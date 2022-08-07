@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
+    font-family: 'Quicksand', sans-serif !important;
+}
+
+body {
+    background: #f3f3f9 !important;
+}
+
+.dropzone {
+    width: 100%;
+    height: 20%;
+    border: 1px solid black;
+}
+
+.dzu-dropzone {
+    overflow: hidden !important;
+    border: 2px dashed #bebebe !important;
+    min-height: 14rem !important;
+    border-radius: 20px !important;
+    background-color: #fbfbff;
+    margin-bottom: 0 !important;
+    padding: 25px;
+}
+
+.dzu-previewContainer {
+    box-shadow: 0 1px 15px 0 #e3e3e3;
+    background: #fff !important;
+    margin: 10px !important;
+    padding: 17px 25px !important;
+    border-radius: 20px !important;
+}
+
+.dzu-previewFileName {
+    font-size: 10px !important;
+}
+
+.dzu-inputLabelWithFiles {
+    color: rgb(22, 20, 20) !important;
+    font-family: 'Quicksand', sans-serif !important;
+    margin: auto !important;
+    margin-top: 20px;
+}
+
+.custom_select {
+    padding: 3px 10px;
+    border: hidden;
+}
+
+.custom_select:focus-visible {
+    outline: none;
+}
+
+.addDir:focus {
+    outline: none;
+}
+
+input:focus {
+    outline: none;
+}
+
+button:focus {
+    outline: none !important;
+}
+
+.otpWidth {
+    width: 3em !important;
+}
+
+.month {
+    background: #d8d8d8;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 1px 5px 0 #e3e3e3;
+    transition: background 1s;
+}
+
+.month>h4 {
+    font-size: 12px;
+    margin: 0;
+    transition: color .5s;
+}
+
+.month.selected {
+    background: #9b9b9b;
+    box-shadow: 0 2px 6px 0 #939393;
+    transition: background 1s;
+}
+
+.month.selected>h4 {
+    color: #fff;
+}
