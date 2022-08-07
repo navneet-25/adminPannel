@@ -4,7 +4,7 @@ import HomePage from './page/HomePage';
 import MainContainer from './component/Shared/MainContainer';
 // import CustomerDetails from './component/Employee/CustomerDetails';
 // import EditCustomer from './component/Employee/EditCustomer';
-// import LoginPage from './page/LoginPage';
+import LoginPage from './page/LoginPage';
 // import AllLeads from './component/Leads/AllLeads';
 import ContextProvider from './context/contextProvider';
 // import Partner from './component/Partner/Partner';
@@ -22,8 +22,6 @@ import ProductManagement from './component/PRODUCT/product-management';
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 
-// Vijay
-
 const App = () => {
 
   return (
@@ -40,6 +38,7 @@ const App = () => {
                 <Route path="category" element={<CategoryManagement />} />
                 <Route path="brand" element={<BrandManagement />} />
               </Route>
+              <Route path="/login" element={<LoginPage />} />
               {/* 
               <Route path="/customers" element={<CustomerDetails />} />
               <Route path="/customers/sallary" element={<Sallery />} />
@@ -49,7 +48,6 @@ const App = () => {
               <Route path="/settings/testimonial" element={<TestimonialSettings />} />
               <Route path="/company" element={<Partner />} />
               <Route path="/company/edit" element={<PartnerEdit />} />
-              <Route path="/login" element={<LoginPage />} />
               <Route path="/allLeads" element={<AllLeads />} />
               <Route path="/buyleads" element={<BuyLeads />} />
               <Route path="/magangeLeads" element={<ManageLeads />} /> */}

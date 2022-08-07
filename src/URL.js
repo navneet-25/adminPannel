@@ -1,4 +1,3 @@
-// const URLDomain = 'https://superg.in/real-estate';
-const URLDomain = 'https://superg.in/Billing';
+const URLDomain = 'https://admin.superg.in';
 
 export default URLDomain;
