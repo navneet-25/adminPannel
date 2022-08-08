@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
-import { AddPlotForm } from "./product-add";
+import { AddBrandForm } from "./brand-add-form";
 
 
 const BrandManagement = () => {
@@ -22,20 +22,14 @@ const BrandManagement = () => {
                         <div className="row g-2">
                             <div className="col-sm-4">
                                 <div className="search-box">
-                                    <input type="text" className="form-control" placeholder="Search for name, tasks, projects or something..." />
+                                    <input type="text" className="form-control" placeholder="Search for Brand Name.." />
                                     <i className="ri-search-line search-icon" />
                                 </div>
                             </div>{/*end col*/}
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" className="btn btn-soft-info btn-icon fs-14"><i className="ri-more-2-fill" /></button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                        <li><a className="dropdown-item" href="#">All</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Week</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Month</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Year</a></li>
-                                    </ul>
-                                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addplots"><i className="ri-add-fill me-1 align-bottom" /> Add Plots</button>
+                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Brand</button>
+                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Add New Brand</button>
                                 </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
@@ -44,15 +38,15 @@ const BrandManagement = () => {
                 <div className="row">
                     <div className="col-lg-12">
                         <div>
-                            <div className="modal fade" id="addplots" tabIndex={-1} aria-hidden="true">
+                            <div className="modal fade" id="addBrands" tabIndex={-1} aria-hidden="true">
                                 <div className="modal-dialog modal-dialog-centered w-50">
                                     <div className="modal-content">
                                         <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Plot</h5>
+                                            <h5 className="modal-title" id="myModalLabel">Add New Brand</h5>
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            {/* <AddPlotForm /> */}
+                                            <AddBrandForm />
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}

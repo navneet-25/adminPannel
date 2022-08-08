@@ -58,7 +58,7 @@ const ContextProvider = props => {
                 status: e.status,
                 duration: 3000,
                 isClosable: true,
-                position: "bottom-right",
+                position: "top-right",
             });
         },
     }
@@ -79,6 +79,7 @@ const ContextProvider = props => {
             .then((responseJson) => {
                 console.log("pro", responseJson);
                 functionality.fetchAllData({
+
                     employes: responseJson.employes,
                     partner: responseJson.partner[0],
                     sallaryList: responseJson.sallaryData,
@@ -88,6 +89,20 @@ const ContextProvider = props => {
                     business_banners: responseJson.business_banners,
                     plots: responseJson.plots,
                     reviews: responseJson.reviews,
+
+                    storeBrandsData: responseJson.storeBrandsData,
+                    storeCategoryData: responseJson.storeCategoryData,
+                    storeProductsData: responseJson.storeProductsData,
+                    storeProductUnits: responseJson.storeProductUnits,
+                    storeProductImages: responseJson.storeProductImages,
+                    masterBrandsData: responseJson.masterBrandsData,
+                    masterCategoryData: responseJson.masterCategoryData,
+                    masterProductsData: responseJson.masterProductsData,
+                    masterProductUnits: responseJson.masterProductUnits,
+                    masterProductImages: responseJson.masterProductImages,
+
+
+
                 });
                 return true;
                 // fetchAllData(responseJson);
