@@ -32,8 +32,8 @@ const ContextProvider = props => {
     };
 
     const reloadData = () => {
-        const bussnessID = cookies.get("userBussiness_id");
-        return fetchData(bussnessID);
+        const store_id = cookies.get("userBussiness_id");
+        return fetchData(store_id);
     }
 
     const functionality = {
@@ -44,7 +44,7 @@ const ContextProvider = props => {
         updateDataToCurrentGlobal: (data, where) => dispatch({ type: "UPDATE_DATA", data, where }),
         logOut: () => {
             cookies.remove("isUserLogin");
-            cookies.remove("userID");
+            cookies.remove("adminId");
             cookies.remove("userBussiness_id");
             cookies.remove("userName");
             cookies.remove("userMobile");
@@ -64,31 +64,31 @@ const ContextProvider = props => {
     }
 
 
-    const fetchData = (bussiness_id) => {
+    const fetchData = (store_id) => {
 
-        fetch(URL + "/APP-API/App/fetchData", {
+        fetch(URL + "/APP-API/Billing/fetchData", {
             method: 'POST',
             header: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                bussiness_id
+                store_id: store_id
             })
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log("pro", responseJson);
                 functionality.fetchAllData({
 
-                    employes: responseJson.employes,
-                    partner: responseJson.partner[0],
-                    sallaryList: responseJson.sallaryData,
-                    salaryHistory: responseJson.salaryHistory,
-                    roles: responseJson.roles,
-                    leadsPricing: responseJson.leadsPricing,
-                    business_banners: responseJson.business_banners,
-                    plots: responseJson.plots,
-                    reviews: responseJson.reviews,
+                    // employes: responseJson.employes,
+                    // partner: responseJson.partner[0],
+                    // sallaryList: responseJson.sallaryData,
+                    // salaryHistory: responseJson.salaryHistory,
+                    // roles: responseJson.roles,
+                    // leadsPricing: responseJson.leadsPricing,
+                    // business_banners: responseJson.business_banners,
+                    // plots: responseJson.plots,
+                    // reviews: responseJson.reviews,
 
                     storeBrandsData: responseJson.storeBrandsData,
                     storeCategoryData: responseJson.storeCategoryData,
@@ -99,7 +99,7 @@ const ContextProvider = props => {
                     masterCategoryData: responseJson.masterCategoryData,
                     masterProductsData: responseJson.masterProductsData,
                     masterProductUnits: responseJson.masterProductUnits,
-                    masterProductImages: responseJson.masterProductImages,
+
 
 
 
@@ -112,7 +112,7 @@ const ContextProvider = props => {
             });
     };
 
-    const getUserDetails = (userID) => {
+    const getUserDetails = (adminId) => {
         functionality.setUserLogin();
         fetch(URL + "/APP-API/App/GetUserInfo", {
             method: 'POST',
@@ -122,7 +122,7 @@ const ContextProvider = props => {
 
             },
             body: JSON.stringify({
-                userID
+                adminId
             })
         }).then((response) => response.json())
             .then((responseJson) => {
@@ -137,13 +137,13 @@ const ContextProvider = props => {
 
 
     useEffect(() => {
-        // let userCookie = btoa("userID");
+        // let userCookie = btoa("adminId");
         // lets see...
-        const userID = cookies.get("userID");
-        const bussnessID = cookies.get("userBussiness_id");
-        if (userID && MainData.user.user_info.name == "") {
-            getUserDetails(userID);
-            fetchData(bussnessID);
+        const adminId = cookies.get("adminId");
+        const store_id = cookies.get("adminStoreId");
+        if (adminId && MainData.user.user_info.name == "") {
+            getUserDetails(adminId);
+            fetchData(store_id);
         }
     }, [MainData.user.user_info.name]);
 

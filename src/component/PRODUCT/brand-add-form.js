@@ -15,8 +15,8 @@ export const AddBrandForm = (props) => {
     const [storeBrandsData, setstoreBrandsData] = useState({
         'store_id': adminStoreId,
         'brand_type': adminStoreType,
-        'brand_name': '',
-        'brand_feature_image': '',
+        'brand_name': null,
+        'brand_feature_image': null,
         'date': +new Date(),
     });
 
@@ -24,7 +24,7 @@ export const AddBrandForm = (props) => {
 
     const AddPlot = () => {
 
-        if (storeBrandsData.brand_name == '' && storeBrandsData.brand_feature_image == '') {
+        if (storeBrandsData.brand_name == null && storeBrandsData.brand_feature_image == null) {
             getToast({ title: "Brand Name & Image Requird", dec: "Requird", status: "error" });
         }
         else {
@@ -54,14 +54,14 @@ export const AddBrandForm = (props) => {
                     if (responseJson.is_brand_alredy == 1) {
 
                         getToast({ title: "Brand Added Already", dec: "Successful", status: "success" });
-                        setstoreBrandsData({ brand_name: '', brand_feature_image: '' })
+                        setstoreBrandsData({ brand_name: '', brand_feature_image: '', brand_type: adminStoreType })
 
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "Brand Added", dec: "Successful", status: "success" });
-                        setstoreBrandsData({ brand_name: '', brand_feature_image: '' })
-                        // reloadData();
+                        setstoreBrandsData({ brand_name: '', brand_feature_image: '', brand_type: adminStoreType })
+                        reloadData();
                     }
                     setIL(false);
                     for (let i = 0; i < 10; i++) {

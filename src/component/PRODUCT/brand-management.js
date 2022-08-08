@@ -2,10 +2,102 @@ import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
-import { AddBrandForm } from "./brand-add-form";
 
+import { AddBrandForm } from "./brand-add-form";
+import "bootstrap/dist/css/bootstrap.css";
+import { Col, Row, Table } from "react-bootstrap";
+import { ButtonGroup, Button } from "react-bootstrap";
+
+import {
+    DatatableWrapper,
+    Filter,
+    Pagination,
+    PaginationOptions,
+    TableBody,
+    TableHeader
+} from "react-bs-datatable";
+
+// Create table headers consisting of 4 columns.
+
+const STORY_HEADERS = [
+
+    {
+        prop: "brand_name",
+        title: "Brand Name",
+        isFilterable: true,
+        isSortable: true
+
+    },
+    {
+        prop: "image",
+        title: "Image",
+
+        cell: (row) => {
+            return (
+                <img src={row.brand_image} alt="" style={{ height: '40px', margin: 'auto', borderRadius: '14px', boxShadow: '0 1px 5px 0 grey' }} />
+            );
+        }
+    },
+    {
+        prop: "brand_type",
+        title: "Type",
+        isSortable: true
+    },
+];
 
 const BrandManagement = () => {
+    const { storeBrandsData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
+    const [delID, setDelID] = useState();
+    const [editablePlot, setEditablePlot] = useState({});
+    const [showData, setShowData] = useState(storeBrandsData);
+
+    const search = (i) => {
+        const filteredbrandDatas = storeBrandsData.filter(brandData => {
+            let brandDataLowercase = (
+                brandData.brand_name
+            ).toLowerCase();
+
+            let searchTermLowercase = i.toLowerCase();
+
+            return brandDataLowercase.indexOf(searchTermLowercase) > -1;
+        })
+        // const data = storeBrandsData.filter(obj => obj.project_name == i);
+        setShowData(filteredbrandDatas);
+    }
+
+    useEffect(() => {
+        setShowData(storeBrandsData);
+    }, [storeBrandsData]);
+
+    const deletePlot = () => {
+        console.log("kit kat", delID);
+        fetch(URLDomain + "/APP-API/App/deletePlot", {
+            method: 'POST',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: delID
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("respond", responseJson)
+                if (responseJson.deleted) {
+                    removeDataToCurrentGlobal({ type: "storeBrandsData", payload: delID, where: "id" });
+                    getToast({ title: "Plot Deleted", dec: "", status: "error" });
+                } else {
+                    alert("Error");
+                }
+                for (let i = 0; i < 10; i++) {
+                    document.getElementsByClassName("btn-close")[i].click();
+                }
+            })
+            .catch((error) => {
+                //  console.error(error);
+            });
+    }
+
 
     return (
         <>
@@ -20,12 +112,7 @@ const BrandManagement = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="row g-2">
-                            <div className="col-sm-4">
-                                <div className="search-box">
-                                    <input type="text" className="form-control" placeholder="Search for Brand Name.." />
-                                    <i className="ri-search-line search-icon" />
-                                </div>
-                            </div>{/*end col*/}
+
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
                                     <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Brand</button>
@@ -35,6 +122,66 @@ const BrandManagement = () => {
                         </div>{/*end row*/}
                     </div>
                 </div>
+
+                <div className="row">
+
+                </div>
+
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className="card">
+                            <div className="card-body">
+                                <div id="customerList">
+                                    <div className="table-responsive table-card mb-1">
+                                        <DatatableWrapper
+                                            body={showData}
+                                            headers={STORY_HEADERS}
+                                            paginationOptionsProps={{
+                                                initialState: {
+                                                    rowsPerPage: 5,
+                                                    options: [5, 10, 15, 20]
+                                                }
+                                            }}
+                                        >
+                                            <Row className="mb-4 p-2">
+                                                <Col
+                                                    xs={12}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-end align-items-end"
+                                                >
+                                                    <Filter />
+                                                </Col>
+                                                <Col
+                                                    xs={12}
+                                                    sm={6}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+                                                >
+                                                    <PaginationOptions />
+                                                </Col>
+                                                <Col
+                                                    xs={12}
+                                                    sm={6}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-end align-items-end"
+                                                >
+                                                    <Pagination />
+                                                </Col>
+                                            </Row>
+                                            <Table
+                                                className="table  table-hover">
+                                                <TableHeader />
+                                                <TableBody />
+                                            </Table>
+                                        </DatatableWrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="row">
                     <div className="col-lg-12">
                         <div>
