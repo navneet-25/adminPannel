@@ -4,6 +4,8 @@ import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
 
 import { AddBrandForm } from "./brand-add-form";
+import { ImportNewBrand } from "./import-new-brand";
+
 import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
 
@@ -102,7 +104,7 @@ const BrandManagement = () => {
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Library Brand</button>
+                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Library Brand</button>
                                     <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Add New Brand</button>
                                 </div>
                             </div>{/*end col*/}
@@ -168,6 +170,26 @@ const BrandManagement = () => {
                     </div>
                 </div>
 
+
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div>
+                            <div className="modal fade" id="importBrands" tabIndex={-1} aria-hidden="true">
+                                <div className="modal-dialog modal-dialog-centered w-50">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="myModalLabel">Import New Brand</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                        </div>
+                                        <div className="modal-body">
+                                            <ImportNewBrand />
+                                        </div>
+                                    </div>{/*end modal-content*/}
+                                </div>{/*end modal-dialog*/}
+                            </div>{/*end modal*/}
+                        </div>
+                    </div>{/* end col */}
+                </div>{/*end row*/}
 
                 <div className="row">
                     <div className="col-lg-12">
