@@ -137,17 +137,11 @@ const LoginPage = () => {
                                             </form>
                                         </div>
                                     </div>
-                                    {/* end card body */}
                                 </div>
                             </div>
                         </div>
-                        {/* end row */}
                     </div>
-                    {/* end container */}
                 </div>
-                {/* end auth page content */}
-                {/* footer */}
-                {/* end Footer */}
             </div>
         </>
     )

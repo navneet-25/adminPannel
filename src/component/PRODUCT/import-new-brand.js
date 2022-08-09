@@ -3,14 +3,17 @@ import URL from '../../URL';
 import Cookies from 'universal-cookie';
 import ContextData from '../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
+import { useRef } from 'react';
 
 const cookies = new Cookies();
 
 export const ImportNewBrand = (props) => {
 
     const { masterBrandsData, storeBrandsData, getToast, reloadData } = useContext(ContextData);
-    const [filteredBrandsData, setFilterBrandData] = useState(masterBrandsData);
+    const [filteredBrandsData, setFilterBrandData] = useState([]);
     const [isLoading, setIL] = useState(false);
+    const getSelectedItemsRef = useRef(null);
+    const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
     const [showMasterData, setShowMasterData] = useState(masterBrandsData);
@@ -25,10 +28,6 @@ export const ImportNewBrand = (props) => {
     // });
     useEffect(() => {
 
-
-
-
-
         let obj3 = []
 
         showMasterData.map(function (a) {
@@ -41,13 +40,12 @@ export const ImportNewBrand = (props) => {
         })
 
 
-
         setFilterBrandData(obj3);
 
         // console.log("filter", res)
 
 
-    });
+    }, []);
 
 
 
@@ -110,14 +108,20 @@ export const ImportNewBrand = (props) => {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label">Select Brands</label>
-                        {filteredBrandsData == false ? null : (
+                        {filteredBrandsData.length && (
+
                             <Multiselect
                                 displayValue="key"
                                 onKeyPressFn={function noRefCheck() { }}
-                                onRemove={function noRefCheck() { }}
                                 onSearch={function noRefCheck() { }}
-                                onSelect={function noRefCheck() { }}
+                                onRemove={() => {
+                                    setAllSelectedItems(getSelectedItemsRef.current.state.selectedValues)
+                                }}
+                                onSelect={() => {
+                                    setAllSelectedItems(getSelectedItemsRef.current.state.selectedValues)
+                                }}
                                 options={filteredBrandsData}
+                                ref={getSelectedItemsRef}
                             // showCheckbox
                             />
 
@@ -125,13 +129,6 @@ export const ImportNewBrand = (props) => {
 
                     </div>
                 </div>{/*end col*/}
-
-
-
-
-
-
-
 
                 <div className="col-lg-12">
                     <div className="text-center mt-2">

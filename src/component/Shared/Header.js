@@ -14,11 +14,11 @@ const Header = () => {
     console.log("main all data", data);
 
 
-    if (!auth.isUserLogin && !cookies.get("userID")) {
+    if (!auth.isUserLogin && !cookies.get("adminId")) {
         return <Navigate to="/login" />;
     } else return (
         <>
-            {user.user_info && <header id="page-topbar" className="topbar-shadow">
+            <header id="page-topbar" className="topbar-shadow">
                 <div className="layout-width">
                     <div className="navbar-header">
                         <div className="d-flex">
@@ -340,7 +340,7 @@ const Header = () => {
                         </div>
                     </div>
                 </div>
-            </header>}
+            </header>
         </>
     )
 

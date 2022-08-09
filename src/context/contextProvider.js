@@ -45,9 +45,12 @@ const ContextProvider = props => {
         logOut: () => {
             cookies.remove("isUserLogin");
             cookies.remove("adminId");
-            cookies.remove("userBussiness_id");
-            cookies.remove("userName");
-            cookies.remove("userMobile");
+            cookies.remove("adminPartnerId");
+            cookies.remove("adminEmail");
+            cookies.remove("adminMobile");
+            cookies.remove("adminRoal");
+            cookies.remove("adminStoreId");
+            cookies.remove("adminStoreType");
             dispatch({ type: "LOGOUT" });
         },
         reloadData,
@@ -58,7 +61,7 @@ const ContextProvider = props => {
                 status: e.status,
                 duration: 3000,
                 isClosable: true,
-                position: "top-right",
+                position: "bottom-right",
             });
         },
     }
@@ -73,13 +76,12 @@ const ContextProvider = props => {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                store_id: store_id
+                store_id
             })
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log("pro", responseJson);
                 functionality.fetchAllData({
-
                     // employes: responseJson.employes,
                     // partner: responseJson.partner[0],
                     // sallaryList: responseJson.sallaryData,
@@ -99,10 +101,6 @@ const ContextProvider = props => {
                     masterCategoryData: responseJson.masterCategoryData,
                     masterProductsData: responseJson.masterProductsData,
                     masterProductUnits: responseJson.masterProductUnits,
-
-
-
-
                 });
                 return true;
                 // fetchAllData(responseJson);
@@ -131,13 +129,13 @@ const ContextProvider = props => {
 
             })
             .catch((error) => {
-                //  console.error(error);
+                console.error(error);
             });
     };
 
 
     useEffect(() => {
-        // let userCookie = btoa("adminId");
+        // let userCookie = btoa("userID");
         // lets see...
         const adminId = cookies.get("adminId");
         const store_id = cookies.get("adminStoreId");
