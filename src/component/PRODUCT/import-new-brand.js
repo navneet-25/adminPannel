@@ -36,7 +36,7 @@ export const ImportNewBrand = (props) => {
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
-                obj3.push({ key: a.brand_name, group: a.id });
+                obj3.push({ key: a.brand_name, id: a.id, cat: 'Group 1', });
             }
         })
 
@@ -118,7 +118,7 @@ export const ImportNewBrand = (props) => {
                                 onSearch={function noRefCheck() { }}
                                 onSelect={function noRefCheck() { }}
                                 options={filteredBrandsData}
-                                showCheckbox
+                            // showCheckbox
                             />
 
                         )}
