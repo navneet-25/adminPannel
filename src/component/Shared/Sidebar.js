@@ -136,7 +136,7 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
                                     <RiUserSettingsFill size={26} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">SETTING </span>
                                 </a>
@@ -149,6 +149,57 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
+
+                            <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li>
+                            <li className="nav-item">
+                                <a className="nav-link menu-link" href="#websiteSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="websiteSettings">
+                                    <AiFillSetting size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">Website Settings</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="websiteSettings">
+                                    <ul className="nav nav-sm flex-column">
+                                        <li className="nav-item">
+                                            <Link to="/settings/banners" className="nav-link" data-key="t-cover"> Banners
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/settings/testimonial" className="nav-link" data-key="t-cover"> Testimonial
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/company" className="nav-link" data-key="t-cover"> Company Info
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                    <i class="ri-group-fill"></i> <span data-key="t-dashboards">Emploes</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="sidebarDashboards">
+                                    <ul className="nav nav-sm flex-column">
+                                        <li className="nav-item">
+                                            <Link to="/customers" className="nav-link"> Empoles Details </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a href="#" onClick={() => navigate("/customers/sallary")} className="nav-link"> Payroll </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
+                                    <RiUserSettingsFill size={26} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">Master</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="sidebarAuth">
+                                    <ul className="nav nav-sm flex-column">
+                                        <li className="nav-item">
+                                            <Link to="/settings/role" className="nav-link" data-key="t-cover"> Role
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> */}
                         </ul>
                     </div>
                     {/* Sidebar */}

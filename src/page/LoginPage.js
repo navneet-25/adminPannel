@@ -61,6 +61,7 @@ const LoginPage = () => {
         cookies.set('adminRoal', userDetails.roal, { maxAge: 9999999999 });
         cookies.set('adminPartnerId', userDetails.partner_id, { maxAge: 9999999999 });
         cookies.set('adminStoreId', userDetails.store_id, { maxAge: 9999999999 });
+        cookies.set('adminStoreType', userDetails.store_type, { maxAge: 9999999999 });
         setUserLogin({ user_info: userDetails });
         navigate("/");
     }
