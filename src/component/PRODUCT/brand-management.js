@@ -6,7 +6,7 @@ import URLDomain from "../../URL";
 import { AddBrandForm } from "./brand-add-form";
 import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
-import { ButtonGroup, Button } from "react-bootstrap";
+
 
 import {
     DatatableWrapper,
@@ -51,19 +51,6 @@ const BrandManagement = () => {
     const [editablePlot, setEditablePlot] = useState({});
     const [showData, setShowData] = useState(storeBrandsData);
 
-    const search = (i) => {
-        const filteredbrandDatas = storeBrandsData.filter(brandData => {
-            let brandDataLowercase = (
-                brandData.brand_name
-            ).toLowerCase();
-
-            let searchTermLowercase = i.toLowerCase();
-
-            return brandDataLowercase.indexOf(searchTermLowercase) > -1;
-        })
-        // const data = storeBrandsData.filter(obj => obj.project_name == i);
-        setShowData(filteredbrandDatas);
-    }
 
     useEffect(() => {
         setShowData(storeBrandsData);
@@ -105,7 +92,7 @@ const BrandManagement = () => {
                 <div className="row">
                     <div className="col-12">
                         <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 className="mb-sm-0">Brand</h4>
+                            <h4 className="mb-sm-0">Brand List</h4>
                         </div>
                     </div>
                 </div>
@@ -115,7 +102,7 @@ const BrandManagement = () => {
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Brand</button>
+                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Library Brand</button>
                                     <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Add New Brand</button>
                                 </div>
                             </div>{/*end col*/}

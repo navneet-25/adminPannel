@@ -1,7 +1,90 @@
-import { AddPlotForm } from "./product-add";
+import { Link } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import ContextData from "../../context/MainContext";
+import URLDomain from "../../URL";
 
+import { AddBrandForm } from "./brand-add-form";
+import "bootstrap/dist/css/bootstrap.css";
+import { Col, Row, Table } from "react-bootstrap";
+
+
+import {
+    DatatableWrapper,
+    Filter,
+    Pagination,
+    PaginationOptions,
+    TableBody,
+    TableHeader
+} from "react-bs-datatable";
+
+// Create table headers consisting of 4 columns.
+
+const STORY_HEADERS = [
+
+    {
+        prop: "brand_name",
+        title: "Brand Name",
+        isFilterable: true,
+        isSortable: true
+
+    },
+    {
+        prop: "image",
+        title: "Image",
+
+        cell: (row) => {
+            return (
+                <img src={row.brand_image} alt="" style={{ height: '40px', margin: 'auto', borderRadius: '14px', boxShadow: '0 1px 5px 0 grey' }} />
+            );
+        }
+    },
+    {
+        prop: "brand_type",
+        title: "Type",
+        isSortable: true
+    },
+];
 
 const CategoryManagement = () => {
+    const { storeBrandsData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
+    const [delID, setDelID] = useState();
+    const [editablePlot, setEditablePlot] = useState({});
+    const [showData, setShowData] = useState(storeBrandsData);
+
+
+    useEffect(() => {
+        setShowData(storeBrandsData);
+    }, [storeBrandsData]);
+
+    const deletePlot = () => {
+        console.log("kit kat", delID);
+        fetch(URLDomain + "/APP-API/App/deletePlot", {
+            method: 'POST',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: delID
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("respond", responseJson)
+                if (responseJson.deleted) {
+                    removeDataToCurrentGlobal({ type: "storeBrandsData", payload: delID, where: "id" });
+                    getToast({ title: "Plot Deleted", dec: "", status: "error" });
+                } else {
+                    alert("Error");
+                }
+                for (let i = 0; i < 10; i++) {
+                    document.getElementsByClassName("btn-close")[i].click();
+                }
+            })
+            .catch((error) => {
+                //  console.error(error);
+            });
+    }
+
 
     return (
         <>
@@ -9,46 +92,95 @@ const CategoryManagement = () => {
                 <div className="row">
                     <div className="col-12">
                         <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 className="mb-sm-0">Category</h4>
+                            <h4 className="mb-sm-0">Category List</h4>
                         </div>
                     </div>
                 </div>
                 <div className="card">
                     <div className="card-body">
                         <div className="row g-2">
-                            <div className="col-sm-4">
-                                <div className="search-box">
-                                    <input type="text" className="form-control" placeholder="Search for name, tasks, projects or something..." />
-                                    <i className="ri-search-line search-icon" />
-                                </div>
-                            </div>{/*end col*/}
+
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" className="btn btn-soft-info btn-icon fs-14"><i className="ri-more-2-fill" /></button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                        <li><a className="dropdown-item" href="#">All</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Week</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Month</a></li>
-                                        <li><a className="dropdown-item" href="#">Last Year</a></li>
-                                    </ul>
-                                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addplots"><i className="ri-add-fill me-1 align-bottom" /> Add Plots</button>
+                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Category</button>
+
                                 </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
                     </div>
                 </div>
+
+                <div className="row">
+
+                </div>
+
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className="card">
+                            <div className="card-body">
+                                <div id="customerList">
+                                    <div className="table-responsive table-card mb-1">
+                                        <DatatableWrapper
+                                            body={showData}
+                                            headers={STORY_HEADERS}
+                                            paginationOptionsProps={{
+                                                initialState: {
+                                                    rowsPerPage: 5,
+                                                    options: [5, 10, 15, 20]
+                                                }
+                                            }}
+                                        >
+                                            <Row className="mb-4 p-2">
+                                                <Col
+                                                    xs={12}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-end align-items-end"
+                                                >
+                                                    <Filter />
+                                                </Col>
+                                                <Col
+                                                    xs={12}
+                                                    sm={6}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+                                                >
+                                                    <PaginationOptions />
+                                                </Col>
+                                                <Col
+                                                    xs={12}
+                                                    sm={6}
+                                                    lg={4}
+                                                    className="d-flex flex-col justify-content-end align-items-end"
+                                                >
+                                                    <Pagination />
+                                                </Col>
+                                            </Row>
+                                            <Table
+                                                className="table  table-hover">
+                                                <TableHeader />
+                                                <TableBody />
+                                            </Table>
+                                        </DatatableWrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="row">
                     <div className="col-lg-12">
                         <div>
-                            <div className="modal fade" id="addplots" tabIndex={-1} aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered w-75">
+                            <div className="modal fade" id="addBrands" tabIndex={-1} aria-hidden="true">
+                                <div className="modal-dialog modal-dialog-centered w-50">
                                     <div className="modal-content">
                                         <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Plot</h5>
+                                            <h5 className="modal-title" id="myModalLabel">Add New Brand</h5>
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            <AddPlotForm />
+                                            <AddBrandForm />
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}

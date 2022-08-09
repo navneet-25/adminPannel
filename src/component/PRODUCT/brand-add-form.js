@@ -54,13 +54,12 @@ export const AddBrandForm = (props) => {
                     if (responseJson.is_brand_alredy == 1) {
 
                         getToast({ title: "Brand Added Already", dec: "Successful", status: "success" });
-                        setstoreBrandsData({ brand_name: '', brand_feature_image: '', brand_type: adminStoreType })
+                        reloadData();
 
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "Brand Added", dec: "Successful", status: "success" });
-                        setstoreBrandsData({ brand_name: '', brand_feature_image: '', brand_type: adminStoreType })
                         reloadData();
                     }
                     setIL(false);
