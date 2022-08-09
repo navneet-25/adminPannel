@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import URL from '../../URL';
 import Cookies from 'universal-cookie';
 import ContextData from '../../context/MainContext';
@@ -9,6 +9,7 @@ const cookies = new Cookies();
 export const ImportNewBrand = (props) => {
 
     const { masterBrandsData, storeBrandsData, getToast, reloadData } = useContext(ContextData);
+    const [filteredBrandsData, setFilterBrandData] = useState(masterBrandsData);
     const [isLoading, setIL] = useState(false);
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
@@ -22,6 +23,31 @@ export const ImportNewBrand = (props) => {
     //     'brand_feature_image': null,
     //     'date': +new Date(),
     // });
+    useEffect(() => {
+
+
+
+
+
+        let obj3 = []
+
+        showMasterData.map(function (a) {
+            let matched = showStoreData.filter(b => a.id === b.master_brand_id);
+            if (matched.length) {
+                // obj3.push({ name: a.name, matched: true });
+            } else {
+                obj3.push({ key: a.brand_name, group: a.id });
+            }
+        })
+
+
+
+        setFilterBrandData(obj3);
+
+        // console.log("filter", res)
+
+
+    });
 
 
 
@@ -84,15 +110,19 @@ export const ImportNewBrand = (props) => {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label">Select Brands</label>
-                        <Multiselect
-                            displayValue="key"
-                            onKeyPressFn={function noRefCheck() { }}
-                            onRemove={function noRefCheck() { }}
-                            onSearch={function noRefCheck() { }}
-                            onSelect={function noRefCheck() { }}
-                            options={showMasterData}
-                            showCheckbox
-                        />
+                        {filteredBrandsData == false ? null : (
+                            <Multiselect
+                                displayValue="key"
+                                onKeyPressFn={function noRefCheck() { }}
+                                onRemove={function noRefCheck() { }}
+                                onSearch={function noRefCheck() { }}
+                                onSelect={function noRefCheck() { }}
+                                options={filteredBrandsData}
+                                showCheckbox
+                            />
+
+                        )}
+
                     </div>
                 </div>{/*end col*/}
 
