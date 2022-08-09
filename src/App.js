@@ -21,6 +21,7 @@ import ProductIndex from './component/PRODUCT/product-index';
 import ProductManagement from './component/PRODUCT/product-management';
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
+import Stocks from './component/STOCK/Stocks';
 
 const App = () => {
 
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="brand" element={<BrandManagement />} />
               </Route>
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/stocks" element={<Stocks />} />
               {/* 
               <Route path="/customers" element={<CustomerDetails />} />
               <Route path="/customers/sallary" element={<Sallery />} />
