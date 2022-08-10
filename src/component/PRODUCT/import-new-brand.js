@@ -28,6 +28,8 @@ export const ImportNewBrand = (props) => {
     // });
     useEffect(() => {
 
+        // const getSelectedItemsRef = useRef(null);
+
         let obj3 = []
 
         showMasterData.map(function (a) {
@@ -35,69 +37,71 @@ export const ImportNewBrand = (props) => {
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
-                obj3.push({ key: a.brand_name, id: a.id, cat: 'Group 1', });
+                obj3.push({ key: a.brand_name, id: a.id, cat: 'Group 1', brand_type: a.brand_type, brand_image: a.brand_image, deceptions: a.deceptions, date: a.date });
             }
         })
-
 
         setFilterBrandData(obj3);
 
         // console.log("filter", res)
 
 
-    }, []);
+    }, [storeBrandsData]);
 
 
 
     const AddPlot = () => {
 
-        // if (storeBrandsData.brand_name == null && storeBrandsData.brand_feature_image == null) {
-        //     getToast({ title: "Brand Name & Image Requird", dec: "Requird", status: "error" });
-        // }
-        // else {
-        //     setIL(true);
-        //     const formData = new FormData();
-
-        //     storeBrandsData.brand_feature_image && storeBrandsData.brand_feature_image.map((item, i) => {
-        //         formData.append(`brand_feature_image`, item, item.name);
-        //     })
-
-        //     formData.append('store_id', storeBrandsData.store_id)
-        //     formData.append('brand_type', storeBrandsData.brand_type)
-        //     formData.append('brand_name', storeBrandsData.brand_name)
 
 
 
-        //     fetch(URL + "/APP-API/Billing/addStoreBrands", {
-        //         method: 'POST',
-        //         header: {
-        //             'Accept': 'application/json',
-        //             'Content-type': 'application/json'
-        //         },
-        //         body: formData
-        //     }).then((response) => response.json())
-        //         .then((responseJson) => {
-        //             console.log("respond plot upload", responseJson)
-        //             if (responseJson.is_brand_alredy == 1) {
+        if (getSelectedItemsRef.current.state.selectedValues[0] === undefined) {
+            getToast({ title: "Please Select Brands", dec: "Requird", status: "error" });
+        }
+        else {
+            setIL(true);
 
-        //                 getToast({ title: "Brand Added Already", dec: "Successful", status: "success" });
-        //                 reloadData();
 
-        //             } else {
-        //                 console.log("added");
-        //                 // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
-        //                 getToast({ title: "Brand Added", dec: "Successful", status: "success" });
-        //                 reloadData();
-        //             }
-        //             setIL(false);
-        //             for (let i = 0; i < 10; i++) {
-        //                 document.getElementsByClassName("btn-close")[i].click();
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             //  console.error(error);
-        //         });
-        // }
+            fetch(URL + "/APP-API/Billing/importStoreBrands", {
+                method: 'POST',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+
+
+                    store_id: adminStoreId,
+                    Brands: getSelectedItemsRef.current.state.selectedValues
+
+
+
+                })
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log("respond plot upload", responseJson)
+                    if (responseJson.success) {
+
+                        getToast({ title: "Brand Added ", dec: "Successful", status: "success" });
+                        const getSelectedItemsRef = null;
+                        reloadData();
+
+                    } else {
+                        console.log("added");
+                        // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
+                        getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
+                        const getSelectedItemsRef = null;
+                        reloadData();
+                    }
+                    setIL(false);
+                    for (let i = 0; i < 10; i++) {
+                        document.getElementsByClassName("btn-close")[i].click();
+                    }
+                })
+                .catch((error) => {
+                    //  console.error(error);
+                });
+        }
 
 
     };
