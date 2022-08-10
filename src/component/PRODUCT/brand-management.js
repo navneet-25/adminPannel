@@ -36,7 +36,7 @@ const STORY_HEADERS = [
 
         cell: (row) => {
             return (
-                <img src={row.brand_image} alt="" style={{ height: '40px', margin: 'auto', borderRadius: '14px', boxShadow: '0 1px 5px 0 grey' }} />
+                <img src={row.brand_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
             );
         }
     },
@@ -121,7 +121,7 @@ const BrandManagement = () => {
                         <div className="card">
                             <div className="card-body">
                                 <div id="customerList">
-                                    <div className="table-responsive table-card mb-1">
+                                    <div className="table-responsive table-card mb-1 px-4">
                                         <DatatableWrapper
                                             body={showData}
                                             headers={STORY_HEADERS}

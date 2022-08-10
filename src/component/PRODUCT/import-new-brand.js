@@ -37,7 +37,15 @@ export const ImportNewBrand = (props) => {
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
-                obj3.push({ key: a.brand_name, id: a.id, cat: 'Group 1', brand_type: a.brand_type, brand_image: a.brand_image, deceptions: a.deceptions, date: a.date });
+                obj3.push({
+                    key: a.brand_name,
+                    id: a.id,
+                    cat: 'Group 1',
+                    brand_type: a.brand_type,
+                    brand_image: a.brand_image,
+                    deceptions: a.deceptions,
+                    date: a.date
+                });
             }
         })
 
@@ -50,10 +58,7 @@ export const ImportNewBrand = (props) => {
 
 
 
-    const AddPlot = () => {
-
-
-
+    const AddBrandToSeller = () => {
 
         if (getSelectedItemsRef.current.state.selectedValues[0] === undefined) {
             getToast({ title: "Please Select Brands", dec: "Requird", status: "error" });
@@ -70,11 +75,8 @@ export const ImportNewBrand = (props) => {
                 },
                 body: JSON.stringify({
 
-
                     store_id: adminStoreId,
                     Brands: getSelectedItemsRef.current.state.selectedValues
-
-
 
                 })
             }).then((response) => response.json())
@@ -83,16 +85,14 @@ export const ImportNewBrand = (props) => {
                     if (responseJson.success) {
 
                         getToast({ title: "Brand Added ", dec: "Successful", status: "success" });
-                        const getSelectedItemsRef = null;
-                        reloadData();
+                        getSelectedItemsRef.current.resetSelectedValues();
 
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
-                        const getSelectedItemsRef = null;
-                        reloadData();
                     }
+                    reloadData();
                     setIL(false);
                     for (let i = 0; i < 10; i++) {
                         document.getElementsByClassName("btn-close")[i].click();
@@ -136,7 +136,7 @@ export const ImportNewBrand = (props) => {
 
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddPlot} className="btn btn-primary">Add Brand</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Brand</button>}
                     </div>
                 </div>{/*end col*/}
             </div>{/*end row*/}
