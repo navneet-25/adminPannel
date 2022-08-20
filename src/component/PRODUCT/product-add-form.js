@@ -87,67 +87,41 @@ export const AddProductForm = (props) => {
             if (Category.category_level == 0) {
                 CategorysData.push({
                     key: Category.category_name,
-                    id: Category.id,
-                    cat: 'Group 1',
-                    category_type: Category.category_type,
-                    category_image: Category.category_image,
-                    category_level: Category.category_level,
-                    deceptions: Category.deceptions,
-                    date: Category.date
+                    ...Category
                 });
             }
-
-
         })
 
         setFilterCategoryData(CategorysData);
-
-
-
-
-        // console.log("filter", res)
-
 
     }, []);
 
 
 
     const setChaildCate = (id) => {
+        if (id.length) {
+
+            setAllSelectedCategorys(id);
+            setSelectedCategoryId(id[0].master_category_id)
+
+            let ChildCategorysData = [];
+
+            const getSelectedCategoryIDD = id[0].master_category_id;
 
 
-        // alert(id[0].id)
+            storeCategoryData.map(function (Category) {
+                if (Category.master_category_level == getSelectedCategoryIDD) {
+                    ChildCategorysData.push({
+                        key: Category.category_name,
+                        ...Category
+                    });
+                }
+            })
 
-        setAllSelectedCategorys(id);
-        setSelectedCategoryId(id[0].id)
-
-        let ChildCategorysData = []
-
-
-        storeCategoryData.map(function (Category) {
-
-
-
-            if (Category.master_category_level == getSelectedCategoryId) {
-                ChildCategorysData.push({
-                    key: Category.category_name,
-                    id: Category.id,
-                    cat: 'Group 1',
-                    category_type: Category.category_type,
-                    category_image: Category.category_image,
-                    category_level: Category.category_level,
-                    deceptions: Category.deceptions,
-                    date: Category.date
-                });
-            }
-
-        })
-
-        setFilterChildCategoryData(ChildCategorysData);
-
-
+            setFilterChildCategoryData(ChildCategorysData);
+        }
 
     }
-
 
 
     const AddPlot = () => {
