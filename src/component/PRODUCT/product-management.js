@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
-import { AddPlotForm } from "./product-add";
+import { AddProductForm } from "./product-add-form";
+import { AddUnitForm } from "./unit-add-form";
 
 
 const ProductManagement = () => {
@@ -87,7 +88,8 @@ const ProductManagement = () => {
                                         <li><a className="dropdown-item" href="#">Last Month</a></li>
                                         <li><a className="dropdown-item" href="#">Last Year</a></li>
                                     </ul>
-                                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addplots"><i className="ri-add-fill me-1 align-bottom" /> Add Plots</button>
+                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUnits"><i className="ri-add-fill me-1 align-bottom" /> Add Units</button>
+                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addproducts"><i className="ri-add-fill me-1 align-bottom" /> Add Products</button>
                                 </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
@@ -150,15 +152,35 @@ const ProductManagement = () => {
                 <div className="row">
                     <div className="col-lg-12">
                         <div>
-                            <div className="modal fade" id="addplots" tabIndex={-1} aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered w-50">
+                            <div className="modal fade" id="addproducts" tabIndex={-1} aria-hidden="true">
+                                <div className="modal-dialog modal-dialog-centered">
                                     <div className="modal-content">
                                         <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Plot</h5>
+                                            <h5 className="modal-title" id="myModalLabel">Add Product</h5>
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            {/* <AddPlotForm /> */}
+                                            <AddProductForm />
+                                        </div>
+                                    </div>{/*end modal-content*/}
+                                </div>{/*end modal-dialog*/}
+                            </div>{/*end modal*/}
+                        </div>
+                    </div>{/* end col */}
+                </div>{/*end row*/}
+
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div>
+                            <div className="modal fade" id="addUnits" tabIndex={-1} aria-hidden="true">
+                                <div className="modal-dialog modal-dialog-centered w-50">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="myModalLabel">Add Unit</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                        </div>
+                                        <div className="modal-body">
+                                            <AddUnitForm />
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}

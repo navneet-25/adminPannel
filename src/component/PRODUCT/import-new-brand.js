@@ -134,6 +134,7 @@ export const ImportNewBrand = (props) => {
                     </div>
                 </div>{/*end col*/}
 
+
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
                         {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Brand</button>}

@@ -104,7 +104,7 @@ const BrandManagement = () => {
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Library Brand</button>
+                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importBrands"><i className="ri-add-fill me-1 align-bottom" /> Import Library Brand  </button>
                                     <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBrands"><i className="ri-add-fill me-1 align-bottom" /> Add New Brand</button>
                                 </div>
                             </div>{/*end col*/}
