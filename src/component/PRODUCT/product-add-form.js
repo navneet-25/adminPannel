@@ -200,14 +200,14 @@ export const AddProductForm = (props) => {
 
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label">Product Name</label>
+                        <label htmlFor="compnayNameinput" className="form-label text-danger">Product Name</label>
                         <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })} value={productDetails.product_name} className="form-control" placeholder="Product Name" id="compnayNameinput" />
                     </div>
                 </div>{/*end col*/}
 
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label">Product Image (First Image is Features Image)</label>
+                        <label htmlFor="compnayNameinput" className="form-label text-danger">Product Image (First Image is Features Image)</label>
                         <ImageUploader
                             withIcon={true}
                             buttonText='Choose Multiple Images'
@@ -224,7 +224,7 @@ export const AddProductForm = (props) => {
 
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Product Category</label>
+                        <label htmlFor="firstNameinput" className="form-label text-danger">Product Category</label>
 
 
                         {filteredCategorysData.length && (
@@ -252,7 +252,7 @@ export const AddProductForm = (props) => {
                 </div>{/*end col*/}
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Product Child Category</label>
+                        <label htmlFor="firstNameinput" className="form-label text-danger">Product Child Category</label>
                         {filteredChildCategorysData.length && (
 
                             <Multiselect
@@ -278,7 +278,7 @@ export const AddProductForm = (props) => {
                 </div>{/*end col*/}
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Product Brand</label>
+                        <label htmlFor="firstNameinput" className="form-label text-danger">Product Brand</label>
                         {filteredBrandsData.length && (
 
                             <Multiselect
@@ -303,7 +303,7 @@ export const AddProductForm = (props) => {
                 </div>{/*end col*/}
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Size & Unit</label>
+                        <label htmlFor="firstNameinput" className="form-label text-danger">Size & Unit</label>
                         <div className='d-flex'>
                             <input type="text" onChange={e => setproductDetails({ ...productDetails, product_size: e.target.value })} value={productDetails.product_size} className="form-control" placeholder="Product Size" id="address1ControlTextarea" />
                            
@@ -325,7 +325,7 @@ export const AddProductForm = (props) => {
                     <div className='row'>
                         <div className='col-sm-4'>
                         <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label">Price</label>
+                        <label htmlFor="compnayNameinput" className="form-label text-danger">Price</label>
                         <input type="number" onChange={e => setproductDetails({ ...productDetails, price: e.target.value })} value={productDetails.price} className="form-control" placeholder="Price" id="compnayNameinput" />
                     </div>
 
@@ -396,7 +396,7 @@ export const AddProductForm = (props) => {
 
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
-                        <label htmlFor="citynameInput" className="form-label">Barcode</label>
+                        <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
                         <input type="text" onChange={e => setproductDetails({ ...productDetails, product_bar_code: e.target.value })} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
                     </div>
                 </div>{/*end col*/}
@@ -418,7 +418,7 @@ export const AddProductForm = (props) => {
 
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label">Deceptions</label>
+                        <label htmlFor="compnayNameinput" className="form-label ">Deceptions</label>
                         <textarea onChange={e => setproductDetails({ ...productDetails, property_decerption: e.target.value })} value={productDetails.property_decerption} class="form-control" id="exampleFormControlTextarea5" rows="4"></textarea>
                     </div>
                 </div>
