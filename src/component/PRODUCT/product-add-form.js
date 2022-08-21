@@ -27,7 +27,7 @@ export const AddProductForm = (props) => {
     const [getAllSelectedChildCategorys, setAllSelectedChildCategorys] = useState([]);
 
 
-    const adminStoreId = cookies.get("adminStoreId");
+    const adminStoreId = cookies.get("adminStoreId"); 
     const adminStoreType = cookies.get("adminStoreType");
     // `product_name`, `product_uniq_slug_name`, `product_image`, `product_type`, `parent_category_id`,
     //  `category_id`, `brand_id`, `price`, `discount_in_percent`, `sale_price`, `product_size`, `product_unit`, 
@@ -36,16 +36,16 @@ export const AddProductForm = (props) => {
     const [productDetails, setproductDetails] = useState({
         'store_id': adminStoreId,
         'product_name': '',
-        'product_uniq_slug_name': '',
-        'product_image': '',
-        'product_type': '',
+        'product_uniq_slug_name': '', 
+        'product_image': {length:0},
+        'product_type': adminStoreType,
         'parent_category_id': '',
         'category_id': '',
         'brand_id': '',
-        'price': '',
-        'discount_in_percent': '',
-        'sale_price': '',
-        'product_size': '',
+        'price': 0,
+        'discount_in_percent': 0,
+        'discount_in_rs':0,
+        'sale_price': 0,
         'product_unit': '',
         'product_size': '',
         'product_bar_code':null,
@@ -54,7 +54,6 @@ export const AddProductForm = (props) => {
         'i_gst': 0,
         'c_gst': 0,
         's_gst': 0,
-        'expeiry_date': '',
         'margin_in_rs': '',
      
        
@@ -72,12 +71,8 @@ export const AddProductForm = (props) => {
 
             brandsData.push({
                 key: brand.brand_name,
-                id: brand.id,
-                cat: 'Group 1',
-                brand_type: brand.brand_type,
-                brand_image: brand.brand_image,
-                deceptions: brand.deceptions,
-                date: brand.date
+                ...brand
+
             });
 
         })
@@ -133,66 +128,133 @@ export const AddProductForm = (props) => {
         setproductDetails({ ...productDetails, product_bar_code: randNo })
     }
 
-    const AddPlot = () => {
-        console.log("category select me", getSelectedCategorysRef.current.state.selectedValues[0].id);
-        // setIL(true);
-        // const formData = new FormData();
-
-        // productDetails.project_feature_image && productDetails.project_feature_image.map((item, i) => {
-        //     formData.append(`project_feature_image[]`, item, item.name);
-        // })
-        // formData.append('bussiness_id', productDetails.bussiness_id)
-        // formData.append('project_id', Math.floor(Math.random() * (9999999999 - 1000000000 + 1) + 1000000000));
-        // formData.append('property_status', productDetails.property_status)
-        // formData.append('property_type', productDetails.property_type)
-        // formData.append('project_name', productDetails.project_name)
-        // formData.append('project_location_area', productDetails.project_location_area)
-        // formData.append('property_decerption', productDetails.property_decerption)
-        // formData.append('project_address', productDetails.project_address)
-        // formData.append('product_bar_code', productDetails.product_bar_code)
-        // formData.append('project_state', productDetails.project_state)
-        // // formData.append('project_feature_image', productDetails.project_feature_image[0], productDetails.project_feature_image[0].name)
-        // formData.append('project_video', productDetails.project_video)
-        // formData.append('plot_type', productDetails.plot_type)
-        // formData.append('product_size', `${productDetails.product_size}/${productDetails.product_size_unit}`)
-        // formData.append('plot_sizes', productDetails.plot_sizes)
-        // formData.append('plot_rate', `${productDetails.plot_rate}/${productDetails.plot_rate_unit}`);
-        // formData.append('road_size', productDetails.road_size + "/ft");
-        // formData.append('is_emi_avl', productDetails.is_emi_avl);
-        // formData.append('booking_min_amount', productDetails.booking_min_amount);
-        // formData.append('land_possession', productDetails.land_possession);
-        // formData.append('project_pdf', productDetails.project_pdf);
-        // formData.append('status', productDetails.status);
-        // formData.append('date', +new Date());
+   const onChangeImage = (pictureFiles) => {
+    setproductDetails({ ...productDetails, product_image: pictureFiles })
 
 
-        // fetch(URL + "/APP-API/App/addPlots", {
-        //     method: 'POST',
-        //     header: {
-        //         'Accept': 'application/json',
-        //         'Content-type': 'application/json'
-        //     },
-        //     body: formData
-        // }).then((response) => response.json())
-        //     .then((responseJson) => {
-        //         console.log("respond plot upload", responseJson)
-        //         if (responseJson.user) {
-        //             alert("Member Exists");
-        //         } else {
-        //             console.log("added");
-        //             addDataToCurrentGlobal({ type: "plots", payload: productDetails });
-        //             getToast({ title: "Plot Added", dec: "", status: "success" });
-        //             reloadData();
-        //         }
-        //         setIL(false);
-        //         for (let i = 0; i < 10; i++) {
-        //             document.getElementsByClassName("btn-close")[i].click();
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         //  console.error(error);
-        //     });
+      }
+
+      
+    const AddProductAction = () => {
+
+        let DisInPerc = Math.round(((productDetails.price-productDetails.sale_price)*100)/productDetails.price)
+
+        if (productDetails.product_name == '' ) {
+            getToast({ title: "Product Name Requird", dec: "Requird", status: "error" });
+        }
+        else if (productDetails.product_image.length < 1 ) {
+            getToast({ title: "Product Image Requird", dec: "Requird", status: "error" });
+        }
+        else  if (getSelectedCategorysRef.current.state.selectedValues[0] === undefined) {
+            getToast({ title: "Please Select Category", dec: "Requird", status: "error" });
+        }
+        else  if (getSelectedChildCategorysRef.current.state.selectedValues[0] === undefined) {
+            getToast({ title: "Please Select Child Category", dec: "Requird", status: "error" });
+        }
+        else  if (getSelectedBrandsRef.current.state.selectedValues[0] === undefined) {
+            getToast({ title: "Please Select Brand", dec: "Requird", status: "error" });
+        }
+        else  if (productDetails.product_size == '' ) {
+            getToast({ title: "Product Size Requird", dec: "Requird", status: "error" });
+        }
+        else  if (productDetails.product_unit == '' ) {
+            getToast({ title: "Product Unit Requird", dec: "Requird", status: "error" });
+        }
+        else  if (productDetails.price == 0 ) {
+            getToast({ title: "Product Price Requird", dec: "Requird", status: "error" });
+        }
+        else  if (productDetails.product_bar_code == null ) {
+            getToast({ title: "Product BarCode Requird", dec: "Requird", status: "error" });
+        }
+        else{
+
+        
+        setIL(true);
+        const formData = new FormData();   
+ 
+        productDetails.product_image && productDetails.product_image.map((item, i) => {
+            formData.append(`product_image[]`, item, item.name);
+        })
+    
+        formData.append('store_id', productDetails.store_id)
+        formData.append('product_name', productDetails.product_name)
+        // formData.append('product_uniq_slug_name', productDetails.product_uniq_slug_name)
+        formData.append('product_type', productDetails.product_type)
+        formData.append('parent_category_id', getSelectedCategorysRef.current.state.selectedValues[0].master_category_id)
+        formData.append('category_id', getSelectedChildCategorysRef.current.state.selectedValues[0].master_category_id)
+        formData.append('brand_id', getSelectedBrandsRef.current.state.selectedValues[0].master_brand_id)
+        formData.append('price', productDetails.price)
+        formData.append('discount_in_percent', DisInPerc)
+        formData.append('discount_in_rs', productDetails.discount_in_rs)
+        formData.append('sale_price', productDetails.sale_price)
+        formData.append('product_size', productDetails.product_size)
+        formData.append('product_unit', productDetails.product_unit)
+        formData.append('product_bar_code', productDetails.product_bar_code)
+        formData.append('deceptions', productDetails.deceptions)
+        formData.append('hsn_code', productDetails.hsn_code)
+        formData.append('i_gst', productDetails.i_gst)
+        formData.append('c_gst', productDetails.c_gst)
+        formData.append('s_gst', productDetails.s_gst)
+        formData.append('margin_in_rs', productDetails.margin_in_rs)
+    
+ 
+
+        fetch(URL + "/APP-API/Billing/addStoreProducts", {
+            method: 'POST',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: formData
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("respond product upload", responseJson)
+                if (responseJson.is_product_alredy == 1) {
+
+                    getToast({ title: "Product Added Already", dec: "Successful", status: "success" });
+                    reloadData();
+
+                } else {
+                    console.log("added");
+                    // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
+                    getToast({ title: "Product Added", dec: "Successful", status: "success" });
+                    reloadData();
+                }
+                setIL(false);
+                for (let i = 0; i < 10; i++) {
+                    document.getElementsByClassName("btn-close")[i].click();
+                }
+            })
+            .catch((error) => {
+                //  console.error(error);
+            });
+        }
     };
+
+    const setPricing = (value) =>
+    {
+        setproductDetails({ ...productDetails, price: value,sale_price:value,discount_in_rs:0 })
+    }
+    const setDiscount = (value) =>
+    {
+        let dicountPerc = ((productDetails.price - productDetails.sale_price)/productDetails.price)*10
+
+        setproductDetails({ ...productDetails, discount_in_rs: value ,sale_price:productDetails.price-value,discount_in_percent:dicountPerc})
+    }
+    const setSalePricing = (value) =>
+    {
+        setproductDetails({ ...productDetails, sale_price: value })
+    }
+    const setBarCode = (value) =>
+    {
+if (value=" ") {
+    setproductDetails({ ...productDetails, product_bar_code: null })
+} else {
+    setproductDetails({ ...productDetails, product_bar_code: value })
+}
+    }
+
+
 
     return (
         <>
@@ -201,7 +263,8 @@ export const AddProductForm = (props) => {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Product Name</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })} value={productDetails.product_name} className="form-control" placeholder="Product Name" id="compnayNameinput" />
+                        <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
+                         value={productDetails.product_name}  className="form-control" placeholder="Product Name" id="compnayNameinput" />
                     </div>
                 </div>{/*end col*/}
 
@@ -211,10 +274,10 @@ export const AddProductForm = (props) => {
                         <ImageUploader
                             withIcon={true}
                             buttonText='Choose Multiple Images'
-                            // onChange={this.onChangeImage}
+                            onChange={onChangeImage}
                             imgExtension={['.jpg', '.jpeg', '.png', '.gif']}
                             maxFileSize={5242880}
-                            singleImage={false}
+                            singleImage={false} 
                             withPreview={true}
                         />
                     </div>
@@ -262,13 +325,13 @@ export const AddProductForm = (props) => {
                                 onKeyPressFn={function noRefCheck() { }}
                                 onSearch={function noRefCheck() { }}
                                 onRemove={() => {
-                                    setAllSelectedChildCategorys(getAllSelectedChildCategorys.current.state.selectedValues)
+                                    setAllSelectedChildCategorys(getSelectedChildCategorysRef.current.state.selectedValues)
                                 }}
                                 onSelect={() => {
-                                    setAllSelectedChildCategorys(getAllSelectedChildCategorys.current.state.selectedValues)
+                                    setAllSelectedChildCategorys(getSelectedChildCategorysRef.current.state.selectedValues)
                                 }}
                                 options={filteredChildCategorysData}
-                                ref={getAllSelectedChildCategorys}
+                                ref={getSelectedChildCategorysRef}
                             // showCheckbox
                             />
 
@@ -325,15 +388,15 @@ export const AddProductForm = (props) => {
                     <div className='row'>
                         <div className='col-sm-4'>
                         <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label text-danger">Price</label>
-                        <input type="number" onChange={e => setproductDetails({ ...productDetails, price: e.target.value })} value={productDetails.price} className="form-control" placeholder="Price" id="compnayNameinput" />
+                        <label htmlFor="compnayNameinput"  className="form-label text-danger">Price</label>
+                        <input type="number" onChange={e => setPricing(e.target.value)} value={productDetails.price} className="form-control" placeholder="Price" id="compnayNameinput" />
                     </div>
 
                         </div>
                         <div className='col-sm-4'>
                         <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label">Discount in Rs</label>
-                        <input type="number" onChange={e => setproductDetails({ ...productDetails, discount_in_rs: e.target.value })} value={productDetails.discount_in_rs} className="form-control" placeholder="Discount in Rs" id="compnayNameinput" />
+                        <label htmlFor="compnayNameinput" className="form-label">Discount in Rs </label>
+                        <input type="number" onChange={e => setDiscount(e.target.value )} value={productDetails.discount_in_rs} className="form-control" placeholder="Discount in Rs" id="compnayNameinput" />
                         
                     </div>
 
@@ -341,7 +404,7 @@ export const AddProductForm = (props) => {
                         <div className='col-sm-4'>
                         <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label">Sale Price</label>
-                        <input type="number" onChange={e => setproductDetails({ ...productDetails, sale_price: e.target.value })} value={productDetails.sale_price} className="form-control" placeholder="Sale Price" id="compnayNameinput" />
+                        <input type="number" onChange={e => setSalePricing (e.target.value )} disabled value={productDetails.sale_price} className="form-control" placeholder="Sale Price" id="compnayNameinput" />
                     </div>
 
                         </div>
@@ -384,20 +447,20 @@ export const AddProductForm = (props) => {
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="mobilenumberInput" className="form-label">HSN Code</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, project_name: e.target.value })} value={productDetails.project_name} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
+                        <input type="text" onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
                     </div>
                 </div>{/*end col*/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label">Product Margin (RS)</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, project_name: e.target.value })} value={productDetails.project_name} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
+                        <input type="text" onChange={e => setproductDetails({ ...productDetails, margin_in_rs: e.target.value })} value={productDetails.margin_in_rs} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
                     </div>
                 </div>
 
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, product_bar_code: e.target.value })} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
+                        <input type="text" onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
                     </div>
                 </div>{/*end col*/}
                 <div className="col-md-7">
@@ -419,7 +482,7 @@ export const AddProductForm = (props) => {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label ">Deceptions</label>
-                        <textarea onChange={e => setproductDetails({ ...productDetails, property_decerption: e.target.value })} value={productDetails.property_decerption} class="form-control" id="exampleFormControlTextarea5" rows="4"></textarea>
+                        <textarea onChange={e => setproductDetails({ ...productDetails, deceptions: e.target.value })} value={productDetails.deceptions} class="form-control" id="exampleFormControlTextarea5" rows="4"></textarea>
                     </div>
                 </div>
                
@@ -427,7 +490,7 @@ export const AddProductForm = (props) => {
               
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddPlot} className="btn btn-primary">Add Plot</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddProductAction} className="btn btn-primary">Add Plot</button>}
                     </div>
                 </div>{/*end col*/}
             </div>{/*end row*/}
