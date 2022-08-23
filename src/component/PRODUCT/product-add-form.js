@@ -268,16 +268,10 @@ export const AddProductForm = (props) => {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Product Name</label>
-<<<<<<< HEAD
-                        <input type="text"  autocomplete="nope"
-onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
-                         value={productDetails.product_name}  className="form-control" placeholder="Product Name" id="compnayNameinput" />
-=======
                         <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
                             value={productDetails.product_name} className="form-control" placeholder="Product Name" id="compnayNameinput" />
->>>>>>> bc636edb84ab148e68003ae142c9aa3616445e3a
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
 
                 <div className="col-md-12">
                     <div className="mb-3">
@@ -292,7 +286,7 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
                             withPreview={true}
                         />
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
 
 
 
@@ -323,7 +317,7 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
                         )}
 
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Product Child Category</label>
@@ -349,7 +343,7 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
                         )}
 
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Product Brand</label>
@@ -374,19 +368,13 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
 
                         )}
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Size & Unit</label>
                         <div className='d-flex'>
-<<<<<<< HEAD
-                            <input type="text"  autocomplete="nope"
- onChange={e => setproductDetails({ ...productDetails, product_size: e.target.value })} value={productDetails.product_size} className="form-control" placeholder="Product Size" id="address1ControlTextarea" />
-                           
-=======
                             <input type="text" onChange={e => setproductDetails({ ...productDetails, product_size: e.target.value })} value={productDetails.product_size} className="form-control" placeholder="Product Size" id="address1ControlTextarea" />
 
->>>>>>> bc636edb84ab148e68003ae142c9aa3616445e3a
                             <button type="button" class="btn btn-light dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">{productDetails.product_unit ? productDetails.product_unit : "Unit"}</button>
@@ -400,7 +388,7 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
                             </div>
                         </div>
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-12">
                     <div className='row'>
                         <div className='col-sm-4'>
@@ -464,29 +452,22 @@ onChange={e => setproductDetails({ ...productDetails, product_name: e.target.val
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="mobilenumberInput" className="form-label">HSN Code</label>
-                        <input type="text"  autocomplete="nope"
-onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
+                        <input type="text" onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label">Product Margin (RS)</label>
-                        <input type="text"  autocomplete="nope"
-onChange={e => setproductDetails({ ...productDetails, margin_in_rs: e.target.value })} value={productDetails.margin_in_rs} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
+                        <input type="text" onChange={e => setproductDetails({ ...productDetails, margin_in_rs: e.target.value })} value={productDetails.margin_in_rs} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
                     </div>
                 </div>
 
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
-<<<<<<< HEAD
-                        <input type="text"  autocomplete="nope"
-onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
-=======
                         <input type="text" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
->>>>>>> bc636edb84ab148e68003ae142c9aa3616445e3a
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
                 <div className="col-md-7">
                     <div className="mb-3">
                         <div className=' row col-sm-12  justify-content-center'>
@@ -507,7 +488,7 @@ onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_co
                         </>
                             : null}
                     </div>
-                </div>{/*end col*/}
+                </div>{/end col/}
 
                 <div className="col-md-12">
                     <div className="mb-3">
@@ -522,8 +503,8 @@ onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_co
                     <div className="text-center mt-2">
                         {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddProductAction} className="btn btn-primary">Add Plot</button>}
                     </div>
-                </div>{/*end col*/}
-            </div>{/*end row*/}
+                </div>{/end col/}
+            </div>{/end row/}
         </>
     )
 
