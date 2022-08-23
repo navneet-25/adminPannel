@@ -48,7 +48,7 @@ export const AddProductForm = (props) => {
         'sale_price': 0,
         'product_unit': '',
         'product_size': '',
-        'product_bar_code': null,
+        'product_bar_code': '',
         'deceptions': '',
         'hsn_code': '',
         'i_gst': 0,
@@ -271,7 +271,7 @@ export const AddProductForm = (props) => {
                         <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
                             value={productDetails.product_name} className="form-control" placeholder="Product Name" id="compnayNameinput" />
                     </div>
-                </div>{/end col/}
+                </div>
 
                 <div className="col-md-12">
                     <div className="mb-3">
@@ -286,7 +286,7 @@ export const AddProductForm = (props) => {
                             withPreview={true}
                         />
                     </div>
-                </div>{/end col/}
+                </div>
 
 
 
@@ -317,7 +317,7 @@ export const AddProductForm = (props) => {
                         )}
 
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Product Child Category</label>
@@ -343,7 +343,7 @@ export const AddProductForm = (props) => {
                         )}
 
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Product Brand</label>
@@ -368,7 +368,7 @@ export const AddProductForm = (props) => {
 
                         )}
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Size & Unit</label>
@@ -388,7 +388,7 @@ export const AddProductForm = (props) => {
                             </div>
                         </div>
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-12">
                     <div className='row'>
                         <div className='col-sm-4'>
@@ -454,7 +454,7 @@ export const AddProductForm = (props) => {
                         <label htmlFor="mobilenumberInput" className="form-label">HSN Code</label>
                         <input type="text" onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label">Product Margin (RS)</label>
@@ -467,7 +467,7 @@ export const AddProductForm = (props) => {
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
                         <input type="text" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
                     </div>
-                </div>{/end col/}
+                </div>
                 <div className="col-md-7">
                     <div className="mb-3">
                         <div className=' row col-sm-12  justify-content-center'>
@@ -488,7 +488,7 @@ export const AddProductForm = (props) => {
                         </>
                             : null}
                     </div>
-                </div>{/end col/}
+                </div>
 
                 <div className="col-md-12">
                     <div className="mb-3">
@@ -503,8 +503,8 @@ export const AddProductForm = (props) => {
                     <div className="text-center mt-2">
                         {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddProductAction} className="btn btn-primary">Add Plot</button>}
                     </div>
-                </div>{/end col/}
-            </div>{/end row/}
+                </div>
+            </div>
         </>
     )
 
