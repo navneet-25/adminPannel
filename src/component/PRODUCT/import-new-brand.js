@@ -21,6 +21,10 @@ export const ImportNewBrand = (props) => {
     const [showMasterData, setShowMasterData] = useState(masterBrandsData);
     const [showStoreData, setShowStoreData] = useState(storeBrandsData);
 
+    useEffect(() => {
+        setShowStoreData(storeBrandsData);
+    }, [storeBrandsData])
+
     // const [masterBrandsData, setmasterBrandsData] = useState({
     //     'store_id': adminStoreId,
     //     'brand_type': adminStoreType,
@@ -52,6 +56,9 @@ export const ImportNewBrand = (props) => {
         })
 
         setFilterBrandData(obj3);
+
+        console.log("filter ---->", showStoreData);
+        console.log("filter 222 ---->", storeBrandsData);
 
         // console.log("filter", res)
 
