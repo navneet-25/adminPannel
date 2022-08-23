@@ -19,6 +19,10 @@ export const ImportNewBrand = (props) => {
     const [showMasterData, setShowMasterData] = useState(masterBrandsData);
     const [showStoreData, setShowStoreData] = useState(storeBrandsData);
 
+    useEffect(() => {
+        setShowStoreData(storeBrandsData);
+    }, [storeBrandsData])
+
     // const [masterBrandsData, setmasterBrandsData] = useState({
     //     'store_id': adminStoreId,
     //     'brand_type': adminStoreType,
@@ -33,7 +37,7 @@ export const ImportNewBrand = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.id === b.master_brand_id);
+            let matched = storeBrandsData.filter(b => a.id === b.master_brand_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
@@ -50,6 +54,9 @@ export const ImportNewBrand = (props) => {
         })
 
         setFilterBrandData(obj3);
+
+        console.log("filter ---->", showStoreData);
+        console.log("filter 222 ---->", storeBrandsData);
 
         // console.log("filter", res)
 
