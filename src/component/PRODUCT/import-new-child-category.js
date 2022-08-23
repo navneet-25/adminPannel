@@ -15,6 +15,8 @@ export const ImportNewChildCategory = (props) => {
     const getSelectedItemsRef = useRef(null);
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
+
     const adminStoreType = cookies.get("adminStoreType");
     const [showMasterData, setShowMasterData] = useState(masterCategoryData);
     const [showStoreData, setShowStoreData] = useState(storeCategoryData);
@@ -33,7 +35,7 @@ export const ImportNewChildCategory = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.id == b.master_category_id);
+            let matched = storeCategoryData.filter(b => a.id == b.master_category_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
@@ -73,7 +75,7 @@ export const ImportNewChildCategory = (props) => {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreCategory", {
+            fetch(URL + "/APP-API/Billing/importStoreChildCategory", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -82,6 +84,7 @@ export const ImportNewChildCategory = (props) => {
                 body: JSON.stringify({
 
                     store_id: adminStoreId,
+                    adminId:adminId,
                     Category: getSelectedItemsRef.current.state.selectedValues
 
                 })

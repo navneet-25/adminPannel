@@ -33,6 +33,7 @@
     "react-router-transition": "^2.1.0",
     "react-scripts": "4.0.3",
     "react-transition-group": "^4.4.2",
+    "sweetalert": "^2.1.2",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^1.0.1"
   },

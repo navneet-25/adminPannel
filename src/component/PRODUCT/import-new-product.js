@@ -15,6 +15,7 @@ export const ImportNewProduct = (props) => {
     const getSelectedItemsRef = useRef(null); 
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
     const adminStoreType = cookies.get("adminStoreType");
     const [showMasterData, setShowMasterData] = useState(masterProductsData);
     const [showStoreData, setShowStoreData] = useState(storeProductsData);
@@ -33,7 +34,7 @@ export const ImportNewProduct = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.product_uniq_slug_name === b.product_uniq_slug_name);
+            let matched = storeProductsData.filter(b => a.product_uniq_slug_name === b.product_uniq_slug_name);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else { 
@@ -63,7 +64,7 @@ export const ImportNewProduct = (props) => {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreProduct", {
+            fetch(URL + "/APP-API/Billing/importStoreProduct", { 
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -72,6 +73,7 @@ export const ImportNewProduct = (props) => {
                 body: JSON.stringify({
 
                     store_id: adminStoreId,
+                    adminId:adminId,
                     Product: getSelectedItemsRef.current.state.selectedValues
 
                 })

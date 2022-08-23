@@ -15,6 +15,7 @@ export const ImportNewCategory = (props) => {
     const getSelectedItemsRef = useRef(null);
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
     const adminStoreType = cookies.get("adminStoreType");
     const [showMasterData, setShowMasterData] = useState(masterCategoryData);
     const [showStoreData, setShowStoreData] = useState(storeCategoryData);
@@ -34,7 +35,7 @@ export const ImportNewCategory = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.id === b.master_category_id);
+            let matched = storeCategoryData.filter(b => a.id === b.master_category_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
@@ -83,6 +84,7 @@ export const ImportNewCategory = (props) => {
                 body: JSON.stringify({
 
                     store_id: adminStoreId,
+                    adminId:adminId,
                     Category: getSelectedItemsRef.current.state.selectedValues
 
                 })

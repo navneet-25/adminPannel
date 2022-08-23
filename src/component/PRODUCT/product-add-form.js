@@ -1,7 +1,7 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import URL from '../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../context/MainContext'; 
 import ImageUploader from 'react-images-upload';
 import Multiselect from 'multiselect-react-dropdown';
 import ReactJSBarcode from 'react-jsbarcode';
@@ -29,6 +29,8 @@ export const AddProductForm = (props) => {
 
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
+    const adminId = cookies.get("adminId");
+
     // `product_name`, `product_uniq_slug_name`, `product_image`, `product_type`, `parent_category_id`,
     //  `category_id`, `brand_id`, `price`, `discount_in_percent`, `sale_price`, `product_size`, `product_unit`, 
     //  `stock_quantity`, `stok_warehouse_qty`, `stock_alert_quantity`, `product_bar_code`,
@@ -178,7 +180,7 @@ export const AddProductForm = (props) => {
 
             formData.append('store_id', productDetails.store_id)
             formData.append('product_name', productDetails.product_name)
-            // formData.append('product_uniq_slug_name', productDetails.product_uniq_slug_name)
+            formData.append('adminId', adminId)
             formData.append('product_type', productDetails.product_type)
             formData.append('parent_category_id', getSelectedCategorysRef.current.state.selectedValues[0].master_category_id)
             formData.append('category_id', getSelectedChildCategorysRef.current.state.selectedValues[0].master_category_id)
@@ -213,7 +215,7 @@ export const AddProductForm = (props) => {
 
                         getToast({ title: "Product Added Already", dec: "Successful", status: "success" });
                         reloadData();
-
+ 
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
@@ -221,6 +223,34 @@ export const AddProductForm = (props) => {
                         reloadData();
                     }
                     setIL(false);
+                    setproductDetails(
+                        {'store_id': adminStoreId,
+                        'product_name': '',
+                        'product_uniq_slug_name': '',
+                        'product_image': { length: 0 },
+                        'product_type': adminStoreType,
+                        'parent_category_id': '',
+                        'category_id': '',
+                        'brand_id': '',
+                        'price': 0,
+                        'discount_in_percent': 0,
+                        'discount_in_rs': 0,
+                        'sale_price': 0,
+                        'product_unit': '',
+                        'product_size': '',
+                        'product_bar_code': '',
+                        'deceptions': '',
+                        'hsn_code': '',
+                        'i_gst': 0,
+                        'c_gst': 0,
+                        's_gst': 0,
+                        'margin_in_rs': '',}
+                        
+                    )
+                    getSelectedCategorysRef.current.resetSelectedValues();
+                    getSelectedChildCategorysRef.current.resetSelectedValues();
+                    getSelectedBrandsRef.current.resetSelectedValues();
+
                     for (let i = 0; i < 10; i++) {
                         document.getElementsByClassName("btn-close")[i].click();
                     }

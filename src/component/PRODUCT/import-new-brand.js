@@ -16,6 +16,8 @@ export const ImportNewBrand = (props) => {
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
+    const adminId = cookies.get("adminId");
+
     const [showMasterData, setShowMasterData] = useState(masterBrandsData);
     const [showStoreData, setShowStoreData] = useState(storeBrandsData);
 
@@ -33,7 +35,7 @@ export const ImportNewBrand = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.id === b.master_brand_id);
+            let matched = storeBrandsData.filter(b => a.id === b.master_brand_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
@@ -76,6 +78,7 @@ export const ImportNewBrand = (props) => {
                 body: JSON.stringify({
 
                     store_id: adminStoreId,
+                    adminId:adminId,
                     Brands: getSelectedItemsRef.current.state.selectedValues
 
                 })

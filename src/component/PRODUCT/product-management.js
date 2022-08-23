@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
-import URLDomain from "../../URL";
+import URL from '../../URL';
 
 import { ImportNewProduct } from "./import-new-product";
 import { AddProductForm } from "./product-add-form";
 import { AddUnitForm } from "./unit-add-form";
-
+import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 
 import  SweetAlert from 'react-bootstrap-sweetalert';
 
@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table  } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 
+import swal from 'sweetalert';
 
  
 import {
@@ -24,18 +25,24 @@ import {
     TableBody,
     TableHeader
 } from "react-bs-datatable";
-
-// Create table headers consisting of 4 columns.
-
-
  
+// Create table headers consisting of 4 columns.
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
+
 
 const ProductManagement = () => {
-    const { storeProductsData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
-    const [delID, setDelID] = useState(false);
-    const [editablePlot, setEditablePlot] = useState({});
+    const { storeProductsData, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
+    const [delID, setProductDelID] = useState(0);
+    const [isDeletAction, setDeletAction] = useState(false);
+    const [UpdateProductPrice, setUpdateProductPrice] = useState({});
     const [showData, setShowData] = useState(storeProductsData);
 
+    const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
+
+    
 
 
     useEffect(() => {
@@ -44,7 +51,7 @@ const ProductManagement = () => {
 
     const ChangeStatus = () => {
 
-        setDelID(true)
+        setProductDelID(true)
 
     };
 
@@ -164,9 +171,9 @@ const ProductManagement = () => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Update Price</Dropdown.Item>
+        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
         <Dropdown.Item href="#/action-2">Update Stock</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Delete Product</Dropdown.Item>
+        <Dropdown.Item  onClick={ () => deleteAction(row.id , row.product_name+" "+row.product_size+" "+row.product_unit)}>Delete Product</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
 
@@ -178,9 +185,78 @@ const ProductManagement = () => {
         
     ];
 
-    const deletePlot = () => {
+    const deleteAction=(delete_id,product_name)=>{
+
+
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this Product !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((deleteProductFromStore)=> {
+
+
+
+            if (deleteProductFromStore) { 
+
+
+                
+
+        fetch(URL + "/APP-API/Billing/deleteStoreProduct", { 
+            method: 'POST',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                delete_id: delete_id,
+                product_name:product_name,
+                store_id:adminStoreId, 
+                adminId:adminId
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("respond delete", responseJson)
+                if (responseJson.delete) {
+                        getToast({ title: "Product Deleted ", dec: "Successful", status: "success" });
+                   
+                } else {
+                    getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                }
+            
+                for (let i = 0; i < 10; i++) {
+                    document.getElementsByClassName("btn-close")[i].click();
+                }
+            })
+            .catch((error) => {
+                //  console.error(error); 
+            });
+    
+            reloadData();
+
+              
+
+              swal("Poof! Your Product  has been deleted!", {
+                icon: "success",
+              });
+            } else {
+              swal("Product is safe!");
+            }
+          });
+          
+    }
+    const deleteProductFromStore = () => { 
+
+        // console.log('delete_id',delID)
+        alert("done")
+     }
+
+
+    const deletePlot = () => { 
         console.log("kit kat", delID);
-        fetch(URLDomain + "/APP-API/App/deletePlot", {
+        fetch(URL + "/APP-API/App/deletePlot", {
             method: 'POST',
             header: {
                 'Accept': 'application/json',
@@ -211,20 +287,7 @@ const ProductManagement = () => {
     return (
         <>
 
-            {delID ? (
-                <SweetAlert
-                    warning
-                    showCancel
-                    confirmBtnText="Yes, delete it!"
-                    confirmBtnBsStyle="danger"
-                    title="Are you sure?"
-                    // onConfirm={this.deleteFile}
-                    // onCancel={this.onCancel}
-                    focusCancelBtn
-                >
-                    You will not be able to recover this imaginary file!
-                </SweetAlert>
-            ) : null}
+          
             <div>
                 <div className="row">
                     <div className="col-12">
@@ -366,6 +429,21 @@ const ProductManagement = () => {
                         </div>
                     </div>{/* end col */}
                 </div>{/*end row*/}
+
+
+                <div className="modal fade" id="UpdateProductPricing" tabIndex={-1} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered w-50">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="myModalLabel">Update Product Price</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <div className="modal-body">
+                                <UpdateProductPriceComp productDetails={UpdateProductPrice} />
+                            </div>
+                        </div>{/*end modal-content*/}
+                    </div>{/*end modal-dialog*/}
+                </div>{/*end modal*/}
 
                 <svg className="bookmark-hide">
                     <symbol viewBox="0 0 24 24" stroke="currentColor" fill="var(--color-svg)" id="icon-star"><path strokeWidth=".4" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></symbol>
