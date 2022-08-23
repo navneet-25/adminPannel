@@ -263,7 +263,8 @@ if (value=" ") {
                 <div className="col-md-12">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Product Name</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
+                        <input type="text"  autocomplete="nope"
+onChange={e => setproductDetails({ ...productDetails, product_name: e.target.value })}
                          value={productDetails.product_name}  className="form-control" placeholder="Product Name" id="compnayNameinput" />
                     </div>
                 </div>{/*end col*/}
@@ -368,7 +369,8 @@ if (value=" ") {
                     <div className="mb-3">
                         <label htmlFor="firstNameinput" className="form-label text-danger">Size & Unit</label>
                         <div className='d-flex'>
-                            <input type="text" onChange={e => setproductDetails({ ...productDetails, product_size: e.target.value })} value={productDetails.product_size} className="form-control" placeholder="Product Size" id="address1ControlTextarea" />
+                            <input type="text"  autocomplete="nope"
+ onChange={e => setproductDetails({ ...productDetails, product_size: e.target.value })} value={productDetails.product_size} className="form-control" placeholder="Product Size" id="address1ControlTextarea" />
                            
                             <button type="button" class="btn btn-light dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-haspopup="true"
@@ -447,20 +449,23 @@ if (value=" ") {
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="mobilenumberInput" className="form-label">HSN Code</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
+                        <input type="text"  autocomplete="nope"
+onChange={e => setproductDetails({ ...productDetails, hsn_code: e.target.value })} value={productDetails.hsn_code} className="form-control" placeholder="HSN Code" id="mobilenumberInput" />
                     </div>
                 </div>{/*end col*/}
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label">Product Margin (RS)</label>
-                        <input type="text" onChange={e => setproductDetails({ ...productDetails, margin_in_rs: e.target.value })} value={productDetails.margin_in_rs} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
+                        <input type="text"  autocomplete="nope"
+onChange={e => setproductDetails({ ...productDetails, margin_in_rs: e.target.value })} value={productDetails.margin_in_rs} className="form-control" placeholder="Product Margin" id="mobilenumberInput" />
                     </div>
                 </div>
 
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
-                        <input type="text" onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
+                        <input type="text"  autocomplete="nope"
+onChange={e => setBarCode(e.target.value )} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
                     </div>
                 </div>{/*end col*/}
                 <div className="col-md-7">
