@@ -97,6 +97,7 @@ const ContextProvider = props => {
                     storeProductsData: responseJson.storeProductsData,
                     storeProductUnits: responseJson.storeProductUnits,
                     storeProductImages: responseJson.storeProductImages,
+                    store_vendor_list:responseJson.store_vendor_list,
                     masterBrandsData: responseJson.masterBrandsData,
                     masterCategoryData: responseJson.masterCategoryData,
                     masterProductsData: responseJson.masterProductsData,
