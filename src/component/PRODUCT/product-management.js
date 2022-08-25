@@ -3,9 +3,9 @@ import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URL from '../../URL';
 
-import { ImportNewProduct } from "./import-new-product";
-import { AddProductForm } from "./product-add-form";
-import { AddUnitForm } from "./unit-add-form";
+import { ImportNewProduct } from "./Import/import-new-product";
+import { AddProductForm } from "./Add/product-add-form";
+import { AddUnitForm } from "./Add/unit-add-form";
 import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 
 import  SweetAlert from 'react-bootstrap-sweetalert';

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../../context/MainContext';
 
 const cookies = new Cookies();
 

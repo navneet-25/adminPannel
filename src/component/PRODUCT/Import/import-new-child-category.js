@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
 import { useRef } from 'react';
 

@@ -3,14 +3,14 @@ import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
 
-import { ImportNewCategory } from "./import-new-category";
-import { ImportNewChildCategory } from "./import-new-child-category";
+import { ImportNewCategory } from "./Import/import-new-category";
+import { ImportNewChildCategory } from "./Import/import-new-child-category";
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
 
-
+ 
 import {
     DatatableWrapper,
     Filter,

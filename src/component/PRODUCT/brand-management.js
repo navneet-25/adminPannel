@@ -3,8 +3,8 @@ import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
 
-import { AddBrandForm } from "./brand-add-form";
-import { ImportNewBrand } from "./import-new-brand";
+import { AddBrandForm } from "./Add/brand-add-form";
+import { ImportNewBrand } from "./Import/import-new-brand";
 
 import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";

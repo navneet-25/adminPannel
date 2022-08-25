@@ -1,7 +1,7 @@
 import { useState, useContext, useRef, useEffect } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext'; 
+import ContextData from '../../../context/MainContext'; 
 import ImageUploader from 'react-images-upload';
 import Multiselect from 'multiselect-react-dropdown';
 import ReactJSBarcode from 'react-jsbarcode';
