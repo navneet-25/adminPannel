@@ -22,11 +22,12 @@ import ProductManagement from './component/PRODUCT/product-management';
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
+import { Purchased } from './component/BILLING/Purchased';
 
 const App = () => {
 
   return (
-    <ChakraProvider resetCSS={true}>
+    <ChakraProvider resetCSS={false}>
       <BrowserRouter>
         <ContextProvider>
           <MainContainer>
@@ -38,6 +39,10 @@ const App = () => {
                 <Route path="product" element={<ProductManagement />} />
                 <Route path="category" element={<CategoryManagement />} />
                 <Route path="brand" element={<BrandManagement />} />
+              </Route>
+              <Route path="/billing" >
+                <Route index element={<h4>BILLING</h4>} />
+                <Route path="purchased" element={<Purchased />} />
               </Route>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/stocks" element={<Stocks />} />

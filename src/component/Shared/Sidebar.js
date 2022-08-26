@@ -84,6 +84,19 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
+                            <li className="nav-item">
+                                <a className="nav-link menu-link" href="#stocks-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="stocks-management">
+                                    <GoGraph style={{ fill: "#fff" }} /><span data-key="t-authentication">BILLING</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="stocks-management">
+                                    <ul className="nav nav-sm flex-column">
+                                        <li className="nav-item">
+                                            <Link to="/purchased" className="nav-link" data-key="t-cover"> PURCHASED
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#websiteSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="websiteSettings">
