@@ -17,12 +17,20 @@ import ManageLeads from './component/Leads/ManageLeads';
 import AddPlots from './component/Plot/AddPlots';
 import BannerSettings from './component/Settings/Website/Banner';
 import TestimonialSettings from './component/Settings/Website/Testimonial/Testimonial';
+
+
+import PurchaseIndex from './component/PURCHASE/purchase-index';
+import VendorManagement from './component/PURCHASE/vendor-management';
+
+
 import ProductIndex from './component/PRODUCT/product-index';
 import ProductManagement from './component/PRODUCT/product-management';
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
 import { Purchased } from './component/BILLING/Purchased';
+
+
 
 const App = () => {
 
@@ -34,6 +42,14 @@ const App = () => {
             <Routes>
 
               <Route path="/" element={<HomePage />} />
+
+              <Route path="/purchaseManagement" >
+                <Route index element={<PurchaseIndex />} />
+                <Route path="purchase" element={<VendorManagement />} />
+                <Route path="vendor" element={<VendorManagement />} />
+                <Route path="purchase-history" element={<BrandManagement />} />
+              </Route>
+
               <Route path="/productManagement" >
                 <Route index element={<ProductIndex />} />
                 <Route path="product" element={<ProductManagement />} />

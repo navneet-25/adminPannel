@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../../context/MainContext';
 
 const cookies = new Cookies();
 
@@ -11,6 +11,7 @@ export const AddUnitForm = (props) => {
     const [isLoading, setIL] = useState(false);
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
+    const adminId = cookies.get("adminId");
 
     const [storeUnitsData, setstoreUnitsData] = useState({
         'store_id': adminStoreId,
@@ -31,8 +32,9 @@ export const AddUnitForm = (props) => {
             const formData = new FormData();
 
 
-
+            
             formData.append('store_id', storeUnitsData.store_id)
+            formData.append('adminId',adminId)
             formData.append('unit_type', storeUnitsData.unit_type)
             formData.append('unit_name', storeUnitsData.unit_name)
 

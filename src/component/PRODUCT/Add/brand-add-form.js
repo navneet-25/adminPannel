@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../../context/MainContext';
 
 const cookies = new Cookies();
 
@@ -10,7 +10,9 @@ export const AddBrandForm = (props) => {
     const { addDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
     const adminStoreId = cookies.get("adminStoreId");
-    const adminStoreType = cookies.get("adminStoreType");
+    const adminStoreType = cookies.get("adminStoreType"); 
+    const adminId = cookies.get("adminId");
+
 
     const [storeBrandsData, setstoreBrandsData] = useState({
         'store_id': adminStoreId,
@@ -36,6 +38,7 @@ export const AddBrandForm = (props) => {
             })
 
             formData.append('store_id', storeBrandsData.store_id)
+            formData.append('adminId', adminId)
             formData.append('brand_type', storeBrandsData.brand_type)
             formData.append('brand_name', storeBrandsData.brand_name)
 

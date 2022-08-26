@@ -1,13 +1,13 @@
 import { useState, useContext, useEffect } from 'react';
-import URL from '../../URL';
+import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../context/MainContext';
+import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
 import { useRef } from 'react';
 
 const cookies = new Cookies();
 
-export const ImportNewCategory = (props) => {
+export const ImportNewChildCategory = (props) => {
 
     const { masterCategoryData, storeCategoryData, getToast, reloadData } = useContext(ContextData);
     const [filteredCategoryData, setFilterCategoryData] = useState([]);
@@ -15,6 +15,8 @@ export const ImportNewCategory = (props) => {
     const getSelectedItemsRef = useRef(null);
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
+
     const adminStoreType = cookies.get("adminStoreType");
     const [showMasterData, setShowMasterData] = useState(masterCategoryData);
     const [showStoreData, setShowStoreData] = useState(storeCategoryData);
@@ -26,7 +28,6 @@ export const ImportNewCategory = (props) => {
     //     'Category_feature_image': null,
     //     'date': +new Date(),
     // });
-
     useEffect(() => {
 
         // const getSelectedItemsRef = useRef(null);
@@ -34,11 +35,11 @@ export const ImportNewCategory = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = showStoreData.filter(b => a.id === b.master_category_id);
+            let matched = storeCategoryData.filter(b => a.id == b.master_category_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else {
-                if (a.category_level == 0) {
+                if (a.category_level != 0) {
                     obj3.push({
                         key: a.category_name,
                         id: a.id,
@@ -74,7 +75,7 @@ export const ImportNewCategory = (props) => {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreCategory", {
+            fetch(URL + "/APP-API/Billing/importStoreChildCategory", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -83,6 +84,7 @@ export const ImportNewCategory = (props) => {
                 body: JSON.stringify({
 
                     store_id: adminStoreId,
+                    adminId:adminId,
                     Category: getSelectedItemsRef.current.state.selectedValues
 
                 })
@@ -91,17 +93,13 @@ export const ImportNewCategory = (props) => {
                     console.log("respond plot upload", responseJson)
                     if (responseJson.success) {
 
-                        reloadData();
                         getToast({ title: "Category Added ", dec: "Successful", status: "success" });
                         getSelectedItemsRef.current.resetSelectedValues();
-
 
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeCategoryData });
-                        reloadData();
                         getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
-
                     }
                     reloadData();
                     setIL(false);
@@ -122,7 +120,7 @@ export const ImportNewCategory = (props) => {
             <div className="row">
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Select Category</label>
+                        <label htmlFor="firstNameinput" className="form-label">Select Child Category</label>
                         {filteredCategoryData.length && (
 
                             <Multiselect

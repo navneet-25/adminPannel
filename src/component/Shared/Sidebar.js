@@ -51,6 +51,27 @@ const Sidebar = () => {
                             </li>
                             <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">MANAGEMENT</span></li>
                             <li className="nav-item">
+                                <a className="nav-link menu-link" href="#purchase-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="purchase-management">
+                                    <i class="ri-building-2-fill" /><span data-key="t-authentication">PURCHASE</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="purchase-management">
+                                    <ul className="nav nav-sm flex-column">
+                                        <li className="nav-item">
+                                            <Link to="/purchaseManagement/purchase" className="nav-link" data-key="t-cover"> PURCHASE PRODUCT
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/purchaseManagement/vendor" className="nav-link" data-key="t-cover"> VENDOR
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/purchaseManagement/purchase-history" className="nav-link" data-key="t-cover"> PURCHASE HISTORY
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li className="nav-item">
                                 <a className="nav-link menu-link" href="#product-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="product-management">
                                     <i class="ri-building-2-fill" /><span data-key="t-authentication">PRODUCT</span>
                                 </a>

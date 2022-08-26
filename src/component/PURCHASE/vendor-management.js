@@ -4,7 +4,7 @@ import ContextData from "../../context/MainContext";
 import URL from '../../URL';
 
 import { ImportNewProduct } from "./Import/import-new-product";
-import { AddProductForm } from "./Add/product-add-form";
+import { AddVendorForm } from "./Add/vendor-add-form";
 import { AddUnitForm } from "./Add/unit-add-form";
 import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
@@ -34,13 +34,13 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 
-const ProductManagement = () => {
-    const { storeProductsData, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
+const VendorManagement = () => {
+    const { store_vendor_list, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [UpdateProductPrice, setUpdateProductPrice] = useState({});
     // const [downloadBarcode, setdownloadBarcode] = useState({});
-    const [showData, setShowData] = useState(storeProductsData);
+    const [showData, setShowData] = useState(store_vendor_list);
 
     const adminStoreId = cookies.get("adminStoreId");
     const adminId = cookies.get("adminId");
@@ -49,8 +49,8 @@ const ProductManagement = () => {
 
 
     useEffect(() => {
-        setShowData(storeProductsData);
-    }, [storeProductsData]);
+        setShowData(store_vendor_list);
+    }, [store_vendor_list]);
 
     const ChangeStatus = () => {
 
@@ -61,106 +61,52 @@ const ProductManagement = () => {
     const STORY_HEADERS = [
 
         {
-            prop: "product_name",
-            title: "Product",
+            prop: "name",
+            title: "Vendor Name",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-primary">{row.product_name} {row.product_size} {row.product_unit}</p>
+                   <p className="text-dark">{row.name}</p>
                 );
             }
         },
         {
-            prop: "stock_quantity",
-            title: "Store Stock",
+            prop: "mobile",
+            title: "Mobile",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger">{row.stock_quantity}</p>
+                   <p className="text-dark">{row.mobile}</p>
                 );
             }
         },
         {
-            prop: "stok_warehouse_qty",
-            title: "Warehouse Stock",
+            prop: "address",
+            title: "Address",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger">{row.stok_warehouse_qty}</p>
+                   <p className="text-dark">{row.address}</p>
                 );
             }
         },
       
     
         {
-            prop: "child_category_name",
-            title: "Category",
+            prop: "firm_name",
+            title: "Firm Name",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-success">{row.child_category_name}</p>
+                   <p className="text-success">{row.firm_name}</p>
                 );
             }
         },
-        {
-            prop: "brand_name",
-            title: "Brand",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-dark">{row.brand_name}</p>
-                );
-            }
-        },
-        {
-            prop: "price",
-            title: "Price",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-danger"> ₹ {row.price}</p>
-                );
-            }
-        },
-        {
-            prop: "discount_in_rs",
-            title: "Discount",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-danger"> ₹ {row.discount_in_rs}</p>
-                );
-            }
-        },
-        {
-            prop: "sale_price",
-            title: "Sale Price",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-danger"> ₹ {row.sale_price}</p>
-                );
-            }
-        },
-      
-      {
-            prop: "image",
-            title: "Image",
-
-            cell: (row) => {
-                return (
-                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
-                );
-            }
-        },
+        
 
 
         {
@@ -177,10 +123,10 @@ const ProductManagement = () => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Update Stock</Dropdown.Item>
-        <Dropdown.Item  onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
-        <Dropdown.Item  onClick={ () => deleteAction(row.id , row.product_name+" "+row.product_size+" "+row.product_unit)}>Delete Product</Dropdown.Item>
+      <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Make Payment</Dropdown.Item>
+        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Purchase History</Dropdown.Item>
+        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Payment History</Dropdown.Item>
+
       </Dropdown.Menu>
     </Dropdown>
 
@@ -276,7 +222,7 @@ const ProductManagement = () => {
             .then((responseJson) => {
                 console.log("respond", responseJson)
                 if (responseJson.deleted) {
-                    removeDataToCurrentGlobal({ type: "storeProductsData", payload: delID, where: "id" });
+                    removeDataToCurrentGlobal({ type: "store_vendor_list", payload: delID, where: "id" });
                     getToast({ title: "Plot Deleted", dec: "", status: "error" });
                 } else {
                     alert("Error");
@@ -299,7 +245,7 @@ const ProductManagement = () => {
                 <div className="row">
                     <div className="col-12">
                         <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 className="mb-sm-0">product List</h4>
+                            <h4 className="mb-sm-0">Vendor List</h4>
                         </div>
                     </div>
                 </div>
@@ -309,9 +255,8 @@ const ProductManagement = () => {
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
-                                    <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#importproduct"><i className="ri-add-fill me-1 align-bottom" /> Import product   </button>
-                                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUnits"><i className="ri-add-fill me-1 align-bottom" /> Add Units</button>
-                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addproducts"><i className="ri-add-fill me-1 align-bottom" /> Add Products</button>
+
+                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addvendor"><i className="ri-add-fill me-1 align-bottom" /> Add Vendor</button>
                                 </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
@@ -400,15 +345,15 @@ const ProductManagement = () => {
                 <div className="row">
                     <div className="col-lg-12">
                         <div>
-                            <div className="modal fade" id="addproducts" tabIndex={-1} aria-hidden="true">
+                            <div className="modal fade" id="addvendor" tabIndex={-1} aria-hidden="true">
                                 <div className="modal-dialog modal-dialog-centered">
                                     <div className="modal-content">
                                         <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Product</h5>
+                                            <h5 className="modal-title" id="myModalLabel">Add Vendor</h5>
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            <AddProductForm />
+                                            <AddVendorForm />
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}
@@ -491,4 +436,4 @@ const ProductManagement = () => {
 
 }
 
-export default ProductManagement;
+export default VendorManagement;
