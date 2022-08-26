@@ -72,6 +72,16 @@ const ProductManagement = () => {
             }
         },
         {
+            prop: "image",
+            title: "Image",
+
+            cell: (row) => {
+                return (
+                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
+                );
+            }
+        },
+        {
             prop: "stock_quantity",
             title: "Store Stock",
             isFilterable: true,
@@ -151,16 +161,7 @@ const ProductManagement = () => {
             }
         },
       
-      {
-            prop: "image",
-            title: "Image",
-
-            cell: (row) => {
-                return (
-                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
-                );
-            }
-        },
+     
 
 
         {
