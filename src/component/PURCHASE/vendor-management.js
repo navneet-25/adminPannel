@@ -5,10 +5,10 @@ import URL from '../../URL';
 
 import { ImportNewProduct } from "./Import/import-new-product";
 import { AddVendorForm } from "./Add/vendor-add-form";
-import { AddUnitForm } from "./Add/unit-add-form";
-import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
-import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
-import { DownloadBarcode } from "./Update/DownloadBarcode";
+// import { AddUnitForm } from "./Add/unit-add-form";
+// import { vendorDataComp } from "./Update/vendorDataComp";
+// import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
+import { UpdateVendor } from "./Update/UpdateVendor";
 
 import  SweetAlert from 'react-bootstrap-sweetalert';
 
@@ -38,7 +38,7 @@ const VendorManagement = () => {
     const { store_vendor_list, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
-    const [UpdateProductPrice, setUpdateProductPrice] = useState({});
+    const [vendorData, getVendorData] = useState({});
     // const [downloadBarcode, setdownloadBarcode] = useState({});
     const [showData, setShowData] = useState(store_vendor_list);
 
@@ -59,10 +59,31 @@ const VendorManagement = () => {
     };
 
     const STORY_HEADERS = [
-
+        {
+            prop: "firm_name",
+            title: "Firm Name",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                   <p className="text-dark">{row.firm_name}</p>
+                );
+            }
+        },
+        {
+            prop: "phone",
+            title: "Firm Phone",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                   <p className="text-dark">{row.phone}</p>
+                );
+            }
+        },
         {
             prop: "name",
-            title: "Vendor Name",
+            title: "Contact Name",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
@@ -73,12 +94,23 @@ const VendorManagement = () => {
         },
         {
             prop: "mobile",
-            title: "Mobile",
+            title: "Contact Mobile",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
                    <p className="text-dark">{row.mobile}</p>
+                );
+            }
+        },
+        {
+            prop: "contact_roal",
+            title: "Contact Roal",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                   <p className="text-dark">{row.contact_roal}</p>
                 );
             }
         },
@@ -89,24 +121,13 @@ const VendorManagement = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.address}</p>
+                   <p className="text-dark">{row.address} {row.city} {row.pin_code}</p>
                 );
             }
         },
       
     
-        {
-            prop: "firm_name",
-            title: "Firm Name",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-success">{row.firm_name}</p>
-                );
-            }
-        },
-        
+      
 
 
         {
@@ -123,9 +144,10 @@ const VendorManagement = () => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-      <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Make Payment</Dropdown.Item>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Purchase History</Dropdown.Item>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Payment History</Dropdown.Item>
+        <Dropdown.Item onClick={() => getVendorData(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Make Payment</Dropdown.Item>
+        <Dropdown.Item onClick={() => getVendorData(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Purchase History</Dropdown.Item>
+        <Dropdown.Item onClick={() => getVendorData(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Payment History</Dropdown.Item>
+        <Dropdown.Item onClick={() => getVendorData(row)} data-bs-toggle="modal" data-bs-target="#updateVendor" >Edit Vendor</Dropdown.Item>
 
       </Dropdown.Menu>
     </Dropdown>
@@ -256,7 +278,7 @@ const VendorManagement = () => {
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
 
-                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addvendor"><i className="ri-add-fill me-1 align-bottom" /> Add Vendor</button>
+                                    <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addVendor"><i className="ri-add-fill me-1 align-bottom" /> Add Vendor</button>
                                 </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
@@ -322,106 +344,30 @@ const VendorManagement = () => {
                 </div>
 
 
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div>
-                            <div className="modal fade" id="importproduct" tabIndex={-1} aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered w-50">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Import Product</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        </div>
-                                        <div className="modal-body">
-                                            <ImportNewProduct />
-                                        </div>
-                                    </div>{/*end modal-content*/}
-                                </div>{/*end modal-dialog*/}
-                            </div>{/*end modal*/}
-                        </div>
-                    </div>{/* end col */}
-                </div>{/*end row*/}
-
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div>
-                            <div className="modal fade" id="addvendor" tabIndex={-1} aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Vendor</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        </div>
-                                        <div className="modal-body">
-                                            <AddVendorForm />
-                                        </div>
-                                    </div>{/*end modal-content*/}
-                                </div>{/*end modal-dialog*/}
-                            </div>{/*end modal*/}
-                        </div>
-                    </div>{/* end col */}
-                </div>{/*end row*/}
-
-                <div className="row"> 
-                    <div className="col-lg-12">
-                        <div>
-                            <div className="modal fade" id="addUnits" tabIndex={-1} aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered w-50">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="myModalLabel">Add Unit</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        </div>
-                                        <div className="modal-body">
-                                            <AddUnitForm />
-                                        </div>
-                                    </div>{/*end modal-content*/}
-                                </div>{/*end modal-dialog*/}
-                            </div>{/*end modal*/}
-                        </div>
-                    </div>{/* end col */}
-                </div>{/*end row*/}
-
-
-                <div className="modal fade" id="UpdateProductPricing" tabIndex={-1} aria-hidden="true">
+                
+                <div className="modal fade" id="addVendor" tabIndex={-1} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered w-50">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="myModalLabel">Update Product Price</h5>
+                                <h5 className="modal-title" id="myModalLabel">Add Vendor</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">
-                                <UpdateProductPriceComp productDetails={UpdateProductPrice} />
+                                <AddVendorForm />
                             </div>
                         </div>{/*end modal-content*/}
                     </div>{/*end modal-dialog*/}
                 </div>{/*end modal*/}
-
-                <div className="modal fade" id="UpdateProductStock" tabIndex={-1} aria-hidden="true">
+                
+                <div className="modal fade" id="updateVendor" tabIndex={-1} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered w-50">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="myModalLabel">Update Product Stock</h5>
+                                <h5 className="modal-title" id="myModalLabel">Edit Vendor</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">
-                                <UpdateProductStockComp productDetails={UpdateProductPrice} />
-                            </div>
-                        </div>{/*end modal-content*/}
-                    </div>{/*end modal-dialog*/}
-                </div>{/*end modal*/}
-
-                
-                
-                <div className="modal fade" id="downloadBarcode" tabIndex={-1} aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-centered w-50">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="myModalLabel">Barcode</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                            </div>
-                            <div className="modal-body">
-                                <DownloadBarcode productDetails={UpdateProductPrice} />
+                                <UpdateVendor vendorDetails={vendorData} />
                             </div>
                         </div>{/*end modal-content*/}
                     </div>{/*end modal-dialog*/}

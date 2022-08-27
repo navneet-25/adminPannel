@@ -25,6 +25,10 @@ import VendorManagement from './component/PURCHASE/vendor-management';
 
 import ProductIndex from './component/PRODUCT/product-index';
 import ProductManagement from './component/PRODUCT/product-management';
+import ProductByCategory from './component/PRODUCT/product-by-category';
+import ProductByParentCategory from './component/PRODUCT/product-by-parent-category';
+import ProductByBrand from './component/PRODUCT/product-by-brand';
+
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
@@ -54,6 +58,9 @@ const App = () => {
               <Route path="/productManagement" >
                 <Route index element={<ProductIndex />} />
                 <Route path="product" element={<ProductManagement />} />
+                <Route  path="/productManagement/product-by-brand/:brandID/:brandName" element={<ProductByBrand />} />
+                <Route  path="/productManagement/product-by-category/:subcatID/:subcatName" element={<ProductByCategory />} />
+                <Route  path="/productManagement/product-by-parent-category/:subcatID/:subcatName" element={<ProductByParentCategory />} />
                 <Route path="category" element={<CategoryManagement />} />
                 <Route path="brand" element={<BrandManagement />} />
               </Route>
@@ -76,7 +83,7 @@ const App = () => {
               <Route path="/allLeads" element={<AllLeads />} />
               <Route path="/buyleads" element={<BuyLeads />} />
               <Route path="/magangeLeads" element={<ManageLeads />} />
-              <Route path="/plot" element={<AddPlots />} />
+              <Route path="/plot" element={<AddPlots />} /> 
   */}
 
             </Routes>
@@ -88,3 +95,4 @@ const App = () => {
 }
 
 export default App;
+

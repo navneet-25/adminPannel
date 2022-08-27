@@ -516,7 +516,7 @@ export const AddProductForm = (props) => {
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
-                        <input type="text" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
+                        <input type="text" name="codes" id="codes" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
                     </div>
                 </div>
                 <div className="col-md-7">
