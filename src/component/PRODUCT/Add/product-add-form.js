@@ -44,6 +44,7 @@ export const AddProductForm = (props) => {
         'parent_category_id': '',
         'category_id': '',
         'brand_id': '',
+        'purchase_price':0,
         'price': 0,
         'discount_in_percent': 0,
         'discount_in_rs': 0,
@@ -185,6 +186,7 @@ export const AddProductForm = (props) => {
             formData.append('parent_category_id', getSelectedCategorysRef.current.state.selectedValues[0].master_category_id)
             formData.append('category_id', getSelectedChildCategorysRef.current.state.selectedValues[0].master_category_id)
             formData.append('brand_id', getSelectedBrandsRef.current.state.selectedValues[0].master_brand_id)
+            formData.append('purchase_price', productDetails.purchase_price)
             formData.append('price', productDetails.price)
             formData.append('discount_in_percent', DisInPerc)
             formData.append('discount_in_rs', productDetails.discount_in_rs)
@@ -199,7 +201,7 @@ export const AddProductForm = (props) => {
             formData.append('s_gst', productDetails.s_gst)
             formData.append('margin_in_rs', productDetails.margin_in_rs)
 
-
+            
 
             fetch(URL + "/APP-API/Billing/addStoreProducts", {
                 method: 'POST',
@@ -232,6 +234,7 @@ export const AddProductForm = (props) => {
                         'parent_category_id': '',
                         'category_id': '',
                         'brand_id': '',
+                        'purchase_price':'',
                         'price': 0,
                         'discount_in_percent': 0,
                         'discount_in_rs': 0,
@@ -419,16 +422,34 @@ export const AddProductForm = (props) => {
                         </div>
                     </div>
                 </div>
+                
                 <div className="col-md-12">
                     <div className='row'>
-                        <div className='col-sm-4'>
+                    <div className='col-sm-6'>
                             <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label text-danger">Price</label>
+                                <label htmlFor="compnayNameinput" className="form-label">Purchase Price</label>
+                                <input type="number" onChange={e => setproductDetails({ ...productDetails, purchase_price: e.target.value })} value={productDetails.purchase_price} className="form-control" placeholder="Purchase" id="compnayNameinput" />
+                            </div>
+
+                        </div>
+
+                        <div className='col-sm-6'>
+                            <div className="mb-3">
+                                <label htmlFor="compnayNameinput" className="form-label text-danger">Customer Price</label>
                                 <input type="number" onChange={e => setPricing(e.target.value)} value={productDetails.price} className="form-control" placeholder="Price" id="compnayNameinput" />
                             </div>
 
                         </div>
-                        <div className='col-sm-4'>
+                       
+                    </div>
+
+
+                </div>
+
+                <div className="col-md-12">
+                    <div className='row'>
+                       
+                        <div className='col-sm-6'>
                             <div className="mb-3">
                                 <label htmlFor="compnayNameinput" className="form-label">Discount in Rs </label>
                                 <input type="number" onChange={e => setDiscount(e.target.value)} value={productDetails.discount_in_rs} className="form-control" placeholder="Discount in Rs" id="compnayNameinput" />
@@ -436,9 +457,9 @@ export const AddProductForm = (props) => {
                             </div>
 
                         </div>
-                        <div className='col-sm-4'>
+                        <div className='col-sm-6'>
                             <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label">Sale Price</label>
+                                <label htmlFor="compnayNameinput" className="form-label">Customer Sale Price</label>
                                 <input type="number" onChange={e => setSalePricing(e.target.value)} disabled value={productDetails.sale_price} className="form-control" placeholder="Sale Price" id="compnayNameinput" />
                             </div>
 

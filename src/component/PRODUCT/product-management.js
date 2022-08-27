@@ -72,6 +72,16 @@ const ProductManagement = () => {
             }
         },
         {
+            prop: "image",
+            title: "Image",
+
+            cell: (row) => {
+                return (
+                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
+                );
+            }
+        },
+        {
             prop: "stock_quantity",
             title: "Store Stock",
             isFilterable: true,
@@ -118,13 +128,24 @@ const ProductManagement = () => {
             }
         },
         {
+            prop: "purchase_price",
+            title: "Purchase Price",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                    <p className="text-danger"> ₹ {row.purchase_price}</p>
+                );
+            }
+        },
+        {
             prop: "price",
             title: "Price",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-danger"> ₹ {row.price}</p>
+                    <p className="text-dark"> ₹ {row.price}</p>
                 );
             }
         },
@@ -161,6 +182,19 @@ const ProductManagement = () => {
                 );
             }
         },
+        {
+            prop: "margin_in_rs",
+            title: "Margin",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                    <p className="text-danger"> ₹ {row.margin_in_rs}</p>
+                );
+            }
+        },
+
+
 
 
         {

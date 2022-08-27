@@ -6,7 +6,7 @@ import Alert from 'react-bootstrap/Alert';
 
 const cookies = new Cookies();
 
-export const UpdateProductStockComp = (EditProductData) => {
+export const MoveStoreToWarehouse = (EditProductData) => {
 
     const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
@@ -31,8 +31,12 @@ export const UpdateProductStockComp = (EditProductData) => {
         'c_gst': 0,
         's_gst': 0,
         'margin_in_rs': '',
-        "no_of_stock_to_move":0,
         'resion_for_update':'undefined',
+        'no_of_stock_to_move':0,
+        'newStorestock':0,
+        'newWareHouseStorestock':0,
+        'stock_quantity':0,
+
 
 
     });
@@ -50,6 +54,15 @@ export const UpdateProductStockComp = (EditProductData) => {
     const UpdateProductAction = () => {
 
      
+        if(Number(productDetails.newStorestock)>Number(productDetails.stock_quantity)){
+            getToast({ title: "No of Moving Stocks can not be more than store stocks", dec: "error", status: "error" });
+        }
+        else if(Number(productDetails.newStorestock)<1)
+        { 
+            getToast({ title: "No of moving stocks must be more than 0", dec: "error", status: "error" });
+
+        }
+        else{
 
             setIL(true);
             const formData = new FormData();
@@ -58,15 +71,15 @@ export const UpdateProductStockComp = (EditProductData) => {
             formData.append('id', productDetails.id)
             formData.append('store_id', productDetails.store_id)
             formData.append('adminId', adminId)
-            formData.append('stock_quantity', productDetails.stock_quantity)
-            formData.append('stok_warehouse_qty', productDetails.stok_warehouse_qty)
+            formData.append('stock_quantity', productDetails.newStorestock)
+            formData.append('stok_warehouse_qty', productDetails.newWareHouseStorestock)
             formData.append('stock_alert_quantity', productDetails.stock_alert_quantity)
             formData.append('warehouse_stock_alert_quantity', productDetails.warehouse_stock_alert_quantity)
-            formData.append('coming_from', 'NOT DEFINE')
-            formData.append('going_to', 'NOT DEFINE')
-            formData.append('quantity', productDetails.no_of_stock_to_move)
-            formData.append('action', 'UPDATE')
             formData.append('resion_for_update', productDetails.resion_for_update)
+            formData.append('coming_from', 'STORE')
+            formData.append('going_to', 'WAREHOUSE')
+            formData.append('quantity', productDetails.no_of_stock_to_move)
+            formData.append('action', 'MOVE')
             formData.append('product_name', productDetails.product_name+ " "+productDetails.product_size+" "+productDetails.product_unit)
 
             
@@ -94,7 +107,7 @@ export const UpdateProductStockComp = (EditProductData) => {
                         reloadData();
                     }
                     setIL(false);
-                    setproductDetails([])
+                    setproductDetails({...productDetails, productno_of_stock_to_move:0 ,newStorestock:0,newWareHouseStorestock:0 });
                   
                  
 
@@ -105,21 +118,23 @@ export const UpdateProductStockComp = (EditProductData) => {
                 .catch((error) => {
                     //  console.error(error);
                 });
+          
+        }
+
+         
         
     };
 
-    const setPricing = (value) => {
-        setproductDetails({ ...productDetails, price: value, sale_price: value, discount_in_rs: 0 })
+    const setPricing = (no_to_move) => {
+        // no_of_stock_to_move
+     
+            var newStorestock = Number(productDetails.stock_quantity)-Number(no_to_move);
+            var newWareHouseStorestock = Number(productDetails.stok_warehouse_qty)+Number(no_to_move);
+            setproductDetails({ ...productDetails,no_of_stock_to_move:no_to_move, newStorestock: Number(newStorestock), newWareHouseStorestock: Number(newWareHouseStorestock)})
+        
+       
     }
-    const setDiscount = (value) => {
-        let dicountPerc = ((productDetails.price - productDetails.sale_price) / productDetails.price) * 10
 
-        setproductDetails({ ...productDetails, discount_in_rs: value, sale_price: productDetails.price - value, discount_in_percent: dicountPerc })
-    }
-    const setSalePricing = (value) => {
-        setproductDetails({ ...productDetails, sale_price: value })
-    }
- 
 
 
 
@@ -129,7 +144,7 @@ export const UpdateProductStockComp = (EditProductData) => {
 
                 <div className="col-md-12 my-2 bg-light p-2">
                
-               <h1 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} </h1>
+               <h1 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} | {productDetails.stock_quantity} Items in Store </h1>
                    
                 
                 
@@ -138,54 +153,38 @@ export const UpdateProductStockComp = (EditProductData) => {
           
 
                 <div className="col-md-12">
-                    <div className='row'>
-                        <div className='col-sm-6'>
-                            <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label">Store Stock</label>
-                                <input type="number" onChange={e => setproductDetails({ ...productDetails, stock_quantity: e.target.value,  })} value={productDetails.stock_quantity} className="form-control" placeholder="Store Stock" id="compnayNameinput" />
+
+                <div className="mb-3">
+                            <label htmlFor="compnayNameinput" className="form-label">Quantity to Move ({productDetails.stock_quantity} Items Available) </label>
+                                <input type="number"
+                                 max={Number(productDetails.stock_quantity)}
+                                 onChange={e => setPricing(e.target.value)} value={productDetails.no_of_stock_to_move} className="form-control" placeholder="Quantity to Move" id="compnayNameinput" />
+                                <label htmlFor="compnayNameinput" className="form-label text-danger my-2">Updated Store Stock ({productDetails.newStorestock})</label>
                             </div>
 
-                        </div>
-                        <div className='col-sm-6'>
-                            <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label">Warehouse Stock</label>
-                                <input type="number" onChange={e => setproductDetails({ ...productDetails, stok_warehouse_qty: e.target.value,  })} value={productDetails.stok_warehouse_qty} className="form-control" placeholder="Warehouse Stock" id="compnayNameinput" />
-                            </div>
 
-                        </div>
-                     
-                    </div>
 
 
                 </div>
 
-                <div className="col-md-12">
-                    <div className='row'>
-                     
-                        <div className='col-sm-6'>
-                            <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label">Store Alert Quantity</label>
-                                <input type="number" onChange={e => setproductDetails({ ...productDetails, stock_alert_quantity: e.target.value,  })} value={productDetails.stock_alert_quantity} className="form-control" placeholder="Store Alert Quantity" id="compnayNameinput" />
-                            </div>
 
-                        </div>
+                <div className="col-md-12 my-2">
 
-                        <div className='col-sm-6'>
-                            <div className="mb-3">
-                                <label htmlFor="compnayNameinput" className="form-label">Warehouse Alert Quantity</label>
-                                <input type="number" onChange={e => setproductDetails({ ...productDetails, warehouse_stock_alert_quantity: e.target.value,  })} value={productDetails.warehouse_stock_alert_quantity} className="form-control" placeholder="Warehouse Alert Quantity" id="compnayNameinput" />
-                            </div>
-
-                        </div>
-                    </div>
+                <div className="mb-3">
+                <label htmlFor="compnayNameinput" className="form-label">Warehouse Stock ({productDetails.stok_warehouse_qty} Items Available)</label>
+                <input type="number" disabled onChange={e => setproductDetails({ ...productDetails, stok_warehouse_qty: e.target.value,  })} value={productDetails.stok_warehouse_qty} className="form-control" placeholder="Warehouse Stock" id="compnayNameinput" />
+                <label htmlFor="compnayNameinput" className="form-label text-success my-2">Updated Warehouse Stock ({productDetails.newWareHouseStorestock})</label>
+            </div>
+            
 
 
-                </div>
 
+</div>
+             
 
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Resion For Update</label>
+                        <label htmlFor="firstNameinput" className="form-label">Resion For Move Stock</label>
                         <div>
                             <button type="button" class="btn btn-light dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-haspopup="true"
@@ -193,8 +192,6 @@ export const UpdateProductStockComp = (EditProductData) => {
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Damage Product' })} href="#">Damage Product </a>
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Expired Product' })} href="#">Expired Product </a>
-                                <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Missing Product' })} href="#">Missing Product </a>
-                                <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Given as Gift' })} href="#">Given as Gift </a>
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'undefined' })} href="#">Not Defined </a>
                             </div>
                         </div>
@@ -207,7 +204,7 @@ export const UpdateProductStockComp = (EditProductData) => {
 
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={UpdateProductAction} className="btn btn-primary">Update Details</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Moving </a> : <button type="button" onClick={UpdateProductAction} className="btn btn-primary">Move Stocks</button>}
                     </div>
                 </div>
             </div>

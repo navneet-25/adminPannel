@@ -29,6 +29,8 @@ import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
 import { Purchased } from './component/BILLING/Purchased';
+import LowStock from './component/STOCK/low-stocks';
+import StocksHistory from './component/STOCK/product-stocks-history';
 
 
 
@@ -49,7 +51,6 @@ const App = () => {
               <Route path="vendor" element={<VendorManagement />} />
               <Route path="purchase-history" element={<BrandManagement />} />
             </Route>
-
             <Route path="/productManagement" >
               <Route index element={<ProductIndex />} />
               <Route path="product" element={<ProductManagement />} />
@@ -62,20 +63,8 @@ const App = () => {
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/stocks" element={<Stocks />} />
-            {/* 
-              <Route path="/customers" element={<CustomerDetails />} />
-              <Route path="/customers/sallary" element={<Sallery />} />
-              <Route path="/customers/edit" element={<EditCustomer />} />
-              <Route path="/settings/role" element={<Roles />} />
-              <Route path="/settings/banners" element={<BannerSettings />} />
-              <Route path="/settings/testimonial" element={<TestimonialSettings />} />
-              <Route path="/company" element={<Partner />} />
-              <Route path="/company/edit" element={<PartnerEdit />} />
-              <Route path="/allLeads" element={<AllLeads />} />
-              <Route path="/buyleads" element={<BuyLeads />} />
-              <Route path="/magangeLeads" element={<ManageLeads />} />
-              <Route path="/plot" element={<AddPlots />} />
-  */}
+            <Route path="/low-stocks" element={<LowStock />} />
+            <Route path="/product-stocks-history" element={<StocksHistory />} />
 
           </Routes>
         </MainContainer>
