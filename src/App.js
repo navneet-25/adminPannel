@@ -28,6 +28,7 @@ import ProductManagement from './component/PRODUCT/product-management';
 import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
+import LowStock from './component/STOCK/low-stocks';
 import StocksHistory from './component/STOCK/product-stocks-history';
 
 
@@ -60,6 +61,7 @@ const App = () => {
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/product-stocks" element={<Stocks />} />
+              <Route path="/low-stocks" element={<LowStock />} />
               <Route path="/product-stocks-history" element={<StocksHistory />} />
              
               {/* 

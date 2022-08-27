@@ -78,6 +78,7 @@ export const MoveStoreToWarehouse = (EditProductData) => {
             formData.append('resion_for_update', productDetails.resion_for_update)
             formData.append('coming_from', 'STORE')
             formData.append('going_to', 'WAREHOUSE')
+            formData.append('quantity', productDetails.no_of_stock_to_move)
             formData.append('action', 'MOVE')
             formData.append('product_name', productDetails.product_name+ " "+productDetails.product_size+" "+productDetails.product_unit)
 
@@ -129,7 +130,7 @@ export const MoveStoreToWarehouse = (EditProductData) => {
      
             var newStorestock = Number(productDetails.stock_quantity)-Number(no_to_move);
             var newWareHouseStorestock = Number(productDetails.stok_warehouse_qty)+Number(no_to_move);
-            setproductDetails({ ...productDetails, newStorestock: Number(newStorestock), newWareHouseStorestock: Number(newWareHouseStorestock)})
+            setproductDetails({ ...productDetails,no_of_stock_to_move:no_to_move, newStorestock: Number(newStorestock), newWareHouseStorestock: Number(newWareHouseStorestock)})
         
        
     }
@@ -154,7 +155,7 @@ export const MoveStoreToWarehouse = (EditProductData) => {
                 <div className="col-md-12">
 
                 <div className="mb-3">
-                            <label htmlFor="compnayNameinput" className="form-label">Quantity to Move ({productDetails.stock_quantity})</label>
+                            <label htmlFor="compnayNameinput" className="form-label">Quantity to Move ({productDetails.stock_quantity} Items Available) </label>
                                 <input type="number"
                                  max={Number(productDetails.stock_quantity)}
                                  onChange={e => setPricing(e.target.value)} value={productDetails.no_of_stock_to_move} className="form-control" placeholder="Quantity to Move" id="compnayNameinput" />
@@ -170,7 +171,7 @@ export const MoveStoreToWarehouse = (EditProductData) => {
                 <div className="col-md-12 my-2">
 
                 <div className="mb-3">
-                <label htmlFor="compnayNameinput" className="form-label">Warehouse Stock ({productDetails.stok_warehouse_qty})</label>
+                <label htmlFor="compnayNameinput" className="form-label">Warehouse Stock ({productDetails.stok_warehouse_qty} Items Available)</label>
                 <input type="number" disabled onChange={e => setproductDetails({ ...productDetails, stok_warehouse_qty: e.target.value,  })} value={productDetails.stok_warehouse_qty} className="form-control" placeholder="Warehouse Stock" id="compnayNameinput" />
                 <label htmlFor="compnayNameinput" className="form-label text-success my-2">Updated Warehouse Stock ({productDetails.newWareHouseStorestock})</label>
             </div>

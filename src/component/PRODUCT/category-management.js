@@ -47,10 +47,25 @@ const CategoryManagement = () => {
 
         {
             prop: "category_name",
-            title: "Category Name",
+            title: "Name",
             isFilterable: true,
-            isSortable: true
+            isSortable: true,
 
+            cell: (row) => {
+
+                if (row.category_level == 0) {
+                    return (
+                        <p className="text-danger">{row.category_name}</p>
+                    );
+                }
+                else {
+
+                    return (
+                        <p className="text-success">{row.category_name}</p>
+                    );
+      }
+
+            }
         },
 
         {
@@ -71,18 +86,7 @@ const CategoryManagement = () => {
                     return (
                         <p className="text-success">{row.parent_name}</p>
                     );
-
-
-
-
-
-
-
-
-
-
-
-                }
+      }
 
             }
         }, {
@@ -100,16 +104,22 @@ const CategoryManagement = () => {
         {
             prop: "product",
             title: "Product",
-
             cell: (row) => {
 
+                if (row.category_level == 0) {
+                    return (
+                        <button className="btn btn-primary" > Products   </button>
+                    );
+                }
+                else {
 
-                return (
-                    <button className="btn btn-primary" > Products   </button>
-                );
-
+                    return (
+                        <button className="btn btn-dark" > Products   </button>
+                    );
+      }
 
             }
+
         },
         {
             prop: "dsd",

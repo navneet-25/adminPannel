@@ -128,13 +128,24 @@ const ProductManagement = () => {
             }
         },
         {
+            prop: "purchase_price",
+            title: "Purchase Price",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                   <p className="text-danger"> ₹ {row.purchase_price}</p>
+                );
+            }
+        },
+        {
             prop: "price",
             title: "Price",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger"> ₹ {row.price}</p>
+                   <p className="text-dark"> ₹ {row.price}</p>
                 );
             }
         },
@@ -156,7 +167,18 @@ const ProductManagement = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger"> ₹ {row.sale_price}</p>
+                   <p className="text-dark"> ₹ {row.sale_price}</p>
+                );
+            }
+        },
+        {
+            prop: "margin_in_rs",
+            title: "Margin",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                   <p className="text-danger"> ₹ {row.margin_in_rs}</p>
                 );
             }
         },

@@ -63,7 +63,7 @@ const Stocks = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.product_name} {row.product_size} {row.product_unit}</p>
+                   <p className="text-dark">{row.product_name}</p>
                 );
             }
         },
@@ -83,9 +83,20 @@ const Stocks = () => {
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
-                return (
-                   <p className="text-dark">{row.stock_quantity}</p>
-                );
+
+                if (Number(row.stock_quantity) < Number(row.stock_alert_quantity)) {
+                    return (
+                        <p className="text-danger">{row.stock_quantity}</p>
+
+                    );
+                }
+                else {
+                    return (
+                        <p className="text-success">{row.stock_quantity}</p>
+
+                    );
+                }
+
             }
         },
         {
@@ -94,16 +105,27 @@ const Stocks = () => {
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
-                return (
-                   <p className="text-dark">{row.stok_warehouse_qty}</p>
-                );
+
+                if (Number(row.stok_warehouse_qty) < Number(row.warehouse_stock_alert_quantity)) {
+                    return (
+                        <p className="text-danger">{row.stok_warehouse_qty}</p>
+
+                    );
+                }
+                else {
+                    return (
+                        <p className="text-success">{row.stok_warehouse_qty}</p>
+
+                    );
+                }
+
             }
         },
       
     
         {
             prop: "stock_alert_quantity",
-            title: "Store Alert",
+            title: "Store Alert", 
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
@@ -123,28 +145,7 @@ const Stocks = () => {
                 );
             }
         },
-        {
-            prop: "price",
-            title: "Price",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-dark"> ₹ {row.price}</p>
-                );
-            }
-        },
-        {
-            prop: "discount_in_rs",
-            title: "Discount",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                   <p className="text-dark"> ₹ {row.discount_in_rs}</p>
-                );
-            }
-        },
+     
         {
             prop: "sale_price",
             title: "Sale Price",

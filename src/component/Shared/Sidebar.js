@@ -126,9 +126,14 @@ const Sidebar = () => {
                                             </Link>
                                         </li>
                                         <li className="nav-item">
+                                            <Link to="/low-stocks" className="nav-link" data-key="t-cover">LOW STOCKS
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
                                             <Link to="/product-stocks-history" className="nav-link" data-key="t-cover"> STOCKS HISTORY
                                             </Link>
                                         </li>
+                                       
                                     </ul>
                                 </div>
                             </li>

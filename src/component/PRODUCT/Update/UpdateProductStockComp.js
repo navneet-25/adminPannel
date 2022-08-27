@@ -31,6 +31,7 @@ export const UpdateProductStockComp = (EditProductData) => {
         'c_gst': 0,
         's_gst': 0,
         'margin_in_rs': '',
+        "no_of_stock_to_move":0,
         'resion_for_update':'undefined',
 
 
@@ -63,6 +64,7 @@ export const UpdateProductStockComp = (EditProductData) => {
             formData.append('warehouse_stock_alert_quantity', productDetails.warehouse_stock_alert_quantity)
             formData.append('coming_from', 'NOT DEFINE')
             formData.append('going_to', 'NOT DEFINE')
+            formData.append('quantity', productDetails.no_of_stock_to_move)
             formData.append('action', 'UPDATE')
             formData.append('resion_for_update', productDetails.resion_for_update)
             formData.append('product_name', productDetails.product_name+ " "+productDetails.product_size+" "+productDetails.product_unit)

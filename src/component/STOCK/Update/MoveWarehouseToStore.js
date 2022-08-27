@@ -59,7 +59,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
         if(Number(productDetails.newWareHouseStorestock)>Number(productDetails.stok_warehouse_qty)){
             getToast({ title: "No of Moving Stocks can not be more than Warehouse stocks", dec: "error", status: "error" });
         }
-        else if(Number(productDetails.newWareHouseStorestock)<1)
+        else if(Number(productDetails.newWareHouseStorestock)==0)
         { 
             getToast({ title: "No of moving stocks must be more than 0", dec: "error", status: "error" });
 
@@ -80,6 +80,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
             formData.append('resion_for_update', productDetails.resion_for_update)
             formData.append('coming_from', 'WAREHOUSE')
             formData.append('going_to', 'STORE')
+            formData.append('quantity', productDetails.no_of_stock_to_move)
             formData.append('action', 'MOVE')
             formData.append('product_name', productDetails.product_name+ " "+productDetails.product_size+" "+productDetails.product_unit)
 
@@ -108,7 +109,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
                         reloadData();
                     }
                     setIL(false);
-                    setproductDetails({...productDetails, productno_of_stock_to_move:0 ,newStorestock:0,newWareHouseStorestock:0 });
+                    setproductDetails({});
                  
 
                     for (let i = 0; i < 10; i++) {
@@ -130,7 +131,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
      
             var newStorestock = Number(productDetails.stock_quantity)+Number(no_to_move);
             var newWareHouseStorestock = Number(productDetails.stok_warehouse_qty)-Number(no_to_move);
-            setproductDetails({ ...productDetails, newStorestock: Number(newStorestock), newWareHouseStorestock: Number(newWareHouseStorestock)})
+            setproductDetails({ ...productDetails,no_of_stock_to_move:no_to_move, newStorestock: Number(newStorestock), newWareHouseStorestock: Number(newWareHouseStorestock)})
         
        
     }
@@ -155,7 +156,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
                 <div className="col-md-12">
 
                 <div className="mb-3">
-                <label htmlFor="compnayNameinput" className="form-label">Quantity to Move ({productDetails.stok_warehouse_qty})</label>
+                <label htmlFor="compnayNameinput" className="form-label">Quantity to Move ({productDetails.stok_warehouse_qty} Items Available) </label>
                 <input type="number" 
                  max={Number(productDetails.stok_warehouse_qty)} 
                  onChange={e => setPricing(e.target.value)} 
@@ -174,7 +175,7 @@ export const MoveWarehouseToStore = (EditProductData) => {
 
 
             <div className="mb-3">
-                            <label htmlFor="compnayNameinput" className="form-label">Store Stock ({productDetails.stock_quantity})</label>
+                            <label htmlFor="compnayNameinput" className="form-label">Store Stock ({productDetails.stock_quantity} Items Available)</label>
                                 <input type="number"
                                 
                                  disabled
