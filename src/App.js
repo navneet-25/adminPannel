@@ -35,34 +35,34 @@ import { Purchased } from './component/BILLING/Purchased';
 const App = () => {
 
   return (
-    <ChakraProvider resetCSS={false}>
-      <BrowserRouter>
-        <ContextProvider>
-          <MainContainer>
-            <Routes>
+    // <ChakraProvider resetCSS={false}>
+    <BrowserRouter>
+      <ContextProvider>
+        <MainContainer>
+          <Routes>
 
-              <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
 
-              <Route path="/purchaseManagement" >
-                <Route index element={<PurchaseIndex />} />
-                <Route path="purchase" element={<VendorManagement />} />
-                <Route path="vendor" element={<VendorManagement />} />
-                <Route path="purchase-history" element={<BrandManagement />} />
-              </Route>
+            <Route path="/purchaseManagement" >
+              <Route index element={<PurchaseIndex />} />
+              <Route path="purchase" element={<VendorManagement />} />
+              <Route path="vendor" element={<VendorManagement />} />
+              <Route path="purchase-history" element={<BrandManagement />} />
+            </Route>
 
-              <Route path="/productManagement" >
-                <Route index element={<ProductIndex />} />
-                <Route path="product" element={<ProductManagement />} />
-                <Route path="category" element={<CategoryManagement />} />
-                <Route path="brand" element={<BrandManagement />} />
-              </Route>
-              <Route path="/billing" >
-                <Route index element={<h4>BILLING</h4>} />
-                <Route path="purchased" element={<Purchased />} />
-              </Route>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/stocks" element={<Stocks />} />
-              {/* 
+            <Route path="/productManagement" >
+              <Route index element={<ProductIndex />} />
+              <Route path="product" element={<ProductManagement />} />
+              <Route path="category" element={<CategoryManagement />} />
+              <Route path="brand" element={<BrandManagement />} />
+            </Route>
+            <Route path="/billing" >
+              <Route index element={<h4>BILLING</h4>} />
+              <Route path="purchased" element={<Purchased />} />
+            </Route>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/stocks" element={<Stocks />} />
+            {/* 
               <Route path="/customers" element={<CustomerDetails />} />
               <Route path="/customers/sallary" element={<Sallery />} />
               <Route path="/customers/edit" element={<EditCustomer />} />
@@ -77,11 +77,11 @@ const App = () => {
               <Route path="/plot" element={<AddPlots />} />
   */}
 
-            </Routes>
-          </MainContainer>
-        </ContextProvider>
-      </BrowserRouter>
-    </ChakraProvider>
+          </Routes>
+        </MainContainer>
+      </ContextProvider>
+    </BrowserRouter>
+    // </ChakraProvider>
   );
 }
 
