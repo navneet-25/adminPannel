@@ -8,7 +8,7 @@ import { MoveStoreToWarehouse } from "./Update/MoveStoreToWarehouse";
 
 import SweetAlert from 'react-bootstrap-sweetalert';
 
-import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';

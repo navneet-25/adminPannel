@@ -10,15 +10,15 @@ import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
 import { DownloadBarcode } from "./Update/DownloadBarcode";
 
-import  SweetAlert from 'react-bootstrap-sweetalert';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-import "bootstrap/dist/css/bootstrap.css";
-import { Col, Row, Table  } from "react-bootstrap";
+// import "bootstrap/dist/css/bootstrap.css";
+import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import swal from 'sweetalert';
 
- 
+
 import {
     DatatableWrapper,
     Filter,
@@ -27,15 +27,15 @@ import {
     TableBody,
     TableHeader
 } from "react-bs-datatable";
- 
+
 // Create table headers consisting of 4 columns.
 import Cookies from 'universal-cookie';
 
-const cookies = new Cookies(); 
+const cookies = new Cookies();
 
 
 const ProductByParentCategory = () => {
-    const { storeProductsData, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
+    const { storeProductsData, removeDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [UpdateProductPrice, setUpdateProductPrice] = useState({});
@@ -48,7 +48,7 @@ const ProductByParentCategory = () => {
     const adminStoreId = cookies.get("adminStoreId");
     const adminId = cookies.get("adminId");
 
-    
+
 
 
     useEffect(() => {
@@ -56,7 +56,7 @@ const ProductByParentCategory = () => {
         const newstoreProductsData = storeProductsData.filter(obj => obj.parent_category_id == subcatID)
 
 
-   
+
         setShowData(newstoreProductsData);
     }, [storeProductsData]);
 
@@ -75,7 +75,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-primary">{row.product_name} {row.product_size} {row.product_unit}</p>
+                    <p className="text-primary">{row.product_name} {row.product_size} {row.product_unit}</p>
                 );
             }
         },
@@ -96,7 +96,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger">{row.stock_quantity}</p>
+                    <p className="text-danger">{row.stock_quantity}</p>
                 );
             }
         },
@@ -107,12 +107,12 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger">{row.stok_warehouse_qty}</p>
+                    <p className="text-danger">{row.stok_warehouse_qty}</p>
                 );
             }
         },
-      
-    
+
+
         {
             prop: "child_category_name",
             title: "Category",
@@ -120,7 +120,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-success">{row.child_category_name}</p>
+                    <p className="text-success">{row.child_category_name}</p>
                 );
             }
         },
@@ -131,7 +131,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.brand_name}</p>
+                    <p className="text-dark">{row.brand_name}</p>
                 );
             }
         },
@@ -142,7 +142,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger"> ₹ {row.purchase_price}</p>
+                    <p className="text-danger"> ₹ {row.purchase_price}</p>
                 );
             }
         },
@@ -153,7 +153,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark"> ₹ {row.price}</p>
+                    <p className="text-dark"> ₹ {row.price}</p>
                 );
             }
         },
@@ -164,7 +164,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger"> ₹ {row.discount_in_rs}</p>
+                    <p className="text-danger"> ₹ {row.discount_in_rs}</p>
                 );
             }
         },
@@ -175,7 +175,7 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark"> ₹ {row.sale_price}</p>
+                    <p className="text-dark"> ₹ {row.sale_price}</p>
                 );
             }
         },
@@ -186,12 +186,12 @@ const ProductByParentCategory = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-danger"> ₹ {row.margin_in_rs}</p>
+                    <p className="text-danger"> ₹ {row.margin_in_rs}</p>
                 );
             }
         },
-      
-     
+
+
 
 
         {
@@ -203,27 +203,27 @@ const ProductByParentCategory = () => {
 
                 return (
                     <Dropdown>
-      <Dropdown.Toggle variant="dark" id="dropdown-basic">
-       Action 
-      </Dropdown.Toggle>
+                        <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                            Action
+                        </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Update Stock</Dropdown.Item>
-        <Dropdown.Item  onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
-        <Dropdown.Item  onClick={ () => deleteAction(row.id , row.product_name+" "+row.product_size+" "+row.product_unit)}>Delete Product</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Update Stock</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
+                            <Dropdown.Item onClick={() => deleteAction(row.id, row.product_name + " " + row.product_size + " " + row.product_unit)}>Delete Product</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
                 );
 
 
             }
         },
-        
+
     ];
 
-    const deleteAction=(delete_id,product_name)=>{
+    const deleteAction = (delete_id, product_name) => {
 
 
         swal({
@@ -232,67 +232,67 @@ const ProductByParentCategory = () => {
             icon: "warning",
             buttons: true,
             dangerMode: true,
-          })
-          .then((deleteProductFromStore)=> {
+        })
+            .then((deleteProductFromStore) => {
 
 
 
-            if (deleteProductFromStore) { 
+                if (deleteProductFromStore) {
 
 
-                
 
-        fetch(URL + "/APP-API/Billing/deleteStoreProduct", { 
-            method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                delete_id: delete_id,
-                product_name:product_name,
-                store_id:adminStoreId, 
-                adminId:adminId
-            })
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log("respond delete", responseJson)
-                if (responseJson.delete) {
-                        getToast({ title: "Product Deleted ", dec: "Successful", status: "success" });
-                   
+
+                    fetch(URL + "/APP-API/Billing/deleteStoreProduct", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            delete_id: delete_id,
+                            product_name: product_name,
+                            store_id: adminStoreId,
+                            adminId: adminId
+                        })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+                            console.log("respond delete", responseJson)
+                            if (responseJson.delete) {
+                                getToast({ title: "Product Deleted ", dec: "Successful", status: "success" });
+
+                            } else {
+                                getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                            }
+
+                            for (let i = 0; i < 10; i++) {
+                                document.getElementsByClassName("btn-close")[i].click();
+                            }
+                        })
+                        .catch((error) => {
+                            //  console.error(error); 
+                        });
+
+                    reloadData();
+
+
+
+                    swal("Poof! Your Product  has been deleted!", {
+                        icon: "success",
+                    });
                 } else {
-                    getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                    swal("Product is safe!");
                 }
-            
-                for (let i = 0; i < 10; i++) {
-                    document.getElementsByClassName("btn-close")[i].click();
-                }
-            })
-            .catch((error) => {
-                //  console.error(error); 
             });
-    
-            reloadData();
 
-              
-
-              swal("Poof! Your Product  has been deleted!", {
-                icon: "success",
-              });
-            } else {
-              swal("Product is safe!");
-            }
-          });
-          
     }
-    const deleteProductFromStore = () => { 
+    const deleteProductFromStore = () => {
 
         // console.log('delete_id',delID)
         alert("done")
-     }
+    }
 
 
-    const deletePlot = () => { 
+    const deletePlot = () => {
         console.log("kit kat", delID);
         fetch(URL + "/APP-API/App/deletePlot", {
             method: 'POST',
@@ -325,12 +325,12 @@ const ProductByParentCategory = () => {
     return (
         <>
 
-          
+
             <div>
                 <div className="row">
                     <div className="col-12">
                         <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 className="mb-sm-0">{ subcatName} product's List</h4>
+                            <h4 className="mb-sm-0">{subcatName} product's List</h4>
                         </div>
                     </div>
                 </div>
@@ -408,7 +408,7 @@ const ProductByParentCategory = () => {
                 </div>
 
 
-         
+
 
                 <div className="modal fade" id="UpdateProductPricing" tabIndex={-1} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered w-50">
@@ -438,8 +438,8 @@ const ProductByParentCategory = () => {
                     </div>{/*end modal-dialog*/}
                 </div>{/*end modal*/}
 
-                
-                
+
+
                 <div className="modal fade" id="downloadBarcode" tabIndex={-1} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered w-50">
                         <div className="modal-content">

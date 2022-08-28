@@ -12,7 +12,7 @@ import { UpdateVendor } from "./Update/UpdateVendor";
 
 import SweetAlert from 'react-bootstrap-sweetalert';
 
-import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 
