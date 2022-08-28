@@ -8,13 +8,11 @@ import { MoveStoreToWarehouse } from "./Update/MoveStoreToWarehouse";
 
 import SweetAlert from 'react-bootstrap-sweetalert';
 
-// import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
-import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-
-import swal from 'sweetalert';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 
 import {
@@ -50,12 +48,21 @@ const LowStock = () => {
 
 
 
+    const [radioValue, setRadioValue] = useState('1');
+
+    const radios = [
+        { name: 'Store Low Stock', value: '1' },
+        { name: 'Warehouse Low Stock', value: '2' },
+    ];
+
+
 
     useEffect(() => {
 
 
+        const filterWareHoseStock = storeProductsData.filter(obj => Number(obj.stock_quantity) < Number(obj.stock_alert_quantity) || Number(obj.stok_warehouse_qty) < Number(obj.warehouse_stock_alert_quantity))
 
-        setFilterStoreStockData(storeProductsData);
+        setFilterStoreStockData(filterWareHoseStock);
 
 
 
@@ -200,15 +207,23 @@ const LowStock = () => {
 
     ];
 
-    const StoreLowStockDataShowFunction = () => {
-        setStoreLowStockDataShow(true)
-        setWarehouseLowStockDataShow(false)
+
+    const FilterDataLowStock = (value) => {
+        setRadioValue(value)
+
+
+        if (value == 1) {
+            const newFilterStoreStock = storeProductsData.filter(obj => Number(obj.stock_quantity) < Number(obj.stock_alert_quantity))
+            setFilterStoreStockData(newFilterStoreStock);
+
+        }
+        else {
+            const newFilterWareHoseStock = storeProductsData.filter(obj => Number(obj.stok_warehouse_qty) < Number(obj.warehouse_stock_alert_quantity))
+            setFilterStoreStockData(newFilterWareHoseStock);
+        }
+
     }
 
-    const warehouseLowStockDataShowFunction = () => {
-        setStoreLowStockDataShow(false)
-        setWarehouseLowStockDataShow(true)
-    }
 
     return (
         <>
@@ -228,10 +243,30 @@ const LowStock = () => {
 
                             <div className=" ms-auto">
                                 <div className="list-grid-nav  gap-1">
-                                    <ButtonGroup aria-label="Basic example">
-                                        <Button onClick={() => StoreLowStockDataShowFunction()} variant={isStoreLowStockDataShow ? 'success' : 'secondary'}>Store Low Stock</Button>
-                                        <Button onClick={() => warehouseLowStockDataShowFunction()} variant={isWarehouseLowStockDataShow ? 'success' : 'secondary'}>Warehouse Low Stock</Button>
-                                    </ButtonGroup>                                </div>
+
+                                    <ButtonGroup>
+                                        {radios.map((radio, idx) => (
+                                            <ToggleButton
+                                                key={idx}
+                                                id={`radio-${idx}`}
+                                                type="radio"
+                                                variant={idx % 2 ? 'outline-success' : 'outline-danger'}
+                                                name="radio"
+                                                value={radio.value}
+                                                checked={radioValue === radio.value}
+                                                onChange={(e) => FilterDataLowStock(e.currentTarget.value)}
+                                            >
+                                                {radio.name}
+                                            </ToggleButton>
+                                        ))}
+                                    </ButtonGroup>
+
+
+                                    {/* <ButtonGroup aria-label="Basic example">
+      <Button onClick={() => StoreLowStockDataShowFunction()} variant={isStoreLowStockDataShow?'success':'secondary'}>Store Low Stock</Button>
+      <Button  onClick={() => warehouseLowStockDataShowFunction()} variant={isWarehouseLowStockDataShow?'success':'secondary'}>Warehouse Low Stock</Button>
+    </ButtonGroup>                                */}
+                                </div>
                             </div>{/*end col*/}
                         </div>{/*end row*/}
                     </div>

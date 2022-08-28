@@ -49,6 +49,8 @@ const ProductManagement = () => {
 
 
     useEffect(() => {
+
+   
         setShowData(storeProductsData);
     }, [storeProductsData]);
 

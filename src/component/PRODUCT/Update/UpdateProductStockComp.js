@@ -191,6 +191,7 @@ export const UpdateProductStockComp = (EditProductData) => {
                                 data-bs-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">{productDetails.resion_for_update ? productDetails.resion_for_update : "Select Resion"}</button>
                             <div class="dropdown-menu">
+                                <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Manage Stock' })} href="#">Manage Stock </a>
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Damage Product' })} href="#">Damage Product </a>
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Expired Product' })} href="#">Expired Product </a>
                                 <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, resion_for_update: 'Missing Product' })} href="#">Missing Product </a>

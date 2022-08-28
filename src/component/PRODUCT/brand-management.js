@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
+import { useNavigate } from 'react-router';
 
 import { AddBrandForm } from "./Add/brand-add-form";
 import { ImportNewBrand } from "./Import/import-new-brand";
@@ -21,42 +22,52 @@ import {
 
 // Create table headers consisting of 4 columns.
 
-const STORY_HEADERS = [
 
-    {
-        prop: "brand_name",
-        title: "Brand Name",
-        isFilterable: true,
-        isSortable: true
 
-    },
-    {
-        prop: "image",
-        title: "Image",
-
-        cell: (row) => {
-            return (
-                <img src={row.brand_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
-            );
-        }
-    },
-    {
-        prop: "brand_type",
-        title: "Type",
-        isSortable: true
-    },
-];
-
-const BrandManagement = () => {
+const BrandManagement = () => { 
     const { storeBrandsData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
     const [delID, setDelID] = useState();
     const [editablePlot, setEditablePlot] = useState({});
     const [showData, setShowData] = useState(storeBrandsData);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
         setShowData(storeBrandsData);
     }, [storeBrandsData]);
+
+    const STORY_HEADERS = [
+
+        {
+            prop: "brand_name",
+            title: "Brand Name",
+            isFilterable: true,
+            isSortable: true
+    
+        },
+        {
+            prop: "image",
+            title: "Image",
+    
+            cell: (row) => {
+                return (
+                    <img src={row.brand_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
+                );
+            }
+        },
+        {
+            prop: "Action",
+            title: "Action",
+            isSortable: true,
+            
+            cell: (row) => { 
+                return (
+                    <button onClick={() => navigate("/productManagement/product-by-brand/"+row.master_brand_id+"/"+row.brand_name)} className="btn btn-dark" > Products   </button>
+    
+                );
+            }
+        },
+    ];
 
     const deletePlot = () => {
         console.log("kit kat", delID);

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
+import { useNavigate } from 'react-router';
+
 import ContextData from "../../context/MainContext";
 import URLDomain from "../../URL";
 
@@ -9,6 +11,8 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 
 // import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 
 import {
@@ -30,6 +34,7 @@ const CategoryManagement = () => {
     const [delID, setDelID] = useState(false);
     const [editablePlot, setEditablePlot] = useState({});
     const [showData, setShowData] = useState(storeCategoryData);
+    const navigate = useNavigate();
 
 
 
@@ -42,6 +47,16 @@ const CategoryManagement = () => {
         setDelID(true)
 
     };
+
+
+    const [checked, setChecked] = useState(false);
+    const [radioValue, setRadioValue] = useState('1');
+
+    const radios = [
+        { name: 'Parent Category', value: '1' },
+        { name: 'Child Category', value: '2' },
+    ];
+
 
     const STORY_HEADERS = [
 
@@ -63,7 +78,7 @@ const CategoryManagement = () => {
                     return (
                         <p className="text-success">{row.category_name}</p>
                     );
-      }
+                }
 
             }
         },
@@ -86,7 +101,7 @@ const CategoryManagement = () => {
                     return (
                         <p className="text-success">{row.parent_name}</p>
                     );
-      }
+                }
 
             }
         }, {
@@ -108,15 +123,15 @@ const CategoryManagement = () => {
 
                 if (row.category_level == 0) {
                     return (
-                        <button className="btn btn-primary" > Products   </button>
+                        <button onClick={() => navigate("/productManagement/product-by-parent-category/" + row.master_category_id + "/" + row.category_name)} className="btn btn-primary" > Products   </button>
                     );
                 }
                 else {
 
                     return (
-                        <button className="btn btn-dark" > Products   </button>
+                        <button onClick={() => navigate("/productManagement/product-by-category/" + row.master_category_id + "/" + row.category_name)} className="btn btn-dark" > Products   </button>
                     );
-      }
+                }
 
             }
 
@@ -171,6 +186,22 @@ const CategoryManagement = () => {
     }
 
 
+    const changeCategory = (value) => {
+        setRadioValue(value)
+
+
+        if (value == 1) {
+            const newParentData = storeCategoryData.filter(obj => obj.category_level == 0)
+            setShowData(newParentData);
+
+        }
+        else {
+            const newChildData = storeCategoryData.filter(obj => obj.category_level != 0)
+            setShowData(newChildData);
+        }
+
+    }
+
     return (
         <>
 
@@ -199,6 +230,28 @@ const CategoryManagement = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="row g-2">
+
+                            <div className="col-sm-auto ">
+                                <div className="list-grid-nav hstack gap-1">
+                                    <ButtonGroup>
+                                        {radios.map((radio, idx) => (
+                                            <ToggleButton
+                                                key={idx}
+                                                id={`radio-${idx}`}
+                                                type="radio"
+                                                variant={idx % 2 ? 'outline-success' : 'outline-danger'}
+                                                name="radio"
+                                                value={radio.value}
+                                                checked={radioValue === radio.value}
+                                                onChange={(e) => changeCategory(e.currentTarget.value)}
+                                            >
+                                                {radio.name}
+                                            </ToggleButton>
+                                        ))}
+                                    </ButtonGroup>
+                                </div>
+                            </div>{/*end col*/}
+
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
