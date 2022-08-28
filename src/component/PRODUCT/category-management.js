@@ -185,6 +185,24 @@ const CategoryManagement = () => {
     }
 
 
+    const changeCategory = (value) =>
+    {
+        setRadioValue(value)
+
+
+        if(value==1)
+        {
+            const newParentData = storeCategoryData.filter(obj =>obj.category_level == 0)
+            setShowData(newParentData);
+    
+        }
+        else{
+            const newChildData = storeCategoryData.filter(obj => obj.category_level != 0)
+            setShowData(newChildData);
+        } 
+
+    }
+
     return (
         <>
 
@@ -226,7 +244,7 @@ const CategoryManagement = () => {
             name="radio"
             value={radio.value}
             checked={radioValue === radio.value}
-            onChange={(e) => setRadioValue(e.currentTarget.value)}
+            onChange={(e) => changeCategory(e.currentTarget.value)}
           >
             {radio.name}
           </ToggleButton>
