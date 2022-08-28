@@ -6,15 +6,15 @@ import URL from '../../URL';
 import { MoveWarehouseToStore } from "./Update/MoveWarehouseToStore";
 import { MoveStoreToWarehouse } from "./Update/MoveStoreToWarehouse";
 
-import  SweetAlert from 'react-bootstrap-sweetalert';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-import "bootstrap/dist/css/bootstrap.css";
-import { Col, Row, Table  } from "react-bootstrap";
+// import "bootstrap/dist/css/bootstrap.css";
+import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import swal from 'sweetalert';
 
- 
+
 import {
     DatatableWrapper,
     Filter,
@@ -23,7 +23,7 @@ import {
     TableBody,
     TableHeader
 } from "react-bs-datatable";
- 
+
 // Create table headers consisting of 4 columns.
 import Cookies from 'universal-cookie';
 
@@ -31,7 +31,7 @@ const cookies = new Cookies();
 
 
 const Stocks = () => {
-    const { storeProductsData, removeDataToCurrentGlobal, getToast,reloadData } = useContext(ContextData);
+    const { storeProductsData, removeDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [UpdateProductPrice, setUpdateProductPrice] = useState({});
@@ -41,7 +41,7 @@ const Stocks = () => {
     const adminStoreId = cookies.get("adminStoreId");
     const adminId = cookies.get("adminId");
 
-    
+
 
 
     useEffect(() => {
@@ -63,7 +63,7 @@ const Stocks = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.product_name}</p>
+                    <p className="text-dark">{row.product_name}</p>
                 );
             }
         },
@@ -121,16 +121,16 @@ const Stocks = () => {
 
             }
         },
-      
-    
+
+
         {
             prop: "stock_alert_quantity",
-            title: "Store Alert", 
+            title: "Store Alert",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.stock_alert_quantity}</p>
+                    <p className="text-dark">{row.stock_alert_quantity}</p>
                 );
             }
         },
@@ -141,11 +141,11 @@ const Stocks = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark">{row.warehouse_stock_alert_quantity}</p>
+                    <p className="text-dark">{row.warehouse_stock_alert_quantity}</p>
                 );
             }
         },
-     
+
         {
             prop: "sale_price",
             title: "Sale Price",
@@ -153,12 +153,12 @@ const Stocks = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                   <p className="text-dark"> ₹ {row.sale_price}</p>
+                    <p className="text-dark"> ₹ {row.sale_price}</p>
                 );
             }
         },
-      
-    
+
+
 
         {
             prop: "Stock",
@@ -169,29 +169,29 @@ const Stocks = () => {
 
                 return (
                     <Dropdown>
-      <Dropdown.Toggle variant="dark" id="dropdown-basic">
-      Move Stock 
-      </Dropdown.Toggle>
+                        <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                            Move Stock
+                        </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#warehousetostore" > Warehouse To Store</Dropdown.Item>
-        <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#storetowarehouse" > Store To Warehouse</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#warehousetostore" > Warehouse To Store</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#storetowarehouse" > Store To Warehouse</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
                 );
 
 
             }
         },
-        
+
     ];
 
 
     return (
         <>
 
-          
+
             <div>
                 <div className="row">
                     <div className="col-12">
@@ -272,7 +272,7 @@ const Stocks = () => {
                 </div>
 
 
-          
+
 
                 <div className="modal fade" id="warehousetostore" tabIndex={-1} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered w-50">
@@ -299,12 +299,12 @@ const Stocks = () => {
                                 <MoveStoreToWarehouse productDetails={UpdateProductPrice} />
                             </div>
                         </div>{/*end modal-content*/}
-                    </div>{/*end modal-dialog*/} 
+                    </div>{/*end modal-dialog*/}
                 </div>{/*end modal*/}
 
-                
-                
-            
+
+
+
 
                 <svg className="bookmark-hide">
                     <symbol viewBox="0 0 24 24" stroke="currentColor" fill="var(--color-svg)" id="icon-star"><path strokeWidth=".4" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></symbol>

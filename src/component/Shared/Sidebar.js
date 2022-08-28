@@ -72,7 +72,7 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                            
+
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#purchase-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="purchase-management">
                                     <i class="ri-building-2-fill" /><span data-key="t-authentication">PURCHASE</span>
@@ -133,7 +133,7 @@ const Sidebar = () => {
                                             <Link to="/product-stocks-history" className="nav-link" data-key="t-cover"> STOCKS HISTORY
                                             </Link>
                                         </li>
-                                       
+
                                     </ul>
                                 </div>
                             </li>
@@ -144,14 +144,14 @@ const Sidebar = () => {
                                 <div className="collapse menu-dropdown" id="stocks-management">
                                     <ul className="nav nav-sm flex-column">
                                         <li className="nav-item">
-                                            <Link to="/purchased" className="nav-link" data-key="t-cover"> PURCHASED
+                                            <Link to="/billing/purchased" className="nav-link" data-key="t-cover"> PURCHASED
                                             </Link>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
-                           
+
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                                     <i class="ri-group-fill"></i> <span data-key="t-dashboards">ORDER </span>
@@ -177,7 +177,7 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                           
+
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#employee-details" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="employee-details">
                                     <i class="ri-group-fill"></i> <span data-key="t-dashboards">Emploes</span>
@@ -216,8 +216,8 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                            
-                            
+
+
                         </ul>
                     </div>
                     {/* Sidebar */}
