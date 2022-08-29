@@ -28,39 +28,47 @@ export const Purchased = () => {
     useScanDetection({
         onComplete: (code) => {
             const prod = allProducts?.find(o => o.product_bar_code == code);
-            setAddedItems([...addedItems, prod]);
-        }
+            const allReadyExist = addedItems.some(elem => elem.product_bar_code === code);
+            !allReadyExist && setAddedItems([...addedItems, prod]);
+        },
     });
-
-    const handleOnSearch = (string, results) => {
-        // onSearch will have as the first callback parameter
-        // the string searched and for the second the results.
-        console.log(string, results)
-    }
-
-    const handleOnHover = (result) => {
-        // the item hovered
-        console.log(result)
-    }
-
-    const handleOnSelect = (item) => {
-        // the item selected
-        console.log(item)
-        setAddedItems([...addedItems, item]);
-    }
-
-    const handleOnFocus = () => {
-        console.log('Focused')
-    }
-
-    useEffect(() => {
-        console.log("date seletede ---->", startDate);
-    }, [startDate]);
 
     useEffect(() => {
         setVendorLists(store_vendor_list)
     }, [store_vendor_list])
 
+    const handleOnSelect = (item) => {
+        const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
+        !allReadyExist && setAddedItems([...addedItems, item]);
+    }
+
+    const updateFieldChanged = index => e => {
+        console.log('index: ' + index);
+        console.log('property name: ' + e.target.name);
+        let newArr = [...addedItems];
+        e.target.name === "quantity" && (newArr[index].billing_quantity = e.target.value);
+        e.target.name === "purchase_price" && (newArr[index].purchase_price = e.target.value);
+        e.target.name === "discount" && (newArr[index].discount_in_rs = e.target.value);
+        newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
+        console.log("new arrya --->", newArr);
+        newArr = newArr.filter(item => item);
+        setAddedItems(newArr)
+    }
+
+    const deleteFeild = index => {
+        let newArr = [...addedItems];
+        delete newArr[index];
+        newArr = newArr.filter(item => item);
+        setAddedItems(newArr)
+    }
+
+    const updateList = (rowID) => {
+
+        const index = addedItems.findIndex(object => {
+            return object.id === rowID;
+        });
+
+    }
 
     return (
         <>
@@ -146,16 +154,13 @@ export const Purchased = () => {
                                                         <ReactSearchAutocomplete
                                                             items={allProducts}
                                                             className="form-control search bg-light border-light"
-                                                            onSearch={handleOnSearch}
-                                                            onHover={handleOnHover}
                                                             onSelect={handleOnSelect}
-                                                            onFocus={handleOnFocus}
                                                             autoFocus
                                                             styling={{
                                                                 zIndex: "9999"
                                                             }}
                                                             fuseOptions={{ keys: ["product_name", "product_bar_code", "product_full_name"] }}
-                                                            resultStringKeyName="product_bar_code"
+                                                            resultStringKeyName="product_name"
                                                         // formatResult={formatResult}
                                                         />
                                                     </div>
@@ -193,23 +198,26 @@ export const Purchased = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {addedItems.length ?
+                                                    {addedItems.length && addedItems ?
                                                         addedItems.map((items, index) => {
+                                                            console.log("all items --->", addedItems)
                                                             return (
-                                                                < tr >
-                                                                    <td width={"10%"} className="fw-medium">{index + 1}</td>
-                                                                    <td width={"40%"} >{items.product_full_name}</td>
-                                                                    <td width={"10%"} ><input type="number" value={0} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"} ><input type="number" value={items.purchase_price} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"}>
-                                                                        <input type="number" value={0} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
-                                                                    </td>
-                                                                    <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"} ><input type="number" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"} ><input type="number" value={items.product_full_name} className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
-                                                                    <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} size={24} /></td>
-                                                                </tr>
+                                                                <>
+                                                                    {items && < tr >
+                                                                        <td width={"10%"} className="fw-medium">{index + 1}</td>
+                                                                        <td width={"40%"} >{items.product_full_name}</td>
+                                                                        <td width={"10%"} ><input type="number" name="quantity" onChange={updateFieldChanged(index)} value={items.billing_quantity ? items.billing_quantity : ""} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" name="purchase_price" value={items.purchase_price} onChange={updateFieldChanged(index)} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"}>
+                                                                            <input type="number" name="discount" onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
+                                                                        </td>
+                                                                        <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} onClick={() => deleteFeild(index)} size={24} /></td>
+                                                                    </tr>}
+                                                                </>
                                                             )
                                                         })
                                                         : null

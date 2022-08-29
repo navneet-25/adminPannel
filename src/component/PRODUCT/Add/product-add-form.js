@@ -1,7 +1,7 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../../context/MainContext'; 
+import ContextData from '../../../context/MainContext';
 import ImageUploader from 'react-images-upload';
 import Multiselect from 'multiselect-react-dropdown';
 import ReactJSBarcode from 'react-jsbarcode';
@@ -44,7 +44,7 @@ export const AddProductForm = (props) => {
         'parent_category_id': '',
         'category_id': '',
         'brand_id': '',
-        'purchase_price':0,
+        'purchase_price': 0,
         'price': 0,
         'discount_in_percent': 0,
         'discount_in_rs': 0,
@@ -201,7 +201,7 @@ export const AddProductForm = (props) => {
             formData.append('s_gst', productDetails.s_gst)
             formData.append('margin_in_rs', productDetails.margin_in_rs)
 
-            
+
 
             fetch(URL + "/APP-API/Billing/addStoreProducts", {
                 method: 'POST',
@@ -217,7 +217,7 @@ export const AddProductForm = (props) => {
 
                         getToast({ title: "Product Added Already", dec: "Successful", status: "success" });
                         reloadData();
- 
+
                     } else {
                         console.log("added");
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
@@ -226,29 +226,31 @@ export const AddProductForm = (props) => {
                     }
                     setIL(false);
                     setproductDetails(
-                        {'store_id': adminStoreId,
-                        'product_name': '',
-                        'product_uniq_slug_name': '',
-                        'product_image': { length: 0 },
-                        'product_type': adminStoreType,
-                        'parent_category_id': '',
-                        'category_id': '',
-                        'brand_id': '',
-                        'purchase_price':'',
-                        'price': 0,
-                        'discount_in_percent': 0,
-                        'discount_in_rs': 0,
-                        'sale_price': 0,
-                        'product_unit': '',
-                        'product_size': '',
-                        'product_bar_code': '',
-                        'deceptions': '',
-                        'hsn_code': '',
-                        'i_gst': 0,
-                        'c_gst': 0,
-                        's_gst': 0,
-                        'margin_in_rs': '',}
-                        
+                        {
+                            'store_id': adminStoreId,
+                            'product_name': '',
+                            'product_uniq_slug_name': '',
+                            'product_image': { length: 0 },
+                            'product_type': adminStoreType,
+                            'parent_category_id': '',
+                            'category_id': '',
+                            'brand_id': '',
+                            'purchase_price': '',
+                            'price': 0,
+                            'discount_in_percent': 0,
+                            'discount_in_rs': 0,
+                            'sale_price': 0,
+                            'product_unit': '',
+                            'product_size': '',
+                            'product_bar_code': '',
+                            'deceptions': '',
+                            'hsn_code': '',
+                            'i_gst': 0,
+                            'c_gst': 0,
+                            's_gst': 0,
+                            'margin_in_rs': '',
+                        }
+
                     )
                     getSelectedCategorysRef.current.resetSelectedValues();
                     getSelectedChildCategorysRef.current.resetSelectedValues();
@@ -276,11 +278,11 @@ export const AddProductForm = (props) => {
         setproductDetails({ ...productDetails, sale_price: value })
     }
     const setBarCode = (value) => {
-        if (value = " ") {
+        value && setproductDetails({ ...productDetails, product_bar_code: value });
+        /* if (value = " ") {
             setproductDetails({ ...productDetails, product_bar_code: null })
         } else {
-            setproductDetails({ ...productDetails, product_bar_code: value })
-        }
+        } */
     }
 
     const onPrintBarcode = () => {
@@ -422,10 +424,10 @@ export const AddProductForm = (props) => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="col-md-12">
                     <div className='row'>
-                    <div className='col-sm-6'>
+                        <div className='col-sm-6'>
                             <div className="mb-3">
                                 <label htmlFor="compnayNameinput" className="form-label">Purchase Price</label>
                                 <input type="number" onChange={e => setproductDetails({ ...productDetails, purchase_price: e.target.value })} value={productDetails.purchase_price} className="form-control" placeholder="Purchase" id="compnayNameinput" />
@@ -440,7 +442,7 @@ export const AddProductForm = (props) => {
                             </div>
 
                         </div>
-                       
+
                     </div>
 
 
@@ -448,7 +450,7 @@ export const AddProductForm = (props) => {
 
                 <div className="col-md-12">
                     <div className='row'>
-                       
+
                         <div className='col-sm-6'>
                             <div className="mb-3">
                                 <label htmlFor="compnayNameinput" className="form-label">Discount in Rs </label>
@@ -516,7 +518,7 @@ export const AddProductForm = (props) => {
                 <div className="col-md-5 my-3">
                     <div className="mb-3">
                         <label htmlFor="citynameInput" className="form-label text-danger">Barcode</label>
-                        <input type="text" name="codes" id="codes" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" id="citynameInput" />
+                        <input type="text" name="codes" id="codes" onChange={e => setBarCode(e.target.value)} value={productDetails.product_bar_code} className="form-control" placeholder="Barcode" />
                     </div>
                 </div>
                 <div className="col-md-7">
