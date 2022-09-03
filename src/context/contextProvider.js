@@ -64,10 +64,11 @@ const ContextProvider = props => {
                 position: "bottom-right",
             });
         },
+
     }
 
 
-    const fetchData = (store_id) => {
+    const fetchData = (store_id, adminId) => {
 
         fetch(URL + "/APP-API/Billing/fetchData", {
             method: 'POST',
@@ -76,7 +77,8 @@ const ContextProvider = props => {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                store_id
+                store_id,
+                adminId
             })
         }).then((response) => response.json())
             .then((responseJson) => {
@@ -92,19 +94,20 @@ const ContextProvider = props => {
                     // plots: responseJson.plots,
                     // reviews: responseJson.reviews,
 
-                    storeBrandsData: responseJson.storeBrandsData,
-                    storeCategoryData: responseJson.storeCategoryData,
-                    storeProductsData: responseJson.storeProductsData,
-                    storeProductUnits: responseJson.storeProductUnits,
-                    storeProductImages: responseJson.storeProductImages,
-                    store_vendor_list:responseJson.store_vendor_list,
-                    store_stock_history:responseJson.store_stock_history,
-                    store_activity_history:responseJson.store_activity_history,
-                    store_employee_list:responseJson.store_employee_list,
-                    masterBrandsData: responseJson.masterBrandsData,
-                    masterCategoryData: responseJson.masterCategoryData,
-                    masterProductsData: responseJson.masterProductsData,
-                    masterProductUnits: responseJson.masterProductUnits,
+                    // storeBrandsData: responseJson.storeBrandsData,
+                    // storeCategoryData: responseJson.storeCategoryData,
+                    // storeProductsData: responseJson.storeProductsData,
+                    // storeProductUnits: responseJson.storeProductUnits,
+                    // storeProductImages: responseJson.storeProductImages,
+                    // store_vendor_list: responseJson.store_vendor_list,
+                    // store_stock_history: responseJson.store_stock_history,
+                    // store_activity_history: responseJson.store_activity_history,
+                    // store_employee_list: responseJson.store_employee_list,
+                    // masterBrandsData: responseJson.masterBrandsData,
+                    // masterCategoryData: responseJson.masterCategoryData,
+                    // masterProductsData: responseJson.masterProductsData,
+                    // masterProductUnits: responseJson.masterProductUnits,
+                    ...responseJson
                 });
                 return true;
                 // fetchAllData(responseJson);
@@ -145,7 +148,7 @@ const ContextProvider = props => {
         const store_id = cookies.get("adminStoreId");
         if (adminId && MainData.user.user_info.name == "") {
             getUserDetails(adminId);
-            fetchData(store_id);
+            fetchData(store_id, adminId);
         }
     }, [MainData.user.user_info.name]);
 

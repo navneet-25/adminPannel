@@ -7,22 +7,41 @@ import Multiselect from 'multiselect-react-dropdown';
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import useScanDetection from 'use-scan-detection';
+import { Checkbox } from '@chakra-ui/react'
 
 import "react-datepicker/dist/react-datepicker.css";
+import URLDomain from '../../URL';
 
 
 export const Purchased = () => {
 
     const getAllVendorsRef = useRef(null);
-    const { store_vendor_list, storeProductsData } = useContext(ContextData);
+    const { store_vendor_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [vendorLists, setVendorLists] = useState([]);
-    const [startDate, setStartDate] = useState(new Date());
+    const [PurchaseDate, setPurchaseDate] = useState(new Date());
     const [selectedVendor, setSelectedVendor] = useState({});
     const [allProducts, setAllProducts] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
+    const [allTotals, setAllTotals] = useState({
+        subTotal: 0,
+        sGstTotal: 0,
+        cGstTotal: 0,
+        grandTotal: 0,
+        discount: 0,
+        additional_charges: 0,
+        amount_paid: 0,
+        outstanding: 0,
+        fully_paid: false
+    });
+    const [restInfo, setRestInfo] = useState({
+        sales_man: "",
+        payment_mode: "",
+        notes: ""
+    });
 
     useEffect(() => {
         setAllProducts(storeProductsData);
+        console.log("store prod", store_login_user);
     }, [storeProductsData]);
 
     useScanDetection({
@@ -35,7 +54,66 @@ export const Purchased = () => {
 
     useEffect(() => {
         setVendorLists(store_vendor_list)
-    }, [store_vendor_list])
+    }, [store_vendor_list]);
+
+    useEffect(() => {
+        const subTotalGet = addedItems.reduce((acc, obj) => {
+            return acc + Number(Number(obj?.purchase_price || 0) * Number(obj?.billing_quantity || 0));
+        }, 0);
+        const sGstTotal = addedItems.reduce((acc, obj) => {
+            return acc + Number(obj?.s_gst || 0) * Number(obj?.billing_quantity || 0);
+        }, 0);
+        const cGstTotal = addedItems.reduce((acc, obj) => {
+            return acc + Number(obj?.c_gst || 0) * Number(obj?.billing_quantity || 0);
+        }, 0);
+        const subTotal = subTotalGet - (sGstTotal + cGstTotal);
+        const grandTotal = subTotal + sGstTotal + cGstTotal;
+        setAllTotals({
+            subTotal,
+            sGstTotal,
+            cGstTotal,
+            grandTotal
+        })
+    }, [addedItems]);
+
+    useEffect(() => {
+        const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } = allTotals;
+        const Total = subTotal + sGstTotal + cGstTotal + Number(additional_charges || 0);
+        const discountedPrice = Number(Total || 0) - Number(discount || 0);
+        setAllTotals({
+            ...allTotals,
+            grandTotal: discountedPrice
+        })
+    }, [allTotals.discount]);
+
+    useEffect(() => {
+        const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } = allTotals;
+        const Total = subTotal + sGstTotal + cGstTotal - Number(discount || 0);
+        const AdditionalChargesTotal = Number(Total || 0) + Number(additional_charges || 0);
+        setAllTotals({
+            ...allTotals,
+            grandTotal: AdditionalChargesTotal
+        })
+    }, [allTotals.additional_charges]);
+
+    useEffect(() => {
+        const { grandTotal, amount_paid } = allTotals;
+        const Total = Number(grandTotal || 0);
+        const outstanding = Total - Number(amount_paid || 0);
+        setAllTotals({
+            ...allTotals,
+            outstanding: outstanding
+        })
+    }, [allTotals.amount_paid]);
+
+    useEffect(() => {
+        const { fully_paid } = allTotals;
+        console.log(" is working ---??", fully_paid)
+        fully_paid && setAllTotals({
+            ...allTotals,
+            outstanding: 0,
+        })
+    }, [allTotals.fully_paid]);
 
     const handleOnSelect = (item) => {
         const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
@@ -43,14 +121,14 @@ export const Purchased = () => {
     }
 
     const updateFieldChanged = index => e => {
-        console.log('index: ' + index);
-        console.log('property name: ' + e.target.name);
+        // console.log('index: ' + index);
+        // console.log('property name: ' + e.target.name);
         let newArr = [...addedItems];
         e.target.name === "quantity" && (newArr[index].billing_quantity = e.target.value);
         e.target.name === "purchase_price" && (newArr[index].purchase_price = e.target.value);
         e.target.name === "discount" && (newArr[index].discount_in_rs = e.target.value);
         newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
-        console.log("new arrya --->", newArr);
+        // console.log("new arrya --->", newArr);
         newArr = newArr.filter(item => item);
         setAddedItems(newArr)
     }
@@ -59,16 +137,50 @@ export const Purchased = () => {
         let newArr = [...addedItems];
         delete newArr[index];
         newArr = newArr.filter(item => item);
-        setAddedItems(newArr)
+        setAddedItems(newArr);
     }
 
-    const updateList = (rowID) => {
+    const submitPurchase = (adminId) => {
 
-        const index = addedItems.findIndex(object => {
-            return object.id === rowID;
+
+        const data = JSON.stringify({
+            store_id: store_login_user.store_id,
+            vendor_id: selectedVendor.id,
+            sale_man_name: restInfo.sales_man,
+            user_id: store_login_user.id,
+            sub_total: allTotals.subTotal,
+            i_gst: Number(allTotals.sGstTotal) + Number(allTotals.cGstTotal),
+            s_gst: Number(allTotals.sGstTotal),
+            c_gst: Number(allTotals.cGstTotal),
+            extra_charge: allTotals.additional_charges,
+            discount: allTotals.discount,
+            notes: restInfo.notes,
+            total_payment: allTotals.grandTotal,
+            outstanding: allTotals.outstanding,
+            payment_mode: restInfo.payment_mode,
+            purchaes_date: PurchaseDate,
+            product_list: addedItems
         });
 
-    }
+        console.log(" all data from data ---->", data);
+
+        fetch(URLDomain + "/APP-API/Billing/purchaseStoreProducts", {
+            method: 'POST',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+
+            },
+            body: data
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                // functionality.fetchAllData(responseJson);
+                console.log(" other side ---->", responseJson);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     return (
         <>
@@ -108,13 +220,10 @@ export const Purchased = () => {
                                         <div className="row py-4 mb-4 border-bottom align-items-center">
                                             <div className="col-lg-8 px-4" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                 <div className="row">
-                                                    <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1" }}>
-                                                        <h4 className='mb-0 text-center mb-4'>Choose your vendor</h4>
+                                                    <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1", zIndex: 999999 }}>
+                                                        <h4 className='mb-0 text-center mb-4'>Choose vendor</h4>
                                                         <Multiselect
                                                             // singleSelect={true}
-                                                            style={{
-                                                                zIndex: 99999
-                                                            }}
                                                             selectionLimit={1}
                                                             displayValue="name"
                                                             onKeyPressFn={function noRefCheck() { }}
@@ -140,8 +249,8 @@ export const Purchased = () => {
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 px-4">
-                                                <h4 className='mb-0 text-center mb-4'>Choose Date <FcCalendar /></h4>
-                                                <DatePicker selected={startDate} dateFormat="dd/MM/yyyy" onChange={(date) => setStartDate(date)} className="form-control bg-light border-light custom_date_input" />
+                                                <h4 className='mb-0 text-center mb-4'>Purchased Date <FcCalendar /></h4>
+                                                <DatePicker selected={PurchaseDate} dateFormat="dd/MM/yyyy" onChange={(date) => setPurchaseDate(date)} className="form-control bg-light border-light custom_date_input" />
                                             </div>
                                         </div>
                                     </div>
@@ -200,7 +309,6 @@ export const Purchased = () => {
                                                 <tbody>
                                                     {addedItems.length && addedItems ?
                                                         addedItems.map((items, index) => {
-                                                            console.log("all items --->", addedItems)
                                                             return (
                                                                 <>
                                                                     {items && < tr >
@@ -220,10 +328,96 @@ export const Purchased = () => {
                                                                 </>
                                                             )
                                                         })
-                                                        : null
+                                                        : <>
+                                                        </>
                                                     }
                                                 </tbody>
                                             </table>
+                                            {
+                                                !addedItems.length ? <>
+                                                    <div className="col-md-12 px-0">
+                                                        <div className="d-flex align-items-center justify-content-center p-3 add_product_dashedBorder mt-4" >
+                                                            <div className="w-100">
+                                                                <h5 className='mb-0' style={{ textAlign: "center", color: "#001794", fontSize: 18, marginTop: 4 }}><BiBarcodeReader size={30} style={{ marginRight: 10, marginBottom: 4 }} /> Scan Barcode / Add you product</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                                    : null
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12 border-top border-bottom mt-5">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Payment Mode</h5>
+                                                    <select class="form-select mb-0 w-50" onChange={e => setRestInfo({ ...restInfo, payment_mode: e.target.value })} aria-label="Default select example">
+                                                        <option selected>Select your payment method</option>
+                                                        <option value="UPI">UPI</option>
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Cheque">Cheque</option>
+                                                    </select>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Sales Man</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><input type="text" onChange={e => setRestInfo({ ...restInfo, sales_man: e.target.value })} className="invoice_input p-2 px-3" style={{ width: "14rem" }} placeholder="Enter name here" /></h5>
+                                                </div>
+                                                <div className="py-3 px-5">
+                                                    <h5 style={{ fontSize: 14, marginBottom: 8, fontWeight: "500", color: "black" }}>Notes</h5>
+                                                    <textarea onChange={e => setRestInfo({ ...restInfo, notes: e.target.value })} className="invoice_input" style={{ width: "100%" }} rows={2} placeholder="Enter your notes..!!" />
+                                                </div>
+                                                <div className="py-3 px-5 mt-5">
+                                                    <button type="button" onClick={submitPurchase} class="btn btn-success waves-effect waves-light w-100 ">Submit</button>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 px-0 py-3" style={{ borderLeft: "1px solid #d9d9d9" }}>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Sub Total</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.subTotal.toLocaleString('en-IN')}</h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Discount</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>-<BiRupee /><input type="number" onChange={e => setAllTotals({ ...allTotals, discount: e.target.value })} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center  border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Additional Charges</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /><input type="number" onChange={e => setAllTotals({ ...allTotals, additional_charges: e.target.value })} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>SGST</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.sGstTotal.toLocaleString('en-IN')}</h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>CGST</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.cGstTotal.toLocaleString('en-IN')}</h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Round Off</h5>
+                                                    {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
+                                                    <Checkbox colorScheme='green' defaultChecked />
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
+                                                </div>
+                                                <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}></h5>
+                                                    {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
+                                                    <Checkbox onChange={e => setAllTotals({ ...allTotals, fully_paid: e.target.checked })}>
+                                                        <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Mark as fully paid</h5>
+                                                    </Checkbox>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Amount Paid</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /><input type="number" disabled={allTotals.fully_paid}
+                                                        onChange={e => setAllTotals({ ...allTotals, amount_paid: e.target.value })} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></h5>
+                                                </div>
+                                                <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "green" }}>Outstanding</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "green" }}><BiRupee /> {allTotals.outstanding ? allTotals.outstanding.toLocaleString('en-IN') : 0}</h5>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     {/*end col*/}
