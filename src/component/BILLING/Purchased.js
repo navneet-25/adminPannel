@@ -118,6 +118,9 @@ export const Purchased = () => {
     const handleOnSelect = (item) => {
         const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
         !allReadyExist && setAddedItems([...addedItems, item]);
+        /*  setTimeout(() => {
+             document.getElementsByClassName("clear-icon")[0].querySelector(':scope > svg')[0].click();
+         }, 1000) */ //1 second delay
     }
 
     const updateFieldChanged = index => e => {
@@ -256,10 +259,10 @@ export const Purchased = () => {
                                     </div>
                                     <div className="col-lg-12 pb-4 border-bottom">
                                         <div className="row g-3">
-                                            <div className="col-md-5 col-sm-12">
+                                            <div className="col-md-12 col-sm-12">
                                                 <div className="d-flex align-items-center">
                                                     {/* <input id="search-dropdown" type="text" className="form-control search bg-light border-light" placeholder="Add product..." /> */}
-                                                    <div style={{ width: 500 }}>
+                                                    <div style={{ width: "85%" }}>
                                                         <ReactSearchAutocomplete
                                                             items={allProducts}
                                                             className="form-control search bg-light border-light"
@@ -269,7 +272,7 @@ export const Purchased = () => {
                                                                 zIndex: "9999"
                                                             }}
                                                             fuseOptions={{ keys: ["product_name", "product_bar_code", "product_full_name"] }}
-                                                            resultStringKeyName="product_name"
+                                                            resultStringKeyName="product_full_name"
                                                         // formatResult={formatResult}
                                                         />
                                                     </div>
