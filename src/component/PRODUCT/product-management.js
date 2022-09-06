@@ -174,29 +174,6 @@ const ProductManagement = () => {
             }
         },
 
-        {
-            prop: "image",
-            title: "Image",
-
-            cell: (row) => {
-                return (
-                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
-                );
-            }
-        },
-        {
-            prop: "margin_in_rs",
-            title: "Margin",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-danger"> ₹ {row.margin_in_rs}</p>
-                );
-            }
-        },
-
-
 
 
         {

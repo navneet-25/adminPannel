@@ -129,7 +129,7 @@ export const UpdateProductStockComp = (EditProductData) => {
 
                 <div className="col-md-12 my-2 bg-light p-2">
                
-               <h1 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} </h1>
+               <h5 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} </h5>
                    
                 
                 

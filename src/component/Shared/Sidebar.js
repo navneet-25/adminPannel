@@ -51,24 +51,44 @@ const Sidebar = () => {
                             </li>
 
                             <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">MANAGEMENT</span></li>
+
+                            <li className="nav-item">
+                                <a className="nav-link menu-link" href="#billing-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="billing-management">
+                                    <GoGraph style={{ fill: "#fff" }} /><span data-key="t-authentication">BILLING</span>
+                                </a>
+                                <div className="collapse menu-dropdown" id="billing-management">
+                                    <ul className="nav nav-sm flex-column">
+                                       
+                                        <li className="nav-item">
+                                            <Link to="/billing/sale" className="nav-link" data-key="t-cover"> SALE
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/billing/purchased" className="nav-link" data-key="t-cover"> PURCHASE
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sales-managmenet" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sales-managmenet">
                                     <AiFillSetting size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">SALES</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="sales-managmenet">
                                     <ul className="nav nav-sm flex-column">
-                                        <li className="nav-item">
-                                            <Link to="/salesManagement/sales" className="nav-link" data-key="t-cover"> SALES PRODUCT
-                                            </Link>
-                                        </li>
-                                        <li className="nav-item">
-                                            <Link to="/salesManagement/customers" className="nav-link" data-key="t-cover"> CUSTOMER
-                                            </Link>
-                                        </li>
+
                                         <li className="nav-item">
                                             <Link to="/salesManagement/sales-history" className="nav-link" data-key="t-cover"> SALES HISTORY
                                             </Link>
                                         </li>
+                                        
+                                        <li className="nav-item">
+                                            <Link to="/salesManagement/customers" className="nav-link" data-key="t-cover"> CUSTOMER
+                                            </Link>
+                                        </li>
+                                      
                                     </ul>
                                 </div>
                             </li>
@@ -137,19 +157,7 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                            <li className="nav-item">
-                                <a className="nav-link menu-link" href="#stocks-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="stocks-management">
-                                    <GoGraph style={{ fill: "#fff" }} /><span data-key="t-authentication">BILLING</span>
-                                </a>
-                                <div className="collapse menu-dropdown" id="stocks-management">
-                                    <ul className="nav nav-sm flex-column">
-                                        <li className="nav-item">
-                                            <Link to="/billing/purchased" className="nav-link" data-key="t-cover"> PURCHASED
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                           
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
 
                             <li className="nav-item">

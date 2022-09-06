@@ -33,6 +33,7 @@ import CategoryManagement from './component/PRODUCT/category-management';
 import BrandManagement from './component/PRODUCT/brand-management';
 import Stocks from './component/STOCK/Stocks';
 import { Purchased } from './component/BILLING/Purchased';
+import { Sale } from './component/BILLING/Sale';
 import LowStock from './component/STOCK/low-stocks';
 import StocksHistory from './component/STOCK/product-stocks-history';
 
@@ -58,9 +59,11 @@ const App = () => {
               <Route path="/billing" >
                 <Route index element={<h4>BILLING</h4>} />
                 <Route path="purchased" element={<Purchased />} />
+                <Route path="sale" element={<Sale />} />
+
               </Route>
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/stocks" element={<Stocks />} />
+              <Route path="/product-stocks" element={<Stocks />} />
               <Route path="/low-stocks" element={<LowStock />} />
               <Route path="/product-stocks-history" element={<StocksHistory />} />
 

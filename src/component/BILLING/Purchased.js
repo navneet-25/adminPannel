@@ -31,12 +31,16 @@ export const Purchased = () => {
         additional_charges: 0,
         amount_paid: 0,
         outstanding: 0,
-        fully_paid: false
+        round_off:false,
+        round_off_value:0,
+        fully_paid: false,
+       
     });
     const [restInfo, setRestInfo] = useState({
         sales_man: "",
-        payment_mode: "",
-        notes: ""
+        payment_mode: "Cash",
+        notes: "",
+        stock_location:'Warehouse'
     });
 
     useEffect(() => {
@@ -145,10 +149,13 @@ export const Purchased = () => {
 
     const submitPurchase = (adminId) => {
 
+        console.log('product_list_in_purchse',selectedVendor.firm_name)
+
 
         const data = JSON.stringify({
             store_id: store_login_user.store_id,
             vendor_id: selectedVendor.id,
+            vendor_firm_name: selectedVendor.firm_name,
             sale_man_name: restInfo.sales_man,
             user_id: store_login_user.id,
             sub_total: allTotals.subTotal,
@@ -160,6 +167,7 @@ export const Purchased = () => {
             notes: restInfo.notes,
             total_payment: allTotals.grandTotal,
             outstanding: allTotals.outstanding,
+            stock_location:restInfo.stock_location,
             payment_mode: restInfo.payment_mode,
             purchaes_date: PurchaseDate,
             product_list: addedItems
@@ -178,7 +186,9 @@ export const Purchased = () => {
         }).then((response) => response.json())
             .then((responseJson) => {
                 // functionality.fetchAllData(responseJson);
-                console.log(" other side ---->", responseJson);
+                console.log(" purchase server res ---->", responseJson);
+
+                 
             })
             .catch((error) => {
                 console.error(error);
@@ -190,13 +200,13 @@ export const Purchased = () => {
             <div className="row">
                 <div className="col-12">
                     <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 className="mb-sm-0">Basic Tables</h4>
-                        <div className="page-title-right">
+                        <h4 className="mb-sm-0">Purchase</h4>
+                        {/* <div className="page-title-right">
                             <ol className="breadcrumb m-0">
                                 <li className="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
                                 <li className="breadcrumb-item active">Basic Tables</li>
                             </ol>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
@@ -204,10 +214,8 @@ export const Purchased = () => {
                 <div className="col-lg-12">
                     <div className="card">
                         <div className="card-header align-items-center d-flex px-5">
-                            <h4 className="card-title mb-0 flex-grow-1">Purchased</h4>
-                            <div className="flex-shrink-0">
-                                {/* on right */}<button type="button" class="btn btn-success waves-effect waves-light">Add +</button>
-                            </div>
+                            <h4 className="card-title mb-0 flex-grow-1">Purchase</h4>
+                            
                         </div>
                     </div>
                 </div>
@@ -228,7 +236,7 @@ export const Purchased = () => {
                                                         <Multiselect
                                                             // singleSelect={true}
                                                             selectionLimit={1}
-                                                            displayValue="name"
+                                                            displayValue="firm_name"
                                                             onKeyPressFn={function noRefCheck() { }}
                                                             onSearch={function noRefCheck() { }}
                                                             onRemove={(e) => {
@@ -243,7 +251,7 @@ export const Purchased = () => {
                                                     </div>
                                                     {selectedVendor?.name ? <div className="col-md-5">
                                                         <div className='px-5 border-left'>
-                                                            <h6 className=''>Name: <strong>{selectedVendor?.name}</strong></h6>
+                                                            <h6 className=''>Contact Name: <strong>{selectedVendor?.name}</strong></h6>
                                                             <h6 className=''>Mobile: <strong>{selectedVendor?.mobile}</strong></h6>
                                                             <h6 className=''>Address: <strong>{selectedVendor?.address}</strong></h6>
                                                             <h6 className='mb-0'>Firm Name: <strong>{selectedVendor?.firm_name}</strong></h6>
@@ -253,7 +261,7 @@ export const Purchased = () => {
                                             </div>
                                             <div className="col-lg-4 px-4">
                                                 <h4 className='mb-0 text-center mb-4'>Purchased Date <FcCalendar /></h4>
-                                                <DatePicker selected={PurchaseDate} dateFormat="dd/MM/yyyy" onChange={(date) => setPurchaseDate(date)} className="form-control bg-light border-light custom_date_input" />
+                                                <DatePicker selected={PurchaseDate} dateFormat="dd/MM/yyyy" onChange={(date) => setPurchaseDate(Date.parse(date))} className="form-control bg-light border-light custom_date_input" />
                                             </div>
                                         </div>
                                     </div>
@@ -262,7 +270,7 @@ export const Purchased = () => {
                                             <div className="col-md-12 col-sm-12">
                                                 <div className="d-flex align-items-center">
                                                     {/* <input id="search-dropdown" type="text" className="form-control search bg-light border-light" placeholder="Add product..." /> */}
-                                                    <div style={{ width: "85%" }}>
+                                                    <div style={{ width: "68%" }}>
                                                         <ReactSearchAutocomplete
                                                             items={allProducts}
                                                             className="form-control search bg-light border-light"
@@ -357,8 +365,9 @@ export const Purchased = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Payment Mode</h5>
                                                     <select class="form-select mb-0 w-50" onChange={e => setRestInfo({ ...restInfo, payment_mode: e.target.value })} aria-label="Default select example">
                                                         <option selected>Select your payment method</option>
-                                                        <option value="UPI">UPI</option>
                                                         <option value="Cash">Cash</option>
+                                                        <option value="UPI">UPI</option>
+                                                        <option value="Bank Transfer">Bank Transfer</option>
                                                         <option value="Cheque">Cheque</option>
                                                     </select>
                                                 </div>
@@ -370,6 +379,17 @@ export const Purchased = () => {
                                                     <h5 style={{ fontSize: 14, marginBottom: 8, fontWeight: "500", color: "black" }}>Notes</h5>
                                                     <textarea onChange={e => setRestInfo({ ...restInfo, notes: e.target.value })} className="invoice_input" style={{ width: "100%" }} rows={2} placeholder="Enter your notes..!!" />
                                                 </div>
+
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Send Stocks Location</h5>
+                                                    <select class="form-select mb-0 w-50" onChange={e => setRestInfo({ ...restInfo, stock_location: e.target.value })} aria-label="Default select example">
+                                                      
+                                                        <option value="Warehouse">Warehouse</option>
+                                                        <option value="Store">Store</option>
+
+                                                    </select>
+                                                </div>
+
                                                 <div className="py-3 px-5 mt-5">
                                                     <button type="button" onClick={submitPurchase} class="btn btn-success waves-effect waves-light w-100 ">Submit</button>
                                                 </div>
@@ -395,15 +415,18 @@ export const Purchased = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>CGST</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.cGstTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
-                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Round Off</h5>
-                                                    {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
-                                                    <Checkbox colorScheme='green' defaultChecked />
-                                                </div>
+                                               
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
+
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                                                <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>
+                                                        <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Round Off</h5>
+                                                </Checkbox>
+                                                </div>
+
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}></h5>
                                                     {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
