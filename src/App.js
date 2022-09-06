@@ -21,6 +21,8 @@ import TestimonialSettings from './component/Settings/Website/Testimonial/Testim
 
 import PurchaseIndex from './component/PURCHASE/purchase-index';
 import VendorManagement from './component/PURCHASE/vendor-management';
+import PurchaseHistory from './component/PURCHASE/purchase-history';
+import PurchaseHistoryRecord from './component/PURCHASE/purchase-history-record';
 
 
 import ProductIndex from './component/PRODUCT/product-index';
@@ -54,10 +56,11 @@ const App = () => {
                 <Route index element={<PurchaseIndex />} />
                 <Route path="purchase" element={<VendorManagement />} />
                 <Route path="vendor" element={<VendorManagement />} />
-                <Route path="purchase-history" element={<BrandManagement />} />
+                <Route path="purchase-history" element={<PurchaseHistory />} />
+                <Route path="/purchaseManagement/purchase-history-record/:orderID/:vendorID" element={<PurchaseHistoryRecord />} />
               </Route>
               <Route path="/billing" >
-                <Route index element={<h4>BILLING</h4>} />
+                <Route index element={<h4>BILLING</h4>} /> 
                 <Route path="purchased" element={<Purchased />} />
                 <Route path="sale" element={<Sale />} />
 

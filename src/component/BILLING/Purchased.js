@@ -166,6 +166,7 @@ export const Purchased = () => {
             discount: allTotals.discount,
             notes: restInfo.notes,
             total_payment: allTotals.grandTotal,
+            amount_paid: allTotals.amount_paid,
             outstanding: allTotals.outstanding,
             stock_location:restInfo.stock_location,
             payment_mode: restInfo.payment_mode,
