@@ -8,7 +8,7 @@ import ContextData from '../../context/MainContext';
 import DatePicker from "react-datepicker";
 import useScanDetection from 'use-scan-detection';
 import { Checkbox } from '@chakra-ui/react';
-import ReactToPrint from 'react-to-print';
+// import ReactToPrint from 'react-to-print';
 
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from '../../URL';
