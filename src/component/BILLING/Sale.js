@@ -16,10 +16,10 @@ import URLDomain from '../../URL';
 export const Sale = () => {
 
     const getAllVendorsRef = useRef(null);
-    const { store_vendor_list, storeProductsData, store_login_user } = useContext(ContextData);
-    const [vendorLists, setVendorLists] = useState([]);
+    const { store_customer_list, storeProductsData, store_login_user } = useContext(ContextData);
+    const [customerList, setCustomerList] = useState([]);
     const [Saleate, setSaleate] = useState(new Date());
-    const [selectedVendor, setSelectedVendor] = useState({});
+    const [selectedVendor, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
     const [allTotals, setAllTotals] = useState({
@@ -31,16 +31,16 @@ export const Sale = () => {
         additional_charges: 0,
         amount_paid: 0,
         outstanding: 0,
-        round_off:false,
-        round_off_value:0,
+        round_off: false,
+        round_off_value: 0,
         fully_paid: false,
-       
+
     });
     const [restInfo, setRestInfo] = useState({
         sales_man: "",
         payment_mode: "Cash",
         notes: "",
-        stock_location:'Warehouse'
+        stock_location: 'Warehouse'
     });
 
     useEffect(() => {
@@ -57,8 +57,8 @@ export const Sale = () => {
     });
 
     useEffect(() => {
-        setVendorLists(store_vendor_list)
-    }, [store_vendor_list]);
+        setCustomerList(store_customer_list)
+    }, [store_customer_list]);
 
     useEffect(() => {
         const subTotalGet = addedItems.reduce((acc, obj) => {
@@ -149,7 +149,7 @@ export const Sale = () => {
 
     const submitSale = (adminId) => {
 
-        console.log('product_list_in_purchse',selectedVendor.firm_name)
+        console.log('product_list_in_purchse', selectedVendor.firm_name)
 
 
         const data = JSON.stringify({
@@ -167,7 +167,7 @@ export const Sale = () => {
             notes: restInfo.notes,
             total_payment: allTotals.grandTotal,
             outstanding: allTotals.outstanding,
-            stock_location:restInfo.stock_location,
+            stock_location: restInfo.stock_location,
             payment_mode: restInfo.payment_mode,
             purchaes_date: Saleate,
             product_list: addedItems
@@ -188,7 +188,7 @@ export const Sale = () => {
                 // functionality.fetchAllData(responseJson);
                 console.log(" Sale server res ---->", responseJson);
 
-                 
+
             })
             .catch((error) => {
                 console.error(error);
@@ -215,7 +215,7 @@ export const Sale = () => {
                     <div className="card">
                         <div className="card-header align-items-center d-flex px-5">
                             <h4 className="card-title mb-0 flex-grow-1">Sale</h4>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -232,29 +232,35 @@ export const Sale = () => {
                                             <div className="col-lg-8 px-4" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                 <div className="row">
                                                     <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1", zIndex: 999999 }}>
-                                                        <h4 className='mb-0 text-center mb-4'>Choose vendor</h4>
+                                                        <h4 className='mb-0 text-center mb-4'>Choose customer</h4>
                                                         <Multiselect
                                                             // singleSelect={true}
+                                                            keepSearchTerm={true}
                                                             selectionLimit={1}
-                                                            displayValue="firm_name"
-                                                            onKeyPressFn={function noRefCheck() { }}
-                                                            onSearch={function noRefCheck() { }}
+                                                            displayValue="mobile"
+                                                            onSearch={function noRefCheck(e) {
+                                                                if (e.length == 10) {
+                                                                    setCustomerList([...customerList, { mobile: e }]);
+                                                                    setSelectCustomer({ mobile: e })
+                                                                } else console.log("hey therer ->>>", getAllVendorsRef)
+                                                            }}
                                                             onRemove={(e) => {
-                                                                setSelectedVendor(e[0])
+                                                                setSelectCustomer(e[0])
                                                             }}
                                                             onSelect={(e) => {
-                                                                setSelectedVendor(e[0])
+                                                                setSelectCustomer(e[0])
                                                             }}
-                                                            options={vendorLists}
+
+                                                            options={customerList}
                                                             ref={getAllVendorsRef}
                                                         />
                                                     </div>
-                                                    {selectedVendor?.name ? <div className="col-md-5">
+                                                    {selectedVendor?.mobile ? <div className="col-md-5">
                                                         <div className='px-5 border-left'>
-                                                            <h6 className=''>Contact Name: <strong>{selectedVendor?.name}</strong></h6>
+                                                            {/* <h6 className=''>Contact Name: <strong>{selectedVendor?.name}</strong></h6> */}
                                                             <h6 className=''>Mobile: <strong>{selectedVendor?.mobile}</strong></h6>
-                                                            <h6 className=''>Address: <strong>{selectedVendor?.address}</strong></h6>
-                                                            <h6 className='mb-0'>Firm Name: <strong>{selectedVendor?.firm_name}</strong></h6>
+                                                            {/* <h6 className=''>Address: <strong>{selectedVendor?.address}</strong></h6> */}
+                                                            {/* <h6 className='mb-0'>Firm Name: <strong>{selectedVendor?.firm_name}</strong></h6> */}
                                                         </div>
                                                     </div> : null}
                                                 </div>
@@ -310,9 +316,9 @@ export const Sale = () => {
                                                         <th scope="col">QTY</th>
                                                         <th scope="col"><BiRupee />PRICE/ITEM</th>
                                                         <th scope="col">DISCOUNT</th>
-                                                        <th scope="col">HSN</th>
-                                                        <th scope="col">SGST</th>
-                                                        <th scope="col">CGST</th>
+                                                        {/* <th scope="col">HSN</th> */}
+                                                        <th scope="col">GST</th>
+                                                        {/* <th scope="col">CGST</th> */}
                                                         <th scope="col">AMOUNT</th>
                                                         <th scope="col"></th>
                                                     </tr>
@@ -330,9 +336,9 @@ export const Sale = () => {
                                                                         <td width={"10%"}>
                                                                             <input type="number" name="discount" onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
                                                                         </td>
-                                                                        <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                        <td width={"10%"} ><input type="number" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                        <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        {/* <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
+                                                                        <td width={"10%"} ><input type="number" value={items.i_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        {/* <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
                                                                         <td width={"10%"} ><input type="number" value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} onClick={() => deleteFeild(index)} size={24} /></td>
                                                                     </tr>}
@@ -383,7 +389,7 @@ export const Sale = () => {
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Send Stocks Location</h5>
                                                     <select class="form-select mb-0 w-50" onChange={e => setRestInfo({ ...restInfo, stock_location: e.target.value })} aria-label="Default select example">
-                                                      
+
                                                         <option value="Warehouse">Warehouse</option>
                                                         <option value="Store">Store</option>
 
@@ -415,16 +421,16 @@ export const Sale = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>CGST</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.cGstTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
-                                               
+
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
 
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                                                <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>
+                                                    <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>
                                                         <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Round Off</h5>
-                                                </Checkbox>
+                                                    </Checkbox>
                                                 </div>
 
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">

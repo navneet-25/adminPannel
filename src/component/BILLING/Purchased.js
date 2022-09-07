@@ -31,16 +31,16 @@ export const Purchased = () => {
         additional_charges: 0,
         amount_paid: 0,
         outstanding: 0,
-        round_off:false,
-        round_off_value:0,
+        round_off: false,
+        round_off_value: 0,
         fully_paid: false,
-       
+
     });
     const [restInfo, setRestInfo] = useState({
         sales_man: "",
         payment_mode: "Cash",
         notes: "",
-        stock_location:'Warehouse'
+        stock_location: 'Warehouse'
     });
 
     useEffect(() => {
@@ -140,6 +140,17 @@ export const Purchased = () => {
         setAddedItems(newArr)
     }
 
+    const changeGst = index => e => {
+        let newArr = [...addedItems];
+        e.target.name === "s_gst" && (newArr[index].s_gst = e.target.value);
+        e.target.name === "s_gst" && (newArr[index].c_gst = e.target.value);
+        e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
+        // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
+        // console.log("new arrya --->", newArr);
+        newArr = newArr.filter(item => item);
+        setAddedItems(newArr)
+    }
+
     const deleteFeild = index => {
         let newArr = [...addedItems];
         delete newArr[index];
@@ -149,7 +160,7 @@ export const Purchased = () => {
 
     const submitPurchase = (adminId) => {
 
-        console.log('product_list_in_purchse',selectedVendor.firm_name)
+        console.log('product_list_in_purchse', selectedVendor.firm_name)
 
 
         const data = JSON.stringify({
@@ -168,9 +179,9 @@ export const Purchased = () => {
             total_payment: allTotals.grandTotal,
             amount_paid: allTotals.amount_paid,
             outstanding: allTotals.outstanding,
-            stock_location:restInfo.stock_location,
+            stock_location: restInfo.stock_location,
             payment_mode: restInfo.payment_mode,
-            purchaes_date: PurchaseDate,
+            purchaes_date: PurchaseDate.toLocaleDateString(),
             product_list: addedItems
         });
 
@@ -186,10 +197,7 @@ export const Purchased = () => {
             body: data
         }).then((response) => response.json())
             .then((responseJson) => {
-                // functionality.fetchAllData(responseJson);
                 console.log(" purchase server res ---->", responseJson);
-
-                 
             })
             .catch((error) => {
                 console.error(error);
@@ -216,7 +224,7 @@ export const Purchased = () => {
                     <div className="card">
                         <div className="card-header align-items-center d-flex px-5">
                             <h4 className="card-title mb-0 flex-grow-1">Purchase</h4>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -331,9 +339,9 @@ export const Purchased = () => {
                                                                         <td width={"10%"}>
                                                                             <input type="number" name="discount" onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
                                                                         </td>
-                                                                        <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                        <td width={"10%"} ><input type="number" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
-                                                                        <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="text" onChange={changeGst(index)} name="hsnCode" value={items.hsn_code} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" onChange={changeGst(index)} name="s_gst" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" onChange={changeGst(index)} name="c_gst" value={items.s_gst} disabled className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"} ><input type="number" value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} onClick={() => deleteFeild(index)} size={24} /></td>
                                                                     </tr>}
@@ -384,7 +392,7 @@ export const Purchased = () => {
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Send Stocks Location</h5>
                                                     <select class="form-select mb-0 w-50" onChange={e => setRestInfo({ ...restInfo, stock_location: e.target.value })} aria-label="Default select example">
-                                                      
+
                                                         <option value="Warehouse">Warehouse</option>
                                                         <option value="Store">Store</option>
 
@@ -416,16 +424,16 @@ export const Purchased = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>CGST</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.cGstTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
-                                               
+
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
 
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                                                <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>
+                                                    <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>
                                                         <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Round Off</h5>
-                                                </Checkbox>
+                                                    </Checkbox>
                                                 </div>
 
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
