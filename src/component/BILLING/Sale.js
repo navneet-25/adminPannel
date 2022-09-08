@@ -18,7 +18,7 @@ export const Sale = () => {
     const getAllVendorsRef = useRef(null);
     const { store_customer_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [customerList, setCustomerList] = useState([]);
-    const [Saleate, setSaleate] = useState(new Date());
+    const [Saledate, setSaledate] = useState(new Date());
     const [selectedCustomer, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
@@ -153,6 +153,8 @@ export const Sale = () => {
 
 
         const data = JSON.stringify({
+          
+
             store_id: store_login_user.store_id,
             customer_mobile: selectedCustomer.mobile,
             user_id: store_login_user.id,
@@ -168,8 +170,9 @@ export const Sale = () => {
             outstanding: allTotals.outstanding,
             stock_location: restInfo.stock_location,
             payment_mode: restInfo.payment_mode,
-            purchaes_date: Saleate,
+            purchaes_date: Saledate.toLocaleDateString(),
             product_list: addedItems
+
         });
 
         console.log(" all data from data ---->", data);
@@ -231,7 +234,7 @@ export const Sale = () => {
                                             <div className="col-lg-8 px-4" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                 <div className="row">
                                                     <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1", zIndex: 999999 }}>
-                                                        <h4 className='mb-0 text-center mb-4'>Choose customer</h4>
+                                                        <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
                                                         <Multiselect
                                                             // singleSelect={true}
                                                             keepSearchTerm={true}
@@ -266,7 +269,7 @@ export const Sale = () => {
                                             </div>
                                             <div className="col-lg-4 px-4">
                                                 <h4 className='mb-0 text-center mb-4'>Sale Date <FcCalendar /></h4>
-                                                <DatePicker selected={Saleate} dateFormat="dd-MM-yyyy" onChange={(date) => setSaleate(Date.parse(date))} className="form-control bg-light border-light custom_date_input" />
+                                                <DatePicker selected={Saledate} dateFormat="dd-MM-yyyy" onChange={(date) => setSaledate(Date.parse(date))} className="form-control bg-light border-light custom_date_input" />
                                             </div>
                                         </div>
                                     </div>
