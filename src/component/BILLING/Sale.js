@@ -52,7 +52,8 @@ export const Sale = () => {
         onComplete: (code) => {
             const prod = allProducts?.find(o => o.product_bar_code == code);
             const allReadyExist = addedItems.some(elem => elem.product_bar_code === code);
-            !allReadyExist && setAddedItems([...addedItems, prod]);
+            const index = addedItems.findIndex(elem => elem.product_bar_code === code);
+            !allReadyExist ? setAddedItems([...addedItems, prod]) : setAddedItems(previousState => console.log(" state change ---->", previousState));
         },
     });
 
@@ -121,7 +122,16 @@ export const Sale = () => {
 
     const handleOnSelect = (item) => {
         const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
-        !allReadyExist && setAddedItems([...addedItems, item]);
+        const index = addedItems.findIndex(elem => elem.product_bar_code === item.product_bar_code);
+        !allReadyExist ? setAddedItems([...addedItems, item]) : setAddedItems(previousState => {
+            let obj = previousState[index];
+            if (obj !== undefined) {
+                obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
+                obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);
+            }
+            return [...previousState];
+        });
+        // !allReadyExist && setAddedItems([...addedItems, item]);
         /*  setTimeout(() => {
              document.getElementsByClassName("clear-icon")[0].querySelector(':scope > svg')[0].click();
          }, 1000) */ //1 second delay
@@ -149,11 +159,11 @@ export const Sale = () => {
 
     const submitSale = (adminId) => {
 
-      
+
 
 
         const data = JSON.stringify({
-          
+
 
             store_id: store_login_user.store_id,
             customer_mobile: selectedCustomer.mobile,
@@ -235,7 +245,7 @@ export const Sale = () => {
                                                 <div className="row">
                                                     <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1", zIndex: 999999 }}>
                                                         <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
-                                                        <Multiselect
+                                                        {/* <Multiselect
                                                             // singleSelect={true}
                                                             keepSearchTerm={true}
                                                             selectionLimit={1}
@@ -255,7 +265,17 @@ export const Sale = () => {
 
                                                             options={customerList}
                                                             ref={getAllVendorsRef}
-                                                        />
+                                                        /> */}
+                                                        <div>
+                                                            <datalist id="suggestions" onSelect={e => console.log("heyeyyeyeye ---->", e)}>
+                                                                {customerList?.map((customers, index) => {
+                                                                    return (
+                                                                        <option>{customers.mobile}</option>
+                                                                    )
+                                                                })}
+                                                            </datalist>
+                                                            <input type="text" list="suggestions" class="form-control" onChange={e => e.target.value.length == 10 && setSelectCustomer({ mobile: e.target.value })} placeholder="Search..." autocomplete="on" id="search-options" />
+                                                        </div>
                                                     </div>
                                                     {selectedCustomer?.mobile ? <div className="col-md-5">
                                                         <div className='px-5 border-left'>
@@ -369,7 +389,7 @@ export const Sale = () => {
                                     <div className="col-md-12 border-top border-bottom mt-5">
                                         <div className="row">
                                             <div className="col-md-6">
-                                               <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 17, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
                                                     <h5 style={{ fontSize: 17, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
@@ -382,12 +402,12 @@ export const Sale = () => {
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Payment Mode</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>
-                                                    <select class="form-select " onChange={e => setRestInfo({ ...restInfo, payment_mode: e.target.value })} aria-label="Default select example">
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="UPI">UPI</option>
-                                                        <option value="Bank Transfer">Bank Transfer</option>
-                                                        <option value="Cheque">Cheque</option>
-                                                    </select>
+                                                        <select class="form-select " onChange={e => setRestInfo({ ...restInfo, payment_mode: e.target.value })} aria-label="Default select example">
+                                                            <option value="Cash">Cash</option>
+                                                            <option value="UPI">UPI</option>
+                                                            <option value="Bank Transfer">Bank Transfer</option>
+                                                            <option value="Cheque">Cheque</option>
+                                                        </select>
                                                     </h5>
                                                 </div>
                                                 <div className="py-3 px-5 mt-5">
@@ -399,7 +419,7 @@ export const Sale = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Sub Total</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.subTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
-                                                
+
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>SGST</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.sGstTotal.toLocaleString('en-IN')}</h5>
@@ -414,7 +434,7 @@ export const Sale = () => {
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
 
-                                                
+
 
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}></h5>
