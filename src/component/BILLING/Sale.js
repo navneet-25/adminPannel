@@ -53,7 +53,14 @@ export const Sale = () => {
             const prod = allProducts?.find(o => o.product_bar_code == code);
             const allReadyExist = addedItems.some(elem => elem.product_bar_code === code);
             const index = addedItems.findIndex(elem => elem.product_bar_code === code);
-            !allReadyExist ? setAddedItems([...addedItems, prod]) : setAddedItems(previousState => console.log(" state change ---->", previousState));
+            !allReadyExist ? setAddedItems([...addedItems, { ...prod, billing_quantity: 1, amount_total: prod.sale_price }]) : setAddedItems(previousState => {
+                let obj = previousState[index];
+                if (obj !== undefined) {
+                    obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
+                    obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);
+                }
+                return [...previousState];
+            });
         },
     });
 
@@ -123,8 +130,9 @@ export const Sale = () => {
     const handleOnSelect = (item) => {
         const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
         const index = addedItems.findIndex(elem => elem.product_bar_code === item.product_bar_code);
-        !allReadyExist ? setAddedItems([...addedItems, item]) : setAddedItems(previousState => {
+        !allReadyExist ? setAddedItems([...addedItems, { ...item, billing_quantity: 1, amount_total: item.sale_price }]) : setAddedItems(previousState => {
             let obj = previousState[index];
+            console.log("expencive ---->", obj)
             if (obj !== undefined) {
                 obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
                 obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);
