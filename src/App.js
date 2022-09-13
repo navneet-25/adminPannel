@@ -18,9 +18,13 @@ import AddPlots from './component/Plot/AddPlots';
 import BannerSettings from './component/Settings/Website/Banner';
 import TestimonialSettings from './component/Settings/Website/Testimonial/Testimonial';
 
-
 import PurchaseIndex from './component/PURCHASE/purchase-index';
 import VendorManagement from './component/PURCHASE/vendor-management';
+
+import SaleIndex from './component/SALE/sale-index';
+import CustomerManagement from './component/SALE/customer-management';
+
+
 import PurchaseHistory from './component/PURCHASE/purchase-history';
 import PurchaseHistoryRecord from './component/PURCHASE/purchase-history-record';
 
@@ -59,6 +63,12 @@ const App = () => {
                 <Route path="purchase-history" element={<PurchaseHistory />} />
                 <Route path="/purchaseManagement/purchase-history-record/:orderID/:vendorID" element={<PurchaseHistoryRecord />} />
               </Route>
+
+              <Route path="/salesManagement" >
+                <Route index element={<SaleIndex />} />
+                <Route path="customers" element={<CustomerManagement />} />
+                </Route>
+
               <Route path="/billing" >
                 <Route index element={<h4>BILLING</h4>} /> 
                 <Route path="purchased" element={<Purchased />} />

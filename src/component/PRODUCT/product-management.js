@@ -8,6 +8,7 @@ import { AddProductForm } from "./Add/product-add-form";
 import { AddUnitForm } from "./Add/unit-add-form";
 import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
+import { UpdateProductComp } from "./Update/UpdateProductComp";
 import { DownloadBarcode } from "./Update/DownloadBarcode";
 
 import SweetAlert from 'react-bootstrap-sweetalert';
@@ -192,6 +193,7 @@ const ProductManagement = () => {
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Update Stock</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductComp" >Update Product</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
                             <Dropdown.Item onClick={() => deleteAction(row.id, row.product_name + " " + row.product_size + " " + row.product_unit)}>Delete Product</Dropdown.Item>
                         </Dropdown.Menu>
@@ -474,6 +476,20 @@ const ProductManagement = () => {
                             </div>
                             <div className="modal-body">
                                 <UpdateProductStockComp productDetails={UpdateProductPrice} />
+                            </div>
+                        </div>{/*end modal-content*/}
+                    </div>{/*end modal-dialog*/}
+                </div>{/*end modal*/}
+
+                <div  className="modal fade" id="UpdateProductComp" tabIndex={-1} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered w-50">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="myModalLabel">Update Product</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <div className="modal-body">
+                                <UpdateProductComp productDetails={UpdateProductPrice} />
                             </div>
                         </div>{/*end modal-content*/}
                     </div>{/*end modal-dialog*/}

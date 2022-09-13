@@ -364,12 +364,12 @@ export const Sale = () => {
                                                                         <td width={"10%"} ><input type="number" name="quantity" onChange={updateFieldChanged(index)} value={items.billing_quantity ? items.billing_quantity : ""} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"} ><input type="number" name="sale_price" value={items.sale_price} onChange={updateFieldChanged(index)} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}>
-                                                                            <input type="number" name="discount" onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
+                                                                            <input type="number" name="discount" disabled onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
                                                                         </td>
                                                                         {/* <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
-                                                                        <td width={"10%"} ><input type="number" value={items.i_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" disabled value={items.i_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
                                                                         {/* <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
-                                                                        <td width={"10%"} ><input type="number" value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
+                                                                        <td width={"10%"} ><input type="number" disabled value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} onClick={() => deleteFeild(index)} size={24} /></td>
                                                                     </tr>}
                                                                 </>

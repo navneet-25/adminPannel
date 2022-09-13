@@ -7,24 +7,29 @@ import { useRef } from 'react';
 
 const cookies = new Cookies();
 
-export const ImportNewProduct = (props) => {
+export const ImportNewBrand = (props) => {
 
-    const { masterProductsData, storeProductsData, getToast, reloadData } = useContext(ContextData);
-    const [filteredProductData, setFilterProductData] = useState([]);
+    const { masterBrandsData, storeBrandsData, getToast, reloadData } = useContext(ContextData);
+    const [filteredBrandsData, setFilterBrandData] = useState([]);
     const [isLoading, setIL] = useState(false);
-    const getSelectedItemsRef = useRef(null); 
+    const getSelectedItemsRef = useRef(null);
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
-    const adminId = cookies.get("adminId");
     const adminStoreType = cookies.get("adminStoreType");
-    const [showMasterData, setShowMasterData] = useState(masterProductsData);
-    const [showStoreData, setShowStoreData] = useState(storeProductsData);
+    const adminId = cookies.get("adminId");
 
-    // const [masterProductsData, setmasterProductsData] = useState({
+    const [showMasterData, setShowMasterData] = useState(masterBrandsData);
+    const [showStoreData, setShowStoreData] = useState(storeBrandsData);
+
+    useEffect(() => {
+        setShowStoreData(storeBrandsData);
+    }, [storeBrandsData])
+
+    // const [masterBrandsData, setmasterBrandsData] = useState({
     //     'store_id': adminStoreId,
-    //     'Product_type': adminStoreType,
-    //     'Product_name': null,
-    //     'Product_feature_image': null,
+    //     'brand_type': adminStoreType,
+    //     'brand_name': null,
+    //     'brand_feature_image': null,
     //     'date': +new Date(),
     // });
     useEffect(() => {
@@ -34,37 +39,44 @@ export const ImportNewProduct = (props) => {
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = storeProductsData.filter(b => a.product_uniq_slug_name === b.product_uniq_slug_name);
+            let matched = storeBrandsData.filter(b => a.id === b.master_brand_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
-            } else { 
+            } else {
                 obj3.push({
-                    key: a.product_name+ " "+a.product_size+ " "+a.product_unit,
-                    ...a
+                    key: a.brand_name,
+                    id: a.id,
+                    cat: 'Group 1',
+                    brand_type: a.brand_type,
+                    brand_image: a.brand_image,
+                    deceptions: a.deceptions,
+                    date: a.date
                 });
             }
         })
 
-    
-        setFilterProductData(obj3);
+        setFilterBrandData(obj3);
+
+        console.log("filter ---->", showStoreData);
+        console.log("filter 222 ---->", storeBrandsData);
 
         // console.log("filter", res)
 
 
-    }, [storeProductsData]);
+    }, [storeBrandsData]);
 
 
 
-    const AddProductToSeller = () => {
+    const AddBrandToSeller = () => {
 
         if (getSelectedItemsRef.current.state.selectedValues[0] === undefined) {
-            getToast({ title: "Please Select Product", dec: "Requird", status: "error" });
+            getToast({ title: "Please Select Brands", dec: "Requird", status: "error" });
         }
         else {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreProduct", { 
+            fetch(URL + "/APP-API/Billing/importStoreBrands", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -74,20 +86,20 @@ export const ImportNewProduct = (props) => {
 
                     store_id: adminStoreId,
                     adminId:adminId,
-                    Product: getSelectedItemsRef.current.state.selectedValues
+                    Brands: getSelectedItemsRef.current.state.selectedValues
 
                 })
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    getSelectedItemsRef.current.resetSelectedValues();
+                    console.log("respond plot upload", responseJson)
                     if (responseJson.success) {
 
-                        getToast({ title: "Product Added ", dec: "Successful", status: "success" });
+                        getToast({ title: "Brand Added ", dec: "Successful", status: "success" });
                         getSelectedItemsRef.current.resetSelectedValues();
 
                     } else {
                         console.log("added");
-                        // addDataToCurrentGlobal({ type: "plots", payload: storeProductsData });
+                        // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
                     }
                     reloadData();
@@ -109,8 +121,8 @@ export const ImportNewProduct = (props) => {
             <div className="row">
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Select Product</label>
-                        {filteredProductData.length && (
+                        <label htmlFor="firstNameinput" className="form-label">Select Brands</label>
+                        {filteredBrandsData.length && (
 
                             <Multiselect
                                 displayValue="key"
@@ -122,7 +134,7 @@ export const ImportNewProduct = (props) => {
                                 onSelect={() => {
                                     setAllSelectedItems(getSelectedItemsRef.current.state.selectedValues)
                                 }}
-                                options={filteredProductData}
+                                options={filteredBrandsData}
                                 ref={getSelectedItemsRef}
                             // showCheckbox
                             />
@@ -135,7 +147,7 @@ export const ImportNewProduct = (props) => {
 
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddProductToSeller} className="btn btn-primary">Add Product</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Brand</button>}
                     </div>
                 </div>{/*end col*/}
             </div>{/*end row*/}
