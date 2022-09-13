@@ -120,7 +120,6 @@ export const Sale = () => {
 
     useEffect(() => {
         const { fully_paid } = allTotals;
-        console.log(" is working ---??", fully_paid)
         fully_paid && setAllTotals({
             ...allTotals,
             outstanding: 0,
@@ -132,7 +131,6 @@ export const Sale = () => {
         const index = addedItems.findIndex(elem => elem.product_bar_code === item.product_bar_code);
         !allReadyExist ? setAddedItems([...addedItems, { ...item, billing_quantity: 1, amount_total: item.sale_price }]) : setAddedItems(previousState => {
             let obj = previousState[index];
-            console.log("expencive ---->", obj)
             if (obj !== undefined) {
                 obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
                 obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);

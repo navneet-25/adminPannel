@@ -117,6 +117,25 @@ const ContextProvider = props => {
             });
     };
 
+    const testingAPI = (adminId) => {
+        fetch("http://localhost:8000/product", {
+            method: 'GET',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("Loacal Data ---->", responseJson)
+                // functionality.fetchAllData(responseJson);
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
     const getUserDetails = (adminId) => {
         functionality.setUserLogin();
         fetch(URL + "/APP-API/App/GetUserInfo", {
@@ -149,6 +168,7 @@ const ContextProvider = props => {
         if (adminId && MainData.user.user_info.name == "") {
             getUserDetails(adminId);
             fetchData(store_id, adminId);
+            testingAPI();
         }
     }, [MainData.user.user_info.name]);
 
