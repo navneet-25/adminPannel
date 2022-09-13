@@ -39,7 +39,7 @@ export const ImportNewProduct = (props) => {
                 // obj3.push({ name: a.name, matched: true });
             } else { 
                 obj3.push({
-                    key: a.product_name+ " "+a.product_size+ " "+a.product_unit,
+                    key: a.product_name+ " "+a.product_size+ " "+a.product_unit+ " | Brand - "+a.brand_name,
                     ...a
                 });
             }

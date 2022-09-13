@@ -32,8 +32,17 @@ const ContextProvider = props => {
     };
 
     const reloadData = () => {
-        const store_id = cookies.get("userBussiness_id");
-        return fetchData(store_id);
+        const store_id = cookies.get("adminStoreId");
+        const adminId = cookies.get("adminId");
+
+        // return fetchData(store_id);
+        reloadStoreProducts(store_id, adminId);
+        reloadMasterProducts(store_id, adminId);
+        reloadVendorInformation(store_id, adminId);
+        reloadCustomerInformation(store_id, adminId);
+        reloadStoreInformation(store_id, adminId);
+        reloadStockInformation(store_id, adminId);
+
     }
 
     const functionality = {
@@ -117,47 +126,95 @@ const ContextProvider = props => {
             });
     };
 
-    const testingAPI = (adminId) => {
-        fetch("http://localhost:8000/product", {
-            method: 'GET',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-
-            }
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log("Loacal Data ---->", responseJson)
-                // functionality.fetchAllData(responseJson);
-
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-
-    const getUserDetails = (adminId) => {
+    const reloadStoreProducts = (store_id, adminId) => {
         functionality.setUserLogin();
-        fetch(URL + "/APP-API/App/GetUserInfo", {
+        fetch(URL + "/APP-API/Reload/reloadStoreProducts", {
             method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-
-            },
-            body: JSON.stringify({
-                adminId
-            })
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
         }).then((response) => response.json())
             .then((responseJson) => {
-                functionality.setUserLogin(responseJson);
-                // functionality.fetchAllData(responseJson);
-
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+                console.log("reloadStoreProducts", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
     };
+
+    const reloadMasterProducts = (store_id, adminId) => {
+        functionality.setUserLogin();
+        fetch(URL + "/APP-API/Reload/reloadMasterProducts", {
+            method: 'POST',
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("reloadMasterProducts", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
+    };
+    const reloadVendorInformation = (store_id, adminId) => {
+        functionality.setUserLogin();
+        fetch(URL + "/APP-API/Reload/reloadVendorInformation", {
+            method: 'POST',
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("reloadVendorInformation", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
+    };
+
+    const reloadCustomerInformation = (store_id, adminId) => {
+        functionality.setUserLogin();
+        fetch(URL + "/APP-API/Reload/reloadCustomerInformation", {
+            method: 'POST',
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("reloadCustomerInformation", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
+    };
+    const reloadStoreInformation = (store_id, adminId) => {
+        functionality.setUserLogin();
+        fetch(URL + "/APP-API/Reload/reloadStoreInformation", {
+            method: 'POST',
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("reloadStoreInformation", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
+    };
+
+    const reloadStockInformation = (store_id, adminId) => {
+        functionality.setUserLogin();
+        fetch(URL + "/APP-API/Reload/reloadStockInformation", {
+            method: 'POST',
+            header: { 'Accept': 'application/json', 'Content-type': 'application/json' },
+            body: JSON.stringify({ store_id, adminId })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log("reloadStockInformation", responseJson);
+                functionality.fetchAllData({ ...responseJson });
+                return true;
+                // fetchAllData(responseJson);
+            }).catch((error) => { console.error(error); });
+    };
+
+
 
 
     useEffect(() => {
@@ -165,10 +222,19 @@ const ContextProvider = props => {
         // lets see...
         const adminId = cookies.get("adminId");
         const store_id = cookies.get("adminStoreId");
+
+        console.log("store_id", store_id)
         if (adminId && MainData.user.user_info.name == "") {
-            getUserDetails(adminId);
-            fetchData(store_id, adminId);
-            testingAPI();
+            // getUserDetails(adminId);
+            // fetchData(store_id, adminId);
+            reloadStoreProducts(store_id, adminId);
+            reloadMasterProducts(store_id, adminId);
+            reloadVendorInformation(store_id, adminId);
+            reloadCustomerInformation(store_id, adminId);
+            reloadStoreInformation(store_id, adminId);
+            reloadStockInformation(store_id, adminId);
+
+
         }
     }, [MainData.user.user_info.name]);
 
