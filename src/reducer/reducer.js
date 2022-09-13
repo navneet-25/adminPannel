@@ -19,7 +19,6 @@ export const reducer = (state, action) => {
 
     if (action.type === "CART_DETAILS") {
         state.cartDetails = { ...state.cartDetails, ...action.payload };
-        state.isLoading = false
         return {
             ...state,
         };
@@ -44,7 +43,13 @@ export const reducer = (state, action) => {
 
     if (action.type === "FETCH_ALL_DATA") {
         state = { ...state, ...action.payload };
-        state.isLoading = false
+        return {
+            ...state,
+        };
+    }
+
+    if (action.type === "LOADING") {
+        state.isLoading = action.data;
         return {
             ...state,
         };
@@ -75,7 +80,6 @@ export const reducer = (state, action) => {
             state.user = action.credentials;
         }
         state.auth.isUserLogin = true;
-        state.isLoading = false
         return {
             ...state,
         };
@@ -84,7 +88,6 @@ export const reducer = (state, action) => {
     if (action.type === "LOGOUT") {
         state.user = {};
         state.auth.isUserLogin = false;
-        state.isLoading = false
         return {
             ...state,
         };
