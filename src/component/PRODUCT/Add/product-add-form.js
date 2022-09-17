@@ -178,14 +178,17 @@ export const AddProductForm = (props) => {
             productDetails.product_image && productDetails.product_image.map((item, i) => {
                 formData.append(`product_image[]`, item, item.name);
             })
-
+ 
             formData.append('store_id', productDetails.store_id)
             formData.append('product_name', productDetails.product_name)
             formData.append('adminId', adminId)
             formData.append('product_type', productDetails.product_type)
             formData.append('parent_category_id', getSelectedCategorysRef.current.state.selectedValues[0].master_category_id)
+            formData.append('parent_category_name', getSelectedCategorysRef.current.state.selectedValues[0].category_name)
             formData.append('category_id', getSelectedChildCategorysRef.current.state.selectedValues[0].master_category_id)
+            formData.append('child_category_name', getSelectedChildCategorysRef.current.state.selectedValues[0].category_name)
             formData.append('brand_id', getSelectedBrandsRef.current.state.selectedValues[0].master_brand_id)
+            formData.append('brand_name', getSelectedBrandsRef.current.state.selectedValues[0].brand_name)
             formData.append('purchase_price', productDetails.purchase_price)
             formData.append('price', productDetails.price)
             formData.append('discount_in_percent', DisInPerc)
@@ -418,7 +421,7 @@ export const AddProductForm = (props) => {
                                     console.log('test');
                                     return <a class="dropdown-item" onClick={() => setproductDetails({ ...productDetails, product_unit: item.unit_name })} href="#">{item.unit_name}</a>
                                 })}
-
+ 
 
                             </div>
                         </div>
