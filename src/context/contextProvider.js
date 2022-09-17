@@ -42,6 +42,7 @@ const ContextProvider = props => {
         reloadCustomerInformation(store_id, adminId);
         reloadStoreInformation(store_id, adminId);
         reloadStockInformation(store_id, adminId);
+        
 
     }
 

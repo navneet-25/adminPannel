@@ -51,15 +51,15 @@ const App = () => {
 
   const { isLoading } = useContext(ContextData);
 
-  if (isLoading) {
-    return (
-      <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh" }}>
-        <h4>
-          Loading... Please Wait...!!
-        </h4>
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh" }}>
+  //       <h4>
+  //         Loading... Please Wait...!!
+  //       </h4>
+  //     </div>
+  //   )
+  // }
 
   return (
     <ChakraProvider resetCSS={false}>

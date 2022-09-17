@@ -31,6 +31,8 @@ export const ImportNewProduct = (props) => {
 
         // const getSelectedItemsRef = useRef(null);
 
+        if(showMasterData==null){setShowMasterData([])}
+
         let obj3 = []
 
         showMasterData.map(function (a) {
@@ -38,10 +40,7 @@ export const ImportNewProduct = (props) => {
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
             } else { 
-                obj3.push({
-                    key: a.product_name+ " "+a.product_size+ " "+a.product_unit,
-                    ...a
-                });
+                obj3.push({...a });
             }
         })
 
@@ -113,7 +112,7 @@ export const ImportNewProduct = (props) => {
                         {filteredProductData.length && (
 
                             <Multiselect
-                                displayValue="key"
+                                displayValue="product_full_name"
                                 onKeyPressFn={function noRefCheck() { }}
                                 onSearch={function noRefCheck() { }}
                                 onRemove={() => {

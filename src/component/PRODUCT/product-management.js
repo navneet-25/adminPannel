@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URL from '../../URL';
 
-import { ImportNewProduct } from "./Import/import-new-product";
+// import { ImportNewProduct } from "./Import/import-new-product";
 import { AddProductForm } from "./Add/product-add-form";
 import { AddUnitForm } from "./Add/unit-add-form";
 import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
@@ -403,7 +403,7 @@ const ProductManagement = () => {
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            <ImportNewProduct />
+                                            {/* <ImportNewProduct /> */}
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}

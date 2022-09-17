@@ -2,7 +2,7 @@ import { useState, useContext, useRef, useEffect } from 'react';
 import URL from '../../../URL';
 import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext';
-import ImageUploader from 'react-images-upload';
+// import ImageUploader from 'react-images-upload';
 import Multiselect from 'multiselect-react-dropdown';
 import ReactJSBarcode from 'react-jsbarcode';
 
@@ -148,13 +148,7 @@ export const UpdateProductComp = (EditProductData) => {
 
         let DisInPerc = Math.round(((productDetails.price - productDetails.sale_price) * 100) / productDetails.price)
 
-        if (productDetails.product_name == '') {
-            getToast({ title: "Product Name Requird", dec: "Requird", status: "error" });
-        }
-        else if (productDetails.product_image.length < 1) {
-            getToast({ title: "Product Image Requird", dec: "Requird", status: "error" });
-        }
-        else if (getSelectedCategorysRef.current.state.selectedValues[0] === undefined) {
+       if (getSelectedCategorysRef.current.state.selectedValues[0] === undefined) {
             getToast({ title: "Please Select Category", dec: "Requird", status: "error" });
         }
         else if (getSelectedChildCategorysRef.current.state.selectedValues[0] === undefined) {
@@ -181,23 +175,19 @@ export const UpdateProductComp = (EditProductData) => {
             setIL(true);
             const formData = new FormData();
 
-            productDetails.product_image && productDetails.product_image.map((item, i) => {
-                formData.append(`product_image[]`, item, item.name);
-            })
-
-            formData.append('store_id', productDetails.store_id)
-            formData.append('product_name', productDetails.product_name)
-            formData.append('adminId', adminId)
-            formData.append('product_type', productDetails.product_type)
+            formData.append('id', productDetails.id)
             formData.append('parent_category_id', getSelectedCategorysRef.current.state.selectedValues[0].master_category_id)
+            formData.append('parent_category_name', getSelectedCategorysRef.current.state.selectedValues[0].category_name)
             formData.append('category_id', getSelectedChildCategorysRef.current.state.selectedValues[0].master_category_id)
+            formData.append('child_category_name', getSelectedChildCategorysRef.current.state.selectedValues[0].category_name)
             formData.append('brand_id', getSelectedBrandsRef.current.state.selectedValues[0].master_brand_id)
+            formData.append('brand_name', getSelectedBrandsRef.current.state.selectedValues[0].brand_name)
             formData.append('purchase_price', productDetails.purchase_price)
             formData.append('price', productDetails.price)
             formData.append('discount_in_percent', DisInPerc)
             formData.append('discount_in_rs', productDetails.discount_in_rs)
             formData.append('sale_price', productDetails.sale_price)
-            formData.append('product_size', productDetails.product_size)
+            formData.append('product_size', productDetails.product_size) 
             formData.append('product_unit', productDetails.product_unit)
             formData.append('product_bar_code', productDetails.product_bar_code)
             formData.append('deceptions', productDetails.deceptions)
@@ -209,7 +199,7 @@ export const UpdateProductComp = (EditProductData) => {
 
 
 
-            fetch(URL + "/APP-API/Billing/addStoreProducts", {
+            fetch(URL + "/APP-API/Billing/UpdateStoreProductsInformation", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -218,16 +208,15 @@ export const UpdateProductComp = (EditProductData) => {
                 body: formData
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    console.log("respond product upload", responseJson)
-                    if (responseJson.is_product_alredy == 1) {
+                    if (responseJson.success) {
 
-                        getToast({ title: "Product Added Already", dec: "Successful", status: "success" });
+                        getToast({ title: " Updated ", dec: "Successful", status: "success" });
                         reloadData();
-
+ 
                     } else {
-                        console.log("added");
+                      
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
-                        getToast({ title: "Product Added", dec: "Successful", status: "success" });
+                        getToast({ title: "error", dec: "error", status: "error" });
                         reloadData();
                     }
                     setIL(false);
@@ -316,29 +305,7 @@ export const UpdateProductComp = (EditProductData) => {
 
   
 
-                <div className='col-sm-7'>
-                <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label text-danger">Change Product Image</label>
-                        <ImageUploader
-                            withIcon={true}
-                            buttonText='Choose New Images'
-                            onChange={onChangeImage}
-                            imgExtension={['.jpg', '.jpeg', '.png', '.gif']}
-                            maxFileSize={5242880}
-                            singleImage={true}
-                            withPreview={true}
-                        />
-                    </div>
-
-                </div>
-                <div className='col-sm-5'>
-                <div className="mb-3">
-                <label htmlFor="compnayNameinput" className="form-label text-danger">Old Product Image</label>
-
-                <img src={productDetails.product_image} alt="" style={{ height: '150px', borderRadius: '14px' }} />
-                </div>
-
-                </div>
+           
 
 
 
