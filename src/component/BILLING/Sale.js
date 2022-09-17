@@ -1,9 +1,8 @@
 import { BiRupee, BiBarcodeReader } from 'react-icons/bi';
 import { FcCalendar } from 'react-icons/fc';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ContextData from '../../context/MainContext';
-import Multiselect from 'multiselect-react-dropdown';
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import useScanDetection from 'use-scan-detection';
@@ -15,7 +14,6 @@ import URLDomain from '../../URL';
 
 export const Sale = () => {
 
-    const getAllVendorsRef = useRef(null);
     const { store_customer_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [customerList, setCustomerList] = useState([]);
     const [Saledate, setSaledate] = useState(new Date());

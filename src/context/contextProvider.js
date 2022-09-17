@@ -11,38 +11,26 @@ const cookies = new Cookies();
 const ContextProvider = props => {
 
 
-    // const navigate = useNavigate();
-
-    // const [isLoading, setLoading] = useState(true);
     const toast = useToast();
     const MainData = {
         isLoading: true,
         auth: {
             isUserLogin: false
         },
-        user: {
-            user_info: {
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
-                provider_pic: ""
-            },
-        },
+        adminId: cookies.get("adminId")
     };
 
     const reloadData = () => {
         const store_id = cookies.get("adminStoreId");
         const adminId = cookies.get("adminId");
 
-        // return fetchData(store_id);
         reloadStoreProducts(store_id, adminId);
         reloadMasterProducts(store_id, adminId);
         reloadVendorInformation(store_id, adminId);
         reloadCustomerInformation(store_id, adminId);
         reloadStoreInformation(store_id, adminId);
         reloadStockInformation(store_id, adminId);
-        
+
 
     }
 
@@ -248,20 +236,13 @@ const ContextProvider = props => {
     useEffect(() => {
         // let userCookie = btoa("userID");
         // lets see...
-        const adminId = cookies.get("adminId");
         const store_id = cookies.get("adminStoreId");
-
-        console.log("store_id", store_id)
-        if (adminId && MainData.user.user_info.name == "") {
+        if (MainData.adminId) {
             // getUserDetails(adminId);
             // fetchData(store_id, adminId)
-
-            const data1 = reloadStoreProducts(store_id, adminId);
-            letsCheck(store_id, adminId);
-
-
+            letsCheck(store_id, MainData.adminId);
         }
-    }, [MainData.user.user_info.name]);
+    }, [MainData.adminId]);
 
 
 

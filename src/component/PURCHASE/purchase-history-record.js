@@ -1,40 +1,24 @@
-import { BiRupee, BiBarcodeReader } from 'react-icons/bi';
-import { FcCalendar } from 'react-icons/fc';
-import { AiOutlineDelete } from 'react-icons/ai';
+import { BiRupee } from 'react-icons/bi';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ContextData from '../../context/MainContext';
-import DatePicker from "react-datepicker";
-import useScanDetection from 'use-scan-detection';
-import { Checkbox } from '@chakra-ui/react';
-// import ReactToPrint from 'react-to-print';
-
 import "react-datepicker/dist/react-datepicker.css";
-import URLDomain from '../../URL';
 
 
 const PurchaseHistoryRecord = () => {
 
     const { orderID } = useParams();
     const { vendorID } = useParams();
-    const componentRef = useRef();
 
-    const { store_vendor_list, store_vendor_purchase_record, store_vendor_purchase_record_products, storeProductsData, store_login_user } = useContext(ContextData);
+    const { store_vendor_list, store_vendor_purchase_record, store_vendor_purchase_record_products } = useContext(ContextData);
     const [store_vendor_purchase_record_data, setstore_vendor_purchase_record_data] = useState([]);
 
     const [selectedVendor, setSelectedVendor] = useState({});
     const [addedItems, setAddedItems] = useState([]);
 
 
-
-
-
     useEffect(() => {
-
-
-        console.log('order_id', orderID)
-        console.log('vendor_id', vendorID)
 
         const newstore_vendor_purchase_record = store_vendor_purchase_record.filter(obj => obj.order_id == orderID)
         const newstore_vendor_list = store_vendor_list.filter(obj => obj.id == vendorID)
@@ -43,14 +27,7 @@ const PurchaseHistoryRecord = () => {
         setSelectedVendor(newstore_vendor_list[0])
         setAddedItems(items_purchase_record)
 
-
     }, [store_vendor_purchase_record]);
-
-
-
-
-
-
 
 
     return (

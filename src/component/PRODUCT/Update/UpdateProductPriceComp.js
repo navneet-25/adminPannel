@@ -1,28 +1,26 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import URL from '../../../URL';
 import Cookies from 'universal-cookie';
-import ContextData from '../../../context/MainContext'; 
+import ContextData from '../../../context/MainContext';
 import Alert from 'react-bootstrap/Alert';
+import { useToast } from '@chakra-ui/react';
 import ReactJSBarcode from 'react-jsbarcode';
 const cookies = new Cookies();
 
 export const UpdateProductPriceComp = (EditProductData) => {
 
-    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
+    const { reloadData } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
-
-
-
+    const toast = useToast();
     const adminStoreId = cookies.get("adminStoreId");
-    const adminStoreType = cookies.get("adminStoreType");
     const adminId = cookies.get("adminId");
 
- 
+
     const [productDetails, setproductDetails] = useState({
         'store_id': adminStoreId,
-        'id':0,
+        'id': 0,
         'product_name': '',
-        'purchase_price':0,
+        'purchase_price': 0,
         'price': 0,
         'discount_in_percent': 0,
         'discount_in_rs': 0,
@@ -36,14 +34,26 @@ export const UpdateProductPriceComp = (EditProductData) => {
 
     });
 
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
+
+
     useEffect(() => {
         // console.log("productDetails",EditProductData)
-        setproductDetails({...EditProductData.productDetails  });
+        setproductDetails({ ...EditProductData.productDetails });
         // console.log("hey naveet", editablePlot);
     }, [EditProductData.productDetails])
 
 
-  
+
     const setBarCode = (value) => {
         value && setproductDetails({ ...productDetails, product_bar_code: value });
         /* if (value = " ") {
@@ -75,17 +85,17 @@ export const UpdateProductPriceComp = (EditProductData) => {
 
         let DisInPerc = Math.round(((productDetails.price - productDetails.sale_price) * 100) / productDetails.price)
 
-      if (productDetails.price == 0) {
+        if (productDetails.price == 0) {
             getToast({ title: "Product Price Requird", dec: "Requird", status: "error" });
         }
-      
+
         else {
 
 
             setIL(true);
             const formData = new FormData();
 
-          
+
             formData.append('id', productDetails.id)
             formData.append('store_id', productDetails.store_id)
             formData.append('adminId', adminId)
@@ -100,7 +110,7 @@ export const UpdateProductPriceComp = (EditProductData) => {
             formData.append('c_gst', productDetails.c_gst)
             formData.append('s_gst', productDetails.s_gst)
             formData.append('margin_in_rs', productDetails.margin_in_rs)
-            formData.append('product_name', productDetails.product_name+ " "+productDetails.product_size+" "+productDetails.product_unit)
+            formData.append('product_name', productDetails.product_name + " " + productDetails.product_size + " " + productDetails.product_unit)
 
 
 
@@ -118,9 +128,9 @@ export const UpdateProductPriceComp = (EditProductData) => {
 
                         getToast({ title: "Price Updated ", dec: "Successful", status: "success" });
                         reloadData();
- 
+
                     } else {
-                      
+
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "error", dec: "error", status: "error" });
                         reloadData();
@@ -129,31 +139,31 @@ export const UpdateProductPriceComp = (EditProductData) => {
                     setproductDetails([])
                     setproductDetails(
                         {
-                        // 'store_id': adminStoreId,
-                        // 'product_name': '',
-                        // 'product_uniq_slug_name': '',
-                        // 'product_image': { length: 0 },
-                        // 'product_type': adminStoreType,
-                        // 'parent_category_id': '',
-                        // 'category_id': '',
-                        // 'brand_id': '',
-                        // 'price': 0,
-                        // 'discount_in_percent': 0,
-                        // 'discount_in_rs': 0,
-                        // 'sale_price': 0,
-                        // 'product_unit': '',
-                        // 'product_size': '',
-                        // 'product_bar_code': '',
-                        // 'deceptions': '',
-                        // 'hsn_code': '',
-                        // 'i_gst': 0,
-                        // 'c_gst': 0,
-                        // 's_gst': 0,
-                        // 'margin_in_rs': '',
-                    }
-                        
+                            // 'store_id': adminStoreId,
+                            // 'product_name': '',
+                            // 'product_uniq_slug_name': '',
+                            // 'product_image': { length: 0 },
+                            // 'product_type': adminStoreType,
+                            // 'parent_category_id': '',
+                            // 'category_id': '',
+                            // 'brand_id': '',
+                            // 'price': 0,
+                            // 'discount_in_percent': 0,
+                            // 'discount_in_rs': 0,
+                            // 'sale_price': 0,
+                            // 'product_unit': '',
+                            // 'product_size': '',
+                            // 'product_bar_code': '',
+                            // 'deceptions': '',
+                            // 'hsn_code': '',
+                            // 'i_gst': 0,
+                            // 'c_gst': 0,
+                            // 's_gst': 0,
+                            // 'margin_in_rs': '',
+                        }
+
                     )
-                 
+
 
                     for (let i = 0; i < 10; i++) {
                         document.getElementsByClassName("btn-close")[i].click();
@@ -176,7 +186,7 @@ export const UpdateProductPriceComp = (EditProductData) => {
     const setSalePricing = (value) => {
         setproductDetails({ ...productDetails, sale_price: value })
     }
- 
+
 
 
 
@@ -185,16 +195,16 @@ export const UpdateProductPriceComp = (EditProductData) => {
             <div className="row">
 
                 <div className="col-md-12 my-2 bg-light p-2">
-               
-               <h5 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} </h5>
-                   
-                
-                
+
+                    <h5 className=' text-dark'>  {productDetails.product_name} {productDetails.product_size} {productDetails.product_unit} </h5>
+
+
+
                 </div>
 
                 <div className="col-md-12">
                     <div className='row'>
-                    <div className='col-sm-6'>
+                        <div className='col-sm-6'>
                             <div className="mb-3">
                                 <label htmlFor="compnayNameinput" className="form-label">Purchase Price</label>
                                 <input type="number" onChange={e => setproductDetails({ ...productDetails, purchase_price: e.target.value })} value={productDetails.purchase_price} className="form-control" placeholder="Purchase" id="compnayNameinput" />
@@ -209,7 +219,7 @@ export const UpdateProductPriceComp = (EditProductData) => {
                             </div>
 
                         </div>
-                       
+
                     </div>
 
 
@@ -217,7 +227,7 @@ export const UpdateProductPriceComp = (EditProductData) => {
 
                 <div className="col-md-12">
                     <div className='row'>
-                       
+
                         <div className='col-sm-6'>
                             <div className="mb-3">
                                 <label htmlFor="compnayNameinput" className="form-label">Discount in Rs </label>
@@ -310,7 +320,7 @@ export const UpdateProductPriceComp = (EditProductData) => {
                     </div>
                 </div>
 
-            
+
 
 
                 <div className="col-lg-12">

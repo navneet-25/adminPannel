@@ -8,10 +8,8 @@ const cookies = new Cookies();
 
 const Header = () => {
 
-    const { logOut, auth, user } = useContext(ContextData);
+    const { logOut, auth } = useContext(ContextData);
     const data = useContext(ContextData);
-
-    console.log("main all data", data);
 
 
     if (!auth.isUserLogin && !cookies.get("adminId")) {
@@ -41,6 +39,14 @@ const Header = () => {
                                     </span>
                                 </a>
                             </div>
+                            <button type="button" className="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
+                                <span className="hamburger-icon">
+                                    <span />
+                                    <span />
+                                    <span />
+                                </span>
+                            </button>
+
                             {/* <button type="button" className="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
                                 <span className="hamburger-icon">
                                     <span />
@@ -325,14 +331,14 @@ const Header = () => {
                                     <span className="d-flex align-items-center">
                                         <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-1.jpg" alt="Header Avatar" />
                                         <span className="text-start ms-xl-2">
-                                            <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{user.user_info.name}</span>
-                                            <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{user.user_info.role}</span>
+                                            {/* <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{user.user_info.name}</span>
+                                            <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{user.user_info.role}</span> */}
                                         </span>
                                     </span>
                                 </button>
                                 <div className="dropdown-menu dropdown-menu-end">
                                     {/* item*/}
-                                    <h6 className="dropdown-header">Welcome {user.user_info.name}!</h6>
+                                    {/* <h6 className="dropdown-header">Welcome {user.user_info.name}!</h6> */}
                                     <Link className="dropdown-item" to="/profile"><i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1" /> <span className="align-middle">Profile</span></Link>
                                     <div className="dropdown-item" onClick={logOut}><i className="mdi mdi-logout text-muted fs-16 align-middle me-1" /> <span className="align-middle" data-key="t-logout">Logout</span></div>
                                 </div>
