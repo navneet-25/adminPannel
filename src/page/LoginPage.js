@@ -104,7 +104,7 @@ const LoginPage = () => {
                                     <div>
                                         <h2 className="d-inline-block text-light" style={{ fontSize: 26 }}>
                                             {/* <img src="assets/images/logo-light.png" alt="" height={20} /> */}
-                                            SuperG.in
+                                            Mart Pay
                                         </h2>
                                     </div>
                                     <p className="mt-3 fs-15 fw-medium">Admin Login</p>

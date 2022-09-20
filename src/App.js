@@ -56,6 +56,7 @@ const App = () => {
   const { isLoading } = useContext(ContextData);
   const adminId = cookies.get("adminId");
 
+  // console.log("admin",adminId)
   if (isLoading && adminId) {
     return (
       <Loading />
