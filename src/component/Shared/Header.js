@@ -11,6 +11,11 @@ const Header = () => {
     const { logOut, auth } = useContext(ContextData);
     const data = useContext(ContextData);
 
+    const ExpandSlider = () => {
+        sessionStorage.setItem("data-sidebar-size", "sm");
+        sessionStorage.setItem("defaultAttribute", '{"lang":"en","data-layout":"vertical","data-topbar":"light","data-sidebar":"dark","data-sidebar-size":"sm"}');
+    }
+
 
     if (!auth.isUserLogin && !cookies.get("adminId")) {
         return <Navigate to="/login" />;
@@ -39,7 +44,7 @@ const Header = () => {
                                     </span>
                                 </a>
                             </div>
-                            <button type="button" className="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
+                            <button type="button" onClick={ExpandSlider} className="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
                                 <span className="hamburger-icon">
                                     <span />
                                     <span />

@@ -1,15 +1,16 @@
 import { BiRupee, BiBarcodeReader } from 'react-icons/bi';
 import { FcCalendar } from 'react-icons/fc';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import ContextData from '../../context/MainContext';
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import useScanDetection from 'use-scan-detection';
-import { Checkbox } from '@chakra-ui/react'
-
+import { Checkbox } from '@chakra-ui/react';
+import ReactToPrint from 'react-to-print';
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from '../../URL';
+
 
 
 export const Sale = () => {
@@ -40,6 +41,8 @@ export const Sale = () => {
         notes: "",
         stock_location: 'Store'
     });
+    const componentRef = useRef();
+
 
     useEffect(() => {
         setAllProducts(storeProductsData);
@@ -49,16 +52,28 @@ export const Sale = () => {
     useScanDetection({
         onComplete: (code) => {
             const prod = allProducts?.find(o => o.product_bar_code == code);
-            const allReadyExist = addedItems.some(elem => elem.product_bar_code === code);
+            const allReadyExist = addedItems.find(elem => elem.product_bar_code === code);
             const index = addedItems.findIndex(elem => elem.product_bar_code === code);
-            !allReadyExist ? setAddedItems([...addedItems, { ...prod, billing_quantity: 1, amount_total: prod.sale_price }]) : setAddedItems(previousState => {
+            const updatedProduct = [...addedItems];
+            if (allReadyExist) {
+                let obj = updatedProduct[index];
+                if (obj !== undefined) {
+                    obj.billing_quantity++; // <-- state mutation
+                    obj.amount_total = Number(obj.billing_quantity) * Number(obj?.sale_price);
+                }
+            }
+            !allReadyExist ? setAddedItems([...addedItems, { ...prod, billing_quantity: 1, amount_total: prod?.sale_price }]) : setAddedItems(
+                [...updatedProduct]
+            );
+            /* previousState => {
                 let obj = previousState[index];
                 if (obj !== undefined) {
-                    obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
+                    obj.billing_quantity++; // <-- state mutation
                     obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);
+                    console.log("Quantity Scan ---->", obj.billing_quantity);
                 }
                 return [...previousState];
-            });
+            } */
         },
     });
 
@@ -132,6 +147,7 @@ export const Sale = () => {
             if (obj !== undefined) {
                 obj.billing_quantity = Number(obj.billing_quantity || 0) + 1; // <-- state mutation
                 obj.amount_total = Number(obj.billing_quantity) * Number(obj.sale_price);
+                console.log("Quantity Scan ---->", obj.billing_quantity);
             }
             return [...previousState];
         });
@@ -152,7 +168,16 @@ export const Sale = () => {
         // console.log("new arrya --->", newArr);
         newArr = newArr.filter(item => item);
         setAddedItems(newArr)
-    }
+    };
+
+    const Print = () => {
+        console.log('print');
+        let printContents = document.getElementById('section-to-print').innerHTML;
+        let originalContents = document.getElementsByClassName("main-content").innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    };
 
     const deleteFeild = index => {
         let newArr = [...addedItems];
@@ -161,11 +186,7 @@ export const Sale = () => {
         setAddedItems(newArr);
     }
 
-    const submitSale = (adminId) => {
-
-
-
-
+    const submitSale = () => {
         const data = JSON.stringify({
 
 
@@ -247,29 +268,8 @@ export const Sale = () => {
                                         <div className="row py-4 mb-4 border-bottom align-items-center">
                                             <div className="col-lg-8 px-4" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                 <div className="row">
-                                                    <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1", zIndex: 999999 }}>
+                                                    <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                         <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
-                                                        {/* <Multiselect
-                                                            // singleSelect={true}
-                                                            keepSearchTerm={true}
-                                                            selectionLimit={1}
-                                                            displayValue="mobile"
-                                                            onSearch={function noRefCheck(e) {
-                                                                if (e.length == 10) {
-                                                                    setCustomerList([...customerList, { mobile: e }]);
-                                                                    setSelectCustomer({ mobile: e })
-                                                                } else console.log("hey therer ->>>", getAllVendorsRef)
-                                                            }}
-                                                            onRemove={(e) => {
-                                                                setSelectCustomer(e[0])
-                                                            }}
-                                                            onSelect={(e) => {
-                                                                setSelectCustomer(e[0])
-                                                            }}
-
-                                                            options={customerList}
-                                                            ref={getAllVendorsRef}
-                                                        /> */}
                                                         <div>
                                                             <datalist id="suggestions" onSelect={e => console.log("heyeyyeyeye ---->", e)}>
                                                                 {customerList?.map((customers, index) => {
@@ -307,9 +307,8 @@ export const Sale = () => {
                                                             items={allProducts}
                                                             className="form-control search bg-light border-light"
                                                             onSelect={handleOnSelect}
-                                                            autoFocus
                                                             styling={{
-                                                                zIndex: "9999"
+                                                                zIndex: "1"
                                                             }}
                                                             fuseOptions={{ keys: ["product_name", "product_bar_code", "product_full_name"] }}
                                                             resultStringKeyName="product_full_name"
@@ -416,6 +415,10 @@ export const Sale = () => {
                                                 </div>
                                                 <div className="py-3 px-5 mt-5">
                                                     <button type="button" onClick={submitSale} class="btn btn-success waves-effect waves-light w-100 ">Submit</button>
+                                                    <ReactToPrint
+                                                        trigger={() => <button type="button" class="btn btn-warning waves-effect waves-light w-100 mt-3">Print</button>}
+                                                        content={() => componentRef.current}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="col-md-6 px-0 py-3" style={{ borderLeft: "1px solid #d9d9d9" }}>
@@ -468,7 +471,93 @@ export const Sale = () => {
                 </div>
                 {/* end col */}
             </div>
+            <div id='section-to-print' ref={componentRef}>
+                <div className='POS_header'>
+                    <div id="logo" class="media" data-src="logo.png" src="./logo.png"></div>
 
+                </div>
+                <p>GST Number : 9898989898989898</p>
+                <table class="bill-details">
+                    <tbody>
+                        <tr>
+                            <td>Date : <span>1</span></td>
+                            <td>Time : <span>2</span></td>
+                        </tr>
+                        <tr>
+                            <td>Table #: <span>3</span></td>
+                            <td>Bill # : <span>4</span></td>
+                        </tr>
+                        <tr>
+                            <th class="center-align" colspan="2"><span class="receipt">Original Receipt</span></th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="items">
+                    <thead>
+                        <tr>
+                            <th class="heading name">Item</th>
+                            <th class="heading qty">Qty</th>
+                            <th class="heading rate">Rate</th>
+                            <th class="heading amount">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Chocolate milkshake frappe</td>
+                            <td>1</td>
+                            <td class="price">200.00</td>
+                            <td class="price">200.00</td>
+                        </tr>
+                        <tr>
+                            <td>Non-Veg Focaccoa S/W</td>
+                            <td>2</td>
+                            <td class="price">300.00</td>
+                            <td class="price">600.00</td>
+                        </tr>
+                        <tr>
+                            <td>Classic mojito</td>
+                            <td>1</td>
+                            <td class="price">800.00</td>
+                            <td class="price">800.00</td>
+                        </tr>
+                        <tr>
+                            <td>Non-Veg Ciabatta S/W</td>
+                            <td>1</td>
+                            <td class="price">500.00</td>
+                            <td class="price">500.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="sum-up line">Subtotal</td>
+                            <td class="line price">12112.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="sum-up">CGST</td>
+                            <td class="price">10.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="sum-up">SGST</td>
+                            <td class="price">10.00</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3" class="total text">Total</th>
+                            <th class="total price">12132.00</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <section>
+                    <p>
+                        Paid by : <span>CASH</span>
+                    </p>
+                    <p style={{ textAlign: "center" }}>
+                        Thank you for your visit...!
+                    </p>
+                </section>
+                <div className='POS_footer' style={{ textAlign: "center" }}>
+                    <p>Superg.in</p>
+                </div>
+            </div>
         </>
     )
 

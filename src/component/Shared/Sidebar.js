@@ -9,7 +9,7 @@ const Sidebar = () => {
     const navigate = useNavigate();
     return (
         <>
-            <div className="app-menu navbar-menu">
+            <div className="app-menu navbar-menu" >
                 <div className="navbar-brand-box">
                     {/* Dark Logo*/}
                     <Link to="/" className="logo logo-dark">
@@ -58,7 +58,7 @@ const Sidebar = () => {
                                 </a>
                                 <div className="collapse menu-dropdown" id="billing-management">
                                     <ul className="nav nav-sm flex-column">
-                                       
+
                                         <li className="nav-item">
                                             <Link to="/billing/sale" className="nav-link" data-key="t-cover"> SALE
                                             </Link>
@@ -83,12 +83,12 @@ const Sidebar = () => {
                                             <Link to="/salesManagement/sales-history" className="nav-link" data-key="t-cover"> SALES HISTORY
                                             </Link>
                                         </li>
-                                        
+
                                         <li className="nav-item">
                                             <Link to="/salesManagement/customers" className="nav-link" data-key="t-cover"> CUSTOMER
                                             </Link>
                                         </li>
-                                      
+
                                     </ul>
                                 </div>
                             </li>
@@ -157,7 +157,7 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
-                           
+
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
 
                             <li className="nav-item">
