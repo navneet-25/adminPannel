@@ -8,7 +8,7 @@ const cookies = new Cookies();
 
 export const UpdateProductStockComp = (EditProductData) => {
 
-    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
+    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, storeProductRelode } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
 
 
@@ -85,13 +85,13 @@ export const UpdateProductStockComp = (EditProductData) => {
                     if (responseJson.success) {
 
                         getToast({ title: "Stock Updated ", dec: "Successful", status: "success" });
-                        reloadData();
+                        storeProductRelode();
  
                     } else {
                       
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "error", dec: "error", status: "error" });
-                        reloadData();
+                        storeProductRelode();
                     }
                     setIL(false);
                     setproductDetails([])

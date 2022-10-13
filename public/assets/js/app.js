@@ -1,7 +1,7 @@
 !function () {
     function B(e) {
         if (e == e) {
-            alert("all wokring good")
+            // alert("all wokring good")
             switch (e["data-layout"]) {
                 case "vertical":
                     z("data-layout", "vertical"),
@@ -513,7 +513,7 @@
     }
     function B(e) {
         if (e == e) {
-            alert("all wokring good")
+            // alert("all wokring good")
             switch (e["data-layout"]) {
                 case "vertical":
                     z("data-layout", "vertical"),

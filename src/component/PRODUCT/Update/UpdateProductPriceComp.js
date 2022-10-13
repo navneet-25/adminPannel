@@ -9,7 +9,7 @@ const cookies = new Cookies();
 
 export const UpdateProductPriceComp = (EditProductData) => {
 
-    const { reloadData } = useContext(ContextData);
+    const { storeProductRelode } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
     const toast = useToast();
     const adminStoreId = cookies.get("adminStoreId");
@@ -127,13 +127,13 @@ export const UpdateProductPriceComp = (EditProductData) => {
                     if (responseJson.success) {
 
                         getToast({ title: "Price Updated ", dec: "Successful", status: "success" });
-                        reloadData();
+                        storeProductRelode();
 
                     } else {
 
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "error", dec: "error", status: "error" });
-                        reloadData();
+                        storeProductRelode();
                     }
                     setIL(false);
                     setproductDetails([])

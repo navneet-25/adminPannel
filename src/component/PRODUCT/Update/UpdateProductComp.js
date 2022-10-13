@@ -5,12 +5,15 @@ import ContextData from '../../../context/MainContext';
 // import ImageUploader from 'react-images-upload';
 import Multiselect from 'multiselect-react-dropdown';
 import ReactJSBarcode from 'react-jsbarcode';
+import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
 export const UpdateProductComp = (EditProductData) => {  
 
-    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
+    const toast = useToast();
+
+    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal,  storeProductRelode } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
 
     const getSelectedBrandsRef = useRef(null);
@@ -61,6 +64,18 @@ export const UpdateProductComp = (EditProductData) => {
 
 
     });
+
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
+
     useEffect(() => {
         // console.log("productDetails",EditProductData)
         setproductDetails({...EditProductData.productDetails  });
@@ -211,13 +226,13 @@ export const UpdateProductComp = (EditProductData) => {
                     if (responseJson.success) {
 
                         getToast({ title: " Updated ", dec: "Successful", status: "success" });
-                        reloadData();
+                        storeProductRelode();
  
                     } else {
                       
                         // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "error", dec: "error", status: "error" });
-                        reloadData();
+                        storeProductRelode();
                     }
                     setIL(false);
                     setproductDetails(

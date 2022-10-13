@@ -14,6 +14,10 @@ import { Col, Row, Table } from "react-bootstrap";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
+import Dropdown from 'react-bootstrap/Dropdown';
+import swal from 'sweetalert';
+
+import { useToast } from '@chakra-ui/react';
 
 import {
     DatatableWrapper,
@@ -30,12 +34,13 @@ import {
 
 
 const CategoryManagement = () => {
-    const { storeCategoryData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
+    const { storeCategoryData, storeCategoryRelode} = useContext(ContextData);
     const [delID, setDelID] = useState(false);
     const [editablePlot, setEditablePlot] = useState({});
     const [showData, setShowData] = useState(storeCategoryData);
     const navigate = useNavigate();
 
+    const toast = useToast();
 
 
     useEffect(() => {
@@ -48,14 +53,28 @@ const CategoryManagement = () => {
 
     };
 
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
+
 
     const [checked, setChecked] = useState(false);
     const [radioValue, setRadioValue] = useState('1');
 
     const radios = [
-        { name: 'Parent Category', value: '1' },
-        { name: 'Child Category', value: '2' },
+        { name: 'Parent Category', value: '1',variant:'primary' },
+        { name: 'Child Category', value: '2',variant:'dark' },
+        { name: 'Active', value: '3' ,variant:'success'},
+        { name: 'Not Active', value: '4',variant:'danger' },
     ];
+
 
 
     const STORY_HEADERS = [
@@ -117,7 +136,7 @@ const CategoryManagement = () => {
 
 
         {
-            prop: "product",
+            prop: "product", 
             title: "Product",
             cell: (row) => {
 
@@ -137,54 +156,194 @@ const CategoryManagement = () => {
 
         },
         {
-            prop: "dsd",
+            prop: "status",
             title: "Status",
+            isSortable: true,
+            
+            cell: (row) => { 
 
-            cell: (row) => {
-
-                if (row.status == 1) {
+                if (row.category_level == 0) {
                     return (
-                        <button className="btn btn-success" onClick={ChangeStatus}> Active   </button>
-
+                        <Dropdown>
+                            <Dropdown.Toggle variant={row.status==1?'success':'danger'} id="dropdown-basic">
+                            {row.status==1?'Active':'Not Active'}
+                            </Dropdown.Toggle>
+    
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => deleteAction2(row.master_category_id, row.category_name ,row.status)}  >{row.status==1?'Make Not Active':'Make Active'}</Dropdown.Item>
+                               
+                            </Dropdown.Menu>
+                        </Dropdown>
+    
                     );
                 }
                 else {
-                    <button className="btn btn-danger" onClick={ChangeStatus} > InActive   </button>
+
+                    return (
+                        <Dropdown>
+                            <Dropdown.Toggle variant={row.status==1?'success':'danger'} id="dropdown-basic">
+                            {row.status==1?'Active':'Not Active'}
+                            </Dropdown.Toggle>
+    
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => deleteAction(row.master_category_id, row.category_name ,row.status)}  >{row.status==1?'Make Not Active':'Make Active'}</Dropdown.Item>
+                               
+                            </Dropdown.Menu>
+                        </Dropdown>
+    
+                    );
                 }
 
+              
             }
         },
     ];
 
-    const deletePlot = () => {
-        console.log("kit kat", delID);
-        fetch(URLDomain + "/APP-API/App/deletePlot", {
-            method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: delID
-            })
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log("respond", responseJson)
-                if (responseJson.deleted) {
-                    removeDataToCurrentGlobal({ type: "storeCategoryData", payload: delID, where: "id" });
-                    getToast({ title: "Plot Deleted", dec: "", status: "error" });
+    const deleteAction2 = (master_category_id, product_name,status) => {
+
+        var statusAction = '';
+        var statusModified=null;
+        if(Number(status)==1){
+            statusAction='Not Active';
+            statusModified=0;
+        }else{
+            statusAction='Active';
+            statusModified=1;
+        }
+
+        
+
+
+        swal({
+            title: "Action | "+statusAction+" | to "+product_name,
+            text: "All prodcut will be | "+statusAction+" | of  "+product_name,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((deleteProductFromStore) => {
+
+
+
+                if (deleteProductFromStore) {
+
+                    console.log("status",statusModified)
+
+                    fetch(URLDomain + "/APP-API/Billing/changeStoreMasterCategoryStatus", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            master_category_id: master_category_id,
+                            statusModified: statusModified
+                        })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+                            if (responseJson.success) {
+
+                                storeCategoryRelode();
+
+                                getToast({ title: "Status Change ", dec: "Successful", status: "success" });
+
+                            } else {
+                                getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                            }
+
+                            for (let i = 0; i < 10; i++) {
+                                document.getElementsByClassName("btn-close")[i].click();
+                            }
+                        })
+                        .catch((error) => {
+                            //  console.error(error); 
+                        });
+
+
+
+
+                    swal("Status Change!", {
+                        icon: "success",
+                    });
                 } else {
-                    alert("Error");
+                    swal("Nothing Change!");
                 }
-                for (let i = 0; i < 10; i++) {
-                    document.getElementsByClassName("btn-close")[i].click();
-                }
-            })
-            .catch((error) => {
-                //  console.error(error);
             });
+
     }
 
+    const deleteAction = (master_category_id, product_name,status) => {
+
+        var statusAction = '';
+        var statusModified=null;
+        if(Number(status)==1){
+            statusAction='Not Active';
+            statusModified=0;
+        }else{
+            statusAction='Active';
+            statusModified=1;
+        }
+
+        
+
+
+        swal({
+            title: "Action | "+statusAction+" | to "+product_name,
+            text: "All prodcut will be | "+statusAction+" | of  "+product_name,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((deleteProductFromStore) => {
+
+
+
+                if (deleteProductFromStore) {
+
+                    console.log("status",statusModified)
+
+                    fetch(URLDomain + "/APP-API/Billing/changeStoreCategoryStatus", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            master_category_id: master_category_id,
+                            statusModified: statusModified
+                        })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+                            if (responseJson.success) {
+
+                                storeCategoryRelode();
+
+                                getToast({ title: "Status Change ", dec: "Successful", status: "success" });
+
+                            } else {
+                                getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                            }
+
+                            for (let i = 0; i < 10; i++) {
+                                document.getElementsByClassName("btn-close")[i].click();
+                            }
+                        })
+                        .catch((error) => {
+                            //  console.error(error); 
+                        });
+
+
+
+
+                    swal("Status Change!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Nothing Change!");
+                }
+            });
+
+    }
 
     const changeCategory = (value) => {
         setRadioValue(value)
@@ -195,12 +354,37 @@ const CategoryManagement = () => {
             setShowData(newParentData);
 
         }
-        else {
+        else  if (value == 2) {
             const newChildData = storeCategoryData.filter(obj => obj.category_level != 0)
+            setShowData(newChildData);
+        }
+        else  if (value == 3) {
+            const newChildData = storeCategoryData.filter(obj => obj.status ==1)
+            setShowData(newChildData);
+        }
+        else  if (value == 4) {
+            const newChildData = storeCategoryData.filter(obj =>  obj.status ==0)
             setShowData(newChildData);
         }
 
     }
+
+
+    // const changeStatusData = (value) => {
+    //     setRadioValue1(value)
+
+
+    //     if (value == 1) {
+    //         const newParentData = storeCategoryData.filter(obj => obj.status == 1)
+    //         setShowData(newParentData);
+
+    //     }
+    //     else {
+    //         const newChildData = storeCategoryData.filter(obj => obj.status != 0)
+    //         setShowData(newChildData);
+    //     }
+
+    // }
 
     return (
         <>
@@ -235,11 +419,13 @@ const CategoryManagement = () => {
                                 <div className="list-grid-nav hstack gap-1">
                                     <ButtonGroup>
                                         {radios.map((radio, idx) => (
+
+                                        
                                             <ToggleButton
                                                 key={idx}
                                                 id={`radio-${idx}`}
                                                 type="radio"
-                                                variant={idx % 2 ? 'outline-success' : 'outline-danger'}
+                                                variant={'outline-'+radio.variant}
                                                 name="radio"
                                                 value={radio.value}
                                                 checked={radioValue === radio.value}
@@ -251,6 +437,9 @@ const CategoryManagement = () => {
                                     </ButtonGroup>
                                 </div>
                             </div>{/*end col*/}
+                            
+
+                          
 
 
                             <div className="col-sm-auto ms-auto">

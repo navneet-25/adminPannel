@@ -9,7 +9,11 @@ import { ImportNewBrand } from "./Import/import-new-brand";
 
 // import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
-
+import Dropdown from 'react-bootstrap/Dropdown';
+import swal from 'sweetalert';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import { useToast } from '@chakra-ui/react';
 
 import {
     DatatableWrapper,
@@ -22,14 +26,39 @@ import {
 
 // Create table headers consisting of 4 columns.
 
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 
 const BrandManagement = () => { 
-    const { storeBrandsData, removeDataToCurrentGlobal, getToast } = useContext(ContextData);
+    const { storeBrandsData, removeDataToCurrentGlobal, storeBrandRelode} = useContext(ContextData);
     const [delID, setDelID] = useState();
     const [editablePlot, setEditablePlot] = useState({});
     const [showData, setShowData] = useState(storeBrandsData);
     const navigate = useNavigate();
+    const adminStoreId = cookies.get("adminStoreId");
+    const adminId = cookies.get("adminId");
+    const toast = useToast();
+
+    const [radioValue1, setRadioValue1] = useState('1');
+
+    const radios1 = [
+        { name: 'Active', value: '1' },
+        { name: 'Not Active', value: '2' },
+    ];
+
+
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
 
 
     useEffect(() => {
@@ -56,46 +85,128 @@ const BrandManagement = () => {
             }
         },
         {
-            prop: "Action",
-            title: "Action",
+            prop: "Product",
+            title: "Product",
             isSortable: true,
             
             cell: (row) => { 
                 return (
                     <button onClick={() => navigate("/productManagement/product-by-brand/"+row.master_brand_id+"/"+row.brand_name)} className="btn btn-dark" > Products   </button>
-    
+     
+                );
+            }
+        }, 
+        {
+            prop: "status",
+            title: "Status",
+            isSortable: true,
+            
+            cell: (row) => { 
+                return (
+                    <Dropdown>
+                        <Dropdown.Toggle variant={row.status==1?'success':'danger'} id="dropdown-basic">
+                        {row.status==1?'Active':'Not Active'}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => deleteAction(row.master_brand_id, row.brand_name ,row.status)}  >{row.status==1?'Make Not Active':'Make Active'}</Dropdown.Item>
+                           
+                        </Dropdown.Menu>
+                    </Dropdown>
+
                 );
             }
         },
     ];
 
-    const deletePlot = () => {
-        console.log("kit kat", delID);
-        fetch(URLDomain + "/APP-API/App/deletePlot", {
-            method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: delID
-            })
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log("respond", responseJson)
-                if (responseJson.deleted) {
-                    removeDataToCurrentGlobal({ type: "storeBrandsData", payload: delID, where: "id" });
-                    getToast({ title: "Plot Deleted", dec: "", status: "error" });
+
+    const deleteAction = (master_brand_id, product_name,status) => {
+
+        var statusAction = '';
+        var statusModified=null;
+        if(Number(status)==1){
+            statusAction='Not Active';
+            statusModified=0;
+        }else{
+            statusAction='Active';
+            statusModified=1;
+        }
+
+        
+
+
+        swal({
+            title: "Action | "+statusAction+" | to "+product_name,
+            text: "All prodcut will be | "+statusAction+" | of  "+product_name,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((deleteProductFromStore) => {
+
+
+
+                if (deleteProductFromStore) {
+
+                    console.log("status",statusModified)
+
+                    fetch(URLDomain + "/APP-API/Billing/changeStoreBrandStatus", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            master_brand_id: master_brand_id,
+                            statusModified: statusModified
+                        })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+                            if (responseJson.success) {
+
+                                storeBrandRelode();
+
+                                getToast({ title: "Status Change ", dec: "Successful", status: "success" });
+
+                            } else {
+                                getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                            }
+
+                            for (let i = 0; i < 10; i++) {
+                                document.getElementsByClassName("btn-close")[i].click();
+                            }
+                        })
+                        .catch((error) => {
+                            //  console.error(error); 
+                        });
+
+
+
+
+                    swal("Status Change!", {
+                        icon: "success",
+                    });
                 } else {
-                    alert("Error");
+                    swal("Nothing Change!");
                 }
-                for (let i = 0; i < 10; i++) {
-                    document.getElementsByClassName("btn-close")[i].click();
-                }
-            })
-            .catch((error) => {
-                //  console.error(error);
             });
+
+    }
+
+    const changeStatusData = (value) => {
+        setRadioValue1(value)
+
+
+        if (value == 1) {
+            const newParentData = storeBrandsData.filter(obj => obj.status == 1)
+            setShowData(newParentData);
+
+        }
+        else {
+            const newChildData = storeBrandsData.filter(obj => obj.status == 0)
+            setShowData(newChildData);
+        }
+
     }
 
 
@@ -112,6 +223,27 @@ const BrandManagement = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="row g-2">
+
+                        <div className="col-sm-auto ">
+                                <div className="list-grid-nav hstack gap-1">
+                                    <ButtonGroup>
+                                        {radios1.map((radio, idx) => (
+                                            <ToggleButton
+                                                key={idx}
+                                                id={`radio-${idx}`}
+                                                type="radio"
+                                                variant={idx % 2 ? 'outline-danger' : 'outline-success'}
+                                                name="radio"
+                                                value={radio.value}
+                                                checked={radioValue1 === radio.value}
+                                                onChange={(e) => changeStatusData(e.currentTarget.value)}
+                                            >
+                                                {radio.name}
+                                            </ToggleButton>
+                                        ))}
+                                    </ButtonGroup>
+                                </div>
+                            </div>{/*end col*/}
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">

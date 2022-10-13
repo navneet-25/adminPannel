@@ -25,9 +25,88 @@ const ContextProvider = props => {
     
         // letsCheck(store_id, MainData.adminId);
         fetchIntialData(store_id, MainData.adminId);
+    }
 
+
+    const storeBrandRelode = () => {
+
+          const store_id = cookies.get("adminStoreId");
+          const adminId =  MainData.adminId;
+           fetch(URL + "/APP-API/Reload/StoreBrand", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({ store_id, adminId  })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+
+                            functionality.fetchAllData({ ...responseJson })
+                       
+                        })
+                        .catch((error) => {
+                          
+                        });
+
+                        storeProductRelode()
 
     }
+
+    
+
+    const storeCategoryRelode = () => {
+
+        const store_id = cookies.get("adminStoreId");
+        const adminId =  MainData.adminId;
+         fetch(URL + "/APP-API/Reload/StoreCategory", {
+                      method: 'POST',
+                      header: {
+                          'Accept': 'application/json',
+                          'Content-type': 'application/json'
+                      },
+                      body: JSON.stringify({ store_id, adminId  })
+                  }).then((response) => response.json())
+                      .then((responseJson) => {
+
+                          functionality.fetchAllData({ ...responseJson })
+                     
+                      })
+                      .catch((error) => {
+                        
+                      });
+
+                      storeProductRelode()
+
+  }
+
+  
+  const storeProductRelode = () => {
+
+    const store_id = cookies.get("adminStoreId");
+    const adminId =  MainData.adminId;
+     fetch(URL + "/APP-API/Reload/StoreProducts", {
+                  method: 'POST',
+                  header: {
+                      'Accept': 'application/json',
+                      'Content-type': 'application/json'
+                  },
+                  body: JSON.stringify({ store_id, adminId  })
+              }).then((response) => response.json())
+                  .then((responseJson) => {
+
+                      functionality.fetchAllData({ ...responseJson })
+                 
+                  })
+                  .catch((error) => {
+                    
+                  });
+
+
+}
+
+
+  
 
     const fetchIntialData = async(store_id, adminId) => {
 
@@ -87,7 +166,7 @@ const ContextProvider = props => {
             cookies.remove("adminStoreType");
             dispatch({ type: "LOGOUT" });
         },
-        reloadData,
+        reloadData,storeBrandRelode,storeCategoryRelode,storeProductRelode,
         getToast: (e) => {
             toast({
                 title: e.title,
