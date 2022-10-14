@@ -120,7 +120,8 @@ const ContextProvider = props => {
             'MasterProducts',
             'VendorInformation',
             'StockInformation',
-            'StoreInformation'
+            'StoreInformation',
+            'Store_bussiness_info'
         ];
           try{
 

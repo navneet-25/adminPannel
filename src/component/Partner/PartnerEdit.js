@@ -8,18 +8,18 @@ import { FaLinkedinIn, FaMapMarkedAlt } from 'react-icons/fa';
 
 const PartnerEdit = () => {
 
-    const { user, partner, isLoading } = useContext(ContextData);
+    const { user, Store_bussiness_info, isLoading } = useContext(ContextData);
 
-    const [partnerEdit, setPartner] = useState(partner);
+    const [Store_bussiness_infoEdit, setPartner] = useState(Store_bussiness_info);
     const [logo, setLogo] = useState();
     const [banner, setBanner] = useState();
 
     useEffect(() => {
-        setPartner(partner);
-    }, [partner]);
+        setPartner(Store_bussiness_info);
+    }, [Store_bussiness_info]);
 
     const update = () => {
-        console.log("kit kat", partnerEdit);
+        console.log("kit kat", Store_bussiness_infoEdit);
         fetch(URLDomain + "/APP-API/App/updatePartner", {
             method: 'POST',
             header: {
@@ -27,7 +27,7 @@ const PartnerEdit = () => {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                ...partnerEdit
+                ...Store_bussiness_infoEdit
             })
         }).then((response) => response.json())
             .then((responseJson) => {
@@ -51,7 +51,7 @@ const PartnerEdit = () => {
 
         logo ? formData.append(`file`, logo, logo.name) : formData.append("file", banner, banner.name);
         logo ? formData.append(`logo`, logo.name) : formData.append("banner", banner.name);
-        formData.append('bussiness_id', partner.bussiness_id);
+        formData.append('bussiness_id', Store_bussiness_info.bussiness_id);
 
         console.log("formdata", formData)
         fetch(URLDomain + "/APP-API/App/uploadImage", {
@@ -81,7 +81,7 @@ const PartnerEdit = () => {
             <div>
                 <div className="position-relative mx-n4 mt-n4">
                     <div className="profile-wid-bg profile-setting-img">
-                        <img src={banner ? URL.createObjectURL(banner) : URLDomain + "/APP-API/" + partner?.banner} className="profile-wid-img" alt="" />
+                        <img src={banner ? URL.createObjectURL(banner) : URLDomain + "/APP-API/" + Store_bussiness_info?.banner} className="profile-wid-img" alt="" />
                         <div className="overlay-content">
                             <div className="text-end p-3">
                                 <div className="p-0 ms-auto rounded-circle profile-photo-edit">
@@ -100,7 +100,7 @@ const PartnerEdit = () => {
                             <div className="card-body p-4">
                                 <div className="text-center">
                                     <div className="profile-user position-relative d-inline-block mx-auto  mb-4">
-                                        <img src={logo ? URL.createObjectURL(logo) : URLDomain + "/APP-API/" + partner?.logo} className="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image" />
+                                        <img src={logo ? URL.createObjectURL(logo) : URLDomain + "/APP-API/" + Store_bussiness_info?.logo} className="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image" />
                                         <div className="avatar-xs p-0 rounded-circle profile-photo-edit">
                                             <input id="profile-img-file-input" onChange={e => setLogo(e.target.files[0])} type="file" className="profile-img-file-input" />
                                             <label htmlFor="profile-img-file-input" className="profile-photo-edit avatar-xs">
@@ -110,7 +110,7 @@ const PartnerEdit = () => {
                                             </label>
                                         </div>
                                     </div>
-                                    <h5 className="fs-16 mb-1">{partner?.buss_name}</h5>
+                                    <h5 className="fs-16 mb-1">{Store_bussiness_info?.buss_name}</h5>
                                     <p className="text-muted mb-0">Property</p>
                                     {logo && <button type="button" onClick={updateImage} className="btn btn-primary mt-2">Upload Image</button>}
                                 </div>
@@ -121,11 +121,9 @@ const PartnerEdit = () => {
                             <div className="card-body">
                                 <div className="d-flex align-items-center mb-4">
                                     <div className="flex-grow-1">
-                                        <h5 className="card-title mb-0">Portfolio</h5>
+                                        <h5 className="card-title mb-0">Social Links</h5>
                                     </div>
-                                    <div className="flex-shrink-0">
-                                        <a href="javascript:void(0);" className="badge bg-light text-primary fs-12"><i className="ri-add-fill align-bottom me-1" /> Add</a>
-                                    </div>
+                                  
                                 </div>
                                 <div className="mb-3 d-flex">
                                     <div className="avatar-xs d-block flex-shrink-0 me-3">
@@ -133,7 +131,7 @@ const PartnerEdit = () => {
                                             <FaMapMarkedAlt />
                                         </span>
                                     </div>
-                                    <input type="text" value={partnerEdit?.google_map_link} onChange={e => setPartner({ ...partnerEdit, google_map_link: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.google.com/maps/embed?#########" />
+                                    <input type="text" value={Store_bussiness_infoEdit?.google_map_link} onChange={e => setPartner({ ...Store_bussiness_infoEdit, google_map_link: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.google.com/maps/embed?#########" />
                                 </div>
                                 <div className="mb-3 d-flex">
                                     <div className="avatar-xs d-block flex-shrink-0 me-3">
@@ -141,7 +139,7 @@ const PartnerEdit = () => {
                                             <FaFacebookF />
                                         </span>
                                     </div>
-                                    <input type="text" value={partnerEdit?.facebook} onChange={e => setPartner({ ...partnerEdit, facebook: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.facebook.com/xxxxxxxxxx/" />
+                                    <input type="text" value={Store_bussiness_infoEdit?.facebook} onChange={e => setPartner({ ...Store_bussiness_infoEdit, facebook: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.facebook.com/xxxxxxxxxx/" />
                                 </div>
                                 <div className="mb-3 d-flex">
                                     <div className="avatar-xs d-block flex-shrink-0 me-3">
@@ -149,7 +147,7 @@ const PartnerEdit = () => {
                                             <AiOutlineInstagram />
                                         </span>
                                     </div>
-                                    <input type="text" value={partnerEdit?.instagram} onChange={e => setPartner({ ...partnerEdit, instagram: e.target.value })} className="form-control" id="websiteInput" placeholder="https://www.instagram.com/xxxxxxxx" />
+                                    <input type="text" value={Store_bussiness_infoEdit?.instagram} onChange={e => setPartner({ ...Store_bussiness_infoEdit, instagram: e.target.value })} className="form-control" id="websiteInput" placeholder="https://www.instagram.com/xxxxxxxx" />
                                 </div>
                                 <div className="mb-3 d-flex">
                                     <div className="avatar-xs d-block flex-shrink-0 me-3">
@@ -157,7 +155,7 @@ const PartnerEdit = () => {
                                             <FaLinkedinIn />
                                         </span>
                                     </div>
-                                    <input type="text" value={partnerEdit?.linkedin} onChange={e => setPartner({ ...partnerEdit, linkedin: e.target.value })} className="form-control" id="dribbleName" placeholder="https://www.linkedin.com/in/xxxxxxx-xxxxxx-xxxxxx/" />
+                                    <input type="text" value={Store_bussiness_infoEdit?.linkedin} onChange={e => setPartner({ ...Store_bussiness_infoEdit, linkedin: e.target.value })} className="form-control" id="dribbleName" placeholder="https://www.linkedin.com/in/xxxxxxx-xxxxxx-xxxxxx/" />
                                 </div>
                                 <div className="d-flex">
                                     <div className="avatar-xs d-block flex-shrink-0 me-3">
@@ -165,7 +163,7 @@ const PartnerEdit = () => {
                                             <AiOutlineTwitter />
                                         </span>
                                     </div>
-                                    <input type="text" value={partnerEdit?.twitter} onChange={e => setPartner({ ...partnerEdit, twitter: e.target.value })} className="form-control" id="pinterestName" placeholder="https://twitter.com/xxxxxxxxxx" />
+                                    <input type="text" value={Store_bussiness_infoEdit?.twitter} onChange={e => setPartner({ ...Store_bussiness_infoEdit, twitter: e.target.value })} className="form-control" id="pinterestName" placeholder="https://twitter.com/xxxxxxxxxx" />
                                 </div>
                             </div>
                         </div>
@@ -205,7 +203,7 @@ const PartnerEdit = () => {
                                                     <div className="mb-3">
                                                         <label htmlFor="firstnameInput" className="form-label">Bussness
                                                             Name</label>
-                                                        <input type="text" className="form-control" id="firstnameInput" value={partnerEdit?.buss_name} onChange={e => setPartner({ ...partnerEdit, buss_name: e.target.value })} placeholder="Enter your firstname" />
+                                                        <input type="text" className="form-control" id="firstnameInput" value={Store_bussiness_infoEdit?.buss_name} onChange={e => setPartner({ ...Store_bussiness_infoEdit, buss_name: e.target.value })} placeholder="Enter your firstname" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
@@ -214,28 +212,28 @@ const PartnerEdit = () => {
                                                     <div className="mb-3">
                                                         <label htmlFor="emailInput" className="form-label">Email
                                                             Address</label>
-                                                        <input type="email" value={partnerEdit?.company_email} onChange={e => setPartner({ ...partnerEdit, company_email: e.target.value })} className="form-control" id="emailInput" placeholder="Enter your email" />
+                                                        <input type="email" value={Store_bussiness_infoEdit?.company_email} onChange={e => setPartner({ ...Store_bussiness_infoEdit, company_email: e.target.value })} className="form-control" id="emailInput" placeholder="Enter your email" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-6">
                                                     <div className="mb-3">
                                                         <label htmlFor="designationInput" className="form-label">Tag Link</label>
-                                                        <input type="text" value={partnerEdit?.tag_line} onChange={e => setPartner({ ...partnerEdit, tag_line: e.target.value })} className="form-control" id="designationInput" placeholder="Designation" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.tag_line} onChange={e => setPartner({ ...Store_bussiness_infoEdit, tag_line: e.target.value })} className="form-control" id="designationInput" placeholder="Designation" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-6">
                                                     <div className="mb-3">
                                                         <label htmlFor="websiteInput1" className="form-label">Website</label>
-                                                        <input type="text" value={partnerEdit?.website} onChange={e => setPartner({ ...partnerEdit, website: e.target.value })} className="form-control" id="websiteInput1" placeholder="www.example.com" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.website} onChange={e => setPartner({ ...Store_bussiness_infoEdit, website: e.target.value })} className="form-control" id="websiteInput1" placeholder="www.example.com" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-12">
                                                     <div className="mb-3 pb-2">
                                                         <label htmlFor="exampleFormControlTextarea" className="form-label">Description</label>
-                                                        <textarea className="form-control" value={partnerEdit?.about_us} onChange={e => setPartner({ ...partnerEdit, about_us: e.target.value })} id="exampleFormControlTextarea" placeholder="Enter your description" rows={3} />
+                                                        <textarea className="form-control" value={Store_bussiness_infoEdit?.about_us} onChange={e => setPartner({ ...Store_bussiness_infoEdit, about_us: e.target.value })} id="exampleFormControlTextarea" placeholder="Enter your description" rows={3} />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
@@ -251,35 +249,35 @@ const PartnerEdit = () => {
                                                 <div className="col-lg-12">
                                                     <div className="mb-3">
                                                         <label htmlFor="cityInput" className="form-label">Address 1</label>
-                                                        <input type="text" value={partnerEdit?.strteet_linn1} onChange={e => setPartner({ ...partnerEdit, strteet_linn1: e.target.value })} className="form-control" id="cityInput" placeholder="City" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.strteet_linn1} onChange={e => setPartner({ ...Store_bussiness_infoEdit, strteet_linn1: e.target.value })} className="form-control" id="cityInput" placeholder="City" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-12">
                                                     <div className="mb-3">
                                                         <label htmlFor="countryInput" className="form-label">Address 2</label>
-                                                        <input type="text" value={partnerEdit?.strteet_linn2} onChange={e => setPartner({ ...partnerEdit, strteet_linn2: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.strteet_linn2} onChange={e => setPartner({ ...Store_bussiness_infoEdit, strteet_linn2: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-4">
                                                     <div className="mb-3">
                                                         <label htmlFor="countryInput" className="form-label">Area</label>
-                                                        <input type="text" value={partnerEdit?.area} onChange={e => setPartner({ ...partnerEdit, area: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.area} onChange={e => setPartner({ ...Store_bussiness_infoEdit, area: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-4">
                                                     <div className="mb-3">
                                                         <label htmlFor="cityInput" className="form-label">City</label>
-                                                        <input type="text" value={partnerEdit?.city} onChange={e => setPartner({ ...partnerEdit, city: e.target.value })} className="form-control" id="cityInput" placeholder="City" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.city} onChange={e => setPartner({ ...Store_bussiness_infoEdit, city: e.target.value })} className="form-control" id="cityInput" placeholder="City" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
                                                 <div className="col-lg-4">
                                                     <div className="mb-3">
                                                         <label htmlFor="countryInput" className="form-label">State</label>
-                                                        <input type="text" value={partnerEdit?.state} onChange={e => setPartner({ ...partnerEdit, state: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.state} onChange={e => setPartner({ ...Store_bussiness_infoEdit, state: e.target.value })} className="form-control" id="countryInput" placeholder="Country" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
@@ -287,7 +285,22 @@ const PartnerEdit = () => {
                                                     <div className="mb-3">
                                                         <label htmlFor="zipcodeInput" className="form-label">Zip
                                                             Code</label>
-                                                        <input type="text" value={partnerEdit?.pin_code} onChange={e => setPartner({ ...partnerEdit, pin_code: e.target.value })} className="form-control" minLength={5} maxLength={6} id="zipcodeInput" placeholder="Enter zipcode" />
+                                                        <input type="text" value={Store_bussiness_infoEdit?.pin_code} onChange={e => setPartner({ ...Store_bussiness_infoEdit, pin_code: e.target.value })} className="form-control" minLength={5} maxLength={6} id="zipcodeInput" placeholder="Enter zipcode" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-lg-4">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="zipcodeInput" className="form-label">Latitude</label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.lat} onChange={e => setPartner({ ...Store_bussiness_infoEdit, lat: e.target.value })} className="form-control"  id="latInput" placeholder="Enter latitude" />
+                                                    </div>
+                                                </div>
+
+
+                                                <div className="col-lg-4">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="zipcodeInput" className="form-label">Longitude</label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.lng} onChange={e => setPartner({ ...Store_bussiness_infoEdit, lng: e.target.value })} className="form-control"  id="lngInput" placeholder="Enter longitude" />
                                                     </div>
                                                 </div>
                                                 {/*end col*/}
@@ -305,7 +318,7 @@ const PartnerEdit = () => {
                                                             <div className="mb-3">
                                                                 <label htmlFor="phonenumberInput" className="form-label">Teliphone
                                                                     Number</label>
-                                                                <input type="number" maxLength={10} minLength={10} value={partnerEdit?.teliphone1} onChange={e => setPartner({ ...partnerEdit, teliphone1: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
+                                                                <input type="number" maxLength={10} minLength={10} value={Store_bussiness_infoEdit?.teliphone1} onChange={e => setPartner({ ...Store_bussiness_infoEdit, teliphone1: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
                                                             </div>
                                                         </div>
                                                         {/*end col*/}
@@ -313,15 +326,15 @@ const PartnerEdit = () => {
                                                             <div className="mb-3">
                                                                 <label htmlFor="phonenumberInput" className="form-label"> Alternate Teliphone
                                                                     Number</label>
-                                                                <input type="number" maxLength={10} minLength={10} value={partnerEdit?.teliphone2} onChange={e => setPartner({ ...partnerEdit, teliphone2: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
+                                                                <input type="number" maxLength={10} minLength={10} value={Store_bussiness_infoEdit?.teliphone2} onChange={e => setPartner({ ...Store_bussiness_infoEdit, teliphone2: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
                                                             </div>
                                                         </div>
                                                         {/*end col*/}
                                                         <div className="col-lg-6">
                                                             <div className="mb-3">
-                                                                <label htmlFor="phonenumberInput" className="form-label">Phone
+                                                                <label htmlFor="phonenumberInput" className="form-label">Primary Phone
                                                                     Number</label>
-                                                                <input type="number" maxLength={10} minLength={10} value={partnerEdit?.mobile1} onChange={e => setPartner({ ...partnerEdit, mobile1: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
+                                                                <input type="number" maxLength={10} minLength={10} value={Store_bussiness_infoEdit?.mobile1} onChange={e => setPartner({ ...Store_bussiness_infoEdit, mobile1: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter Primary phone number" defaultValue="+(1) 987 6543" />
                                                             </div>
                                                         </div>
                                                         {/*end col*/}
@@ -329,7 +342,7 @@ const PartnerEdit = () => {
                                                             <div className="mb-3">
                                                                 <label htmlFor="phonenumberInput" className="form-label"> Alternate Phone
                                                                     Number</label>
-                                                                <input type="number" maxLength={10} minLength={10} value={partnerEdit?.mobile2} onChange={e => setPartner({ ...partnerEdit, mobile2: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
+                                                                <input type="number" maxLength={10} minLength={10} value={Store_bussiness_infoEdit?.mobile2} onChange={e => setPartner({ ...Store_bussiness_infoEdit, mobile2: e.target.value })} className="form-control" id="phonenumberInput" placeholder="Enter your phone number" defaultValue="+(1) 987 6543" />
                                                             </div>
                                                         </div>
                                                         {/*end col*/}

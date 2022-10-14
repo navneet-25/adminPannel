@@ -3,7 +3,8 @@ import { useContext } from "react";
 import ContextData from "../../context/MainContext";
 import { Navigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 const cookies = new Cookies();
 
 const Header = () => {
@@ -52,20 +53,21 @@ const Header = () => {
                                 </span>
                             </button>
 
-                            {/* <button type="button" className="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
-                                <span className="hamburger-icon">
-                                    <span />
-                                    <span />
-                                    <span />
-                                </span>
-                            </button> */}
+
                         </div>
+
+                     
+                        
                         <div className="d-flex align-items-center">
-                            <div className="dropdown d-md-none topbar-head-dropdown header-item">
-                                <button type="button" className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i className="bx bx-search fs-22" />
-                                </button>
-                                <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-search-dropdown">
+
+                            <div>
+   <ButtonGroup aria-label="Basic example" className="mx-2">
+   <Link to="/billing/sale" >   <Button variant="success" className="mx-2"> SALE </Button> </Link>
+   <Link to="/billing/purchased">  <Button variant="dark">  PURCHASE </Button></Link>
+    </ButtonGroup>
+                            </div>
+
+                        <div className="p-0" aria-labelledby="page-header-search-dropdown">
                                     <form className="p-3">
                                         <div className="form-group m-0">
                                             <div className="input-group">
@@ -74,13 +76,12 @@ const Header = () => {
                                             </div>
                                         </div>
                                     </form>
-                                </div>
-                            </div>
-                            <div className="ms-1 header-item d-none d-sm-flex">
-                                <button type="button" className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode">
-                                    <i className="bx bx-moon fs-22" />
-                                </button>
-                            </div>
+                             </div>
+
+
+                            
+
+
                             <div className="dropdown topbar-head-dropdown ms-1 header-item">
                                 <button type="button" className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i className="bx bx-bell fs-22" />
@@ -334,10 +335,10 @@ const Header = () => {
                             <div className="dropdown ms-sm-3 header-item topbar-user">
                                 <button type="button" className="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span className="d-flex align-items-center">
-                                        <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-1.jpg" alt="Header Avatar" />
+                                        <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-1.jpg" />
                                         <span className="text-start ms-xl-2">
-                                            {/* <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{user.user_info.name}</span>
-                                            <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{user.user_info.role}</span> */}
+                                            {/* <span classNam d-xl-inline-block ms-1 fw-medium user-name-text">{user.user_info.name}</span>
+                                            <span classNam d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{user.user_info.role}</span> */}
                                         </span>
                                     </span>
                                 </button>

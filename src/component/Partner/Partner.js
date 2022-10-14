@@ -5,32 +5,34 @@ import URLDomain from "../../URL";
 
 const Partner = () => {
 
-    const { user, partner, isLoading } = useContext(ContextData);
+    const {  Store_bussiness_info } = useContext(ContextData);
+
+console.log("Store_bussiness_info",Store_bussiness_info)
 
     return (
         <>
-            {isLoading || partner === undefined ? "Loading" : <>
+          
                 <div className="profile-foreground position-relative mx-n4 mt-n4">
                     <div className="profile-wid-bg">
-                        <img src={URLDomain + "/APP-API/" + partner?.banner} alt="" className="profile-wid-img" />
+                        <img src={URLDomain + "/APP-API/" + Store_bussiness_info?.banner} alt="" className="profile-wid-img" />
                     </div>
                 </div>
                 <div className="pt-4 mb-4 mb-lg-3 pb-lg-4">
                     <div className="row g-4">
                         <div className="col-auto">
                             <div className="avatar-lg">
-                                <img src={URLDomain + "/APP-API/" + partner?.logo} alt="user-img" className="img-thumbnail rounded-circle" />
+                                <img src={URLDomain + "/APP-API/" + Store_bussiness_info?.logo} alt="user-img" className="img-thumbnail rounded-circle" />
                             </div>
                         </div>
                         {/*end col*/}
                         <div className="col">
                             <div className="p-2">
-                                <h3 className="text-white mb-1">{partner.buss_name}</h3>
-                                <p className="text-white-75">{partner.tag_line}</p>
+                                <h3 className="text-white mb-1">{Store_bussiness_info.buss_name}</h3>
+                                <p className="text-white-75">{Store_bussiness_info.tag_line}</p>
                                 <div className="hstack text-white-50 gap-1">
-                                    <div className="me-2"><i className="ri-map-pin-user-line me-1 text-white-75 fs-16 align-middle" />{partner.city},
-                                        {partner.state}</div>
-                                    <div><i className="ri-building-line me-1 text-white-75 fs-16 align-middle" />Themesbrand
+                                    <div className="me-2"><i className="ri-map-pin-user-line me-1 text-white-75 fs-16 align-middle" />{Store_bussiness_info.city},
+                                        {Store_bussiness_info.state}</div>
+                                    <div><i className="ri-building-line me-1 text-white-75 fs-16 align-middle" />{Store_bussiness_info.store_slug_name}
                                     </div>
                                 </div>
                             </div>
@@ -93,20 +95,20 @@ const Partner = () => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th className="ps-0" scope="row">Company Name :</th>
-                                                                    <td className="text-muted">{partner.buss_name}</td>
+                                                                    <td className="text-muted">{Store_bussiness_info.buss_name}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th className="ps-0" scope="row">Mobile :</th>
-                                                                    <td className="text-muted">+(91) {partner.mobile1}</td>
+                                                                    <td className="text-muted">+(91) {Store_bussiness_info.mobile1}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th className="ps-0" scope="row">E-mail :</th>
-                                                                    <td className="text-muted">{partner.company_email}</td>
+                                                                    <td className="text-muted">{Store_bussiness_info.company_email}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th className="ps-0" scope="row">Location :</th>
-                                                                    <td className="text-muted">{partner.city},
-                                                                        {partner.state}
+                                                                    <td className="text-muted">{Store_bussiness_info.city},
+                                                                        {Store_bussiness_info.state}
                                                                     </td>
                                                                 </tr>
                                                                 {/* <tr>
@@ -124,7 +126,7 @@ const Partner = () => {
                                             <div className="card">
                                                 <div className="card-body">
                                                     <h5 className="card-title mb-3">About</h5>
-                                                    <p>{partner.about_us}</p>
+                                                    <p>{Store_bussiness_info.about_us}</p>
                                                     <div className="row">
                                                         <div className="col-6 col-md-4">
                                                             <div className="d-flex mt-4">
@@ -135,7 +137,7 @@ const Partner = () => {
                                                                 </div>
                                                                 <div className="flex-grow-1 overflow-hidden">
                                                                     <p className="mb-1">Website :</p>
-                                                                    <a href="#" className="fw-semibold">{partner.website}</a>
+                                                                    <a href="#" className="fw-semibold">{Store_bussiness_info.website}</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1178,8 +1180,8 @@ const Partner = () => {
                     {/*end col*/}
                 </div>
             </>
-            }
-        </>
+            
+      
     )
 
 }

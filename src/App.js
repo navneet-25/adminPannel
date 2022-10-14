@@ -7,8 +7,8 @@ import MainContainer from './component/Shared/MainContainer';
 import LoginPage from './page/LoginPage';
 // import AllLeads from './component/Leads/AllLeads';
 // import ContextProvider from './context/contextProvider';
-// import Partner from './component/Partner/Partner';
-// import PartnerEdit from './component/Partner/PartnerEdit';
+import Partner from './component/Partner/Partner';
+import PartnerEdit from './component/Partner/PartnerEdit';
 import { ChakraProvider } from '@chakra-ui/react';
 // import Roles from './component/Settings/Master/Roles';
 // import Sallery from './component/Employee/Sallary';
@@ -105,6 +105,10 @@ const App = () => {
               <Route path="category" element={<CategoryManagement />} />
               <Route path="brand" element={<BrandManagement />} />
             </Route>
+
+            <Route path="/company" element={<Partner />} />
+            <Route path="/company/edit" element={<PartnerEdit />} />
+
 
 
           </Routes>

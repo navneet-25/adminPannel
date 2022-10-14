@@ -96,8 +96,10 @@ const ProductManagement = () => {
             }
         },
         {
-            prop: "image",
+            prop: "product_image",
             title: "Image",
+            isFilterable: true,
+            isSortable: true,
 
             cell: (row) => {
                 return (
