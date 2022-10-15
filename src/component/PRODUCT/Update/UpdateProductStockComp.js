@@ -3,12 +3,13 @@ import URL from '../../../URL';
 import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext'; 
 import Alert from 'react-bootstrap/Alert';
+import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
 export const UpdateProductStockComp = (EditProductData) => {
 
-    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal, getToast, storeProductRelode } = useContext(ContextData);
+    const { storeCategoryData, storeBrandsData, storeProductUnits, addDataToCurrentGlobal,  storeProductRelode } = useContext(ContextData);
     const [isLoading, setIL] = useState(false);
 
 
@@ -16,6 +17,18 @@ export const UpdateProductStockComp = (EditProductData) => {
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
     const adminId = cookies.get("adminId");
+    const toast = useToast();
+
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
 
  
     const [productDetails, setproductDetails] = useState({

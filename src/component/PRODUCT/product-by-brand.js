@@ -10,7 +10,14 @@ import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
 import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
 import { DownloadBarcode } from "./Update/DownloadBarcode";
 
-import SweetAlert from 'react-bootstrap-sweetalert';
+import { UpdateProductComp } from "./Update/UpdateProductComp";
+
+import { UpdateProductImage } from "./Update/UpdateProductImage";
+import { ProductImageView } from "./Update/ProductImageView";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import { useToast } from '@chakra-ui/react';
+
 
 // import "bootstrap/dist/css/bootstrap.css";
 import { Col, Row, Table } from "react-bootstrap";
@@ -35,7 +42,7 @@ const cookies = new Cookies();
 
 
 const ProductByBrand = () => {
-    const { storeProductsData, removeDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
+    const { storeProductsData, removeDataToCurrentGlobal,  storeProductRelode } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [UpdateProductPrice, setUpdateProductPrice] = useState({});
@@ -48,7 +55,26 @@ const ProductByBrand = () => {
     const adminStoreId = cookies.get("adminStoreId");
     const adminId = cookies.get("adminId");
 
+    const toast = useToast();
 
+    const [radioValue1, setRadioValue1] = useState('1');
+
+    const radios1 = [
+        { name: 'Active', value: '1' },
+        { name: 'Not Active', value: '2' },
+    ];
+
+
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
 
 
     useEffect(() => {
@@ -80,37 +106,18 @@ const ProductByBrand = () => {
             }
         },
         {
-            prop: "image",
+            prop: "product_image",
             title: "Image",
+            isFilterable: true,
+            isSortable: true,
 
             cell: (row) => {
                 return (
-                    <img src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' }} />
+                    <img onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#showImage"  src={row.product_image} alt="" style={{ height: '40px', borderRadius: '14px' ,cursor:'pointer'}} />
                 );
             }
         },
-        {
-            prop: "stock_quantity",
-            title: "Store Stock",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-danger">{row.stock_quantity}</p>
-                );
-            }
-        },
-        {
-            prop: "stok_warehouse_qty",
-            title: "Warehouse Stock",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-danger">{row.stok_warehouse_qty}</p>
-                );
-            }
-        },
+     
 
 
         {
@@ -135,28 +142,7 @@ const ProductByBrand = () => {
                 );
             }
         },
-        {
-            prop: "purchase_price",
-            title: "Purchase Price",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-danger"> ₹ {row.purchase_price}</p>
-                );
-            }
-        },
-        {
-            prop: "price",
-            title: "Price",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark"> ₹ {row.price}</p>
-                );
-            }
-        },
+     
         {
             prop: "discount_in_rs",
             title: "Discount",
@@ -175,24 +161,32 @@ const ProductByBrand = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-dark"> ₹ {row.sale_price}</p>
+                    <p className="text-danger"> ₹ {row.sale_price}</p>
                 );
             }
         },
+
         {
-            prop: "margin_in_rs",
-            title: "Margin",
-            isFilterable: true,
+            prop: "status",
+            title: "Status",
             isSortable: true,
-            cell: (row) => {
+            
+            cell: (row) => { 
                 return (
-                    <p className="text-danger"> ₹ {row.margin_in_rs}</p>
+                    <Dropdown>
+                        <Dropdown.Toggle variant={row.status==1?'success':'danger'} id="dropdown-basic">
+                        {row.status==1?'Active':'Not Active'}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => UpdateStatusAction(row.id, row.product_name ,row.status)}  >{row.status==1?'Make Not Active':'Make Active'}</Dropdown.Item>
+                           
+                        </Dropdown.Menu>
+                    </Dropdown>
+
                 );
             }
         },
-
-
-
 
         {
             prop: "Stock",
@@ -210,7 +204,9 @@ const ProductByBrand = () => {
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Update Price</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductStock" >Update Stock</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductComp" >Update Product</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#updateImage" >Update Image</Dropdown.Item>
                             <Dropdown.Item onClick={() => deleteAction(row.id, row.product_name + " " + row.product_size + " " + row.product_unit)}>Delete Product</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -222,6 +218,79 @@ const ProductByBrand = () => {
         },
 
     ];
+
+
+    const UpdateStatusAction = (product_id, product_name,status) => {
+
+        var statusAction = '';
+        var statusModified=null;
+        if(Number(status)==1){
+            statusAction='Not Active';
+            statusModified=0;
+        }else{
+            statusAction='Active';
+            statusModified=1;
+        }
+
+        
+
+
+        swal({
+            title: "Action | "+statusAction+" | to "+product_name,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((deleteProductFromStore) => {
+
+
+
+                if (deleteProductFromStore) {
+
+                    console.log("status",statusModified)
+
+                    fetch(URL + "/APP-API/Billing/changeStoreProductStatus", {
+                        method: 'POST',
+                        header: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_id: product_id,
+                            statusModified: statusModified
+                        })
+                    }).then((response) => response.json())
+                        .then((responseJson) => {
+                            if (responseJson.success) {
+
+                                storeProductRelode();
+
+                                getToast({ title: "Status Change ", dec: "Successful", status: "success" });
+
+                            } else {
+                                getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+                            }
+
+                            for (let i = 0; i < 10; i++) {
+                                document.getElementsByClassName("btn-close")[i].click();
+                            }
+                        })
+                        .catch((error) => {
+                            //  console.error(error); 
+                        });
+
+
+
+
+                    swal("Status Change!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Nothing Change!");
+                }
+            });
+
+    }
 
     const deleteAction = (delete_id, product_name) => {
 
@@ -258,6 +327,7 @@ const ProductByBrand = () => {
                         .then((responseJson) => {
                             console.log("respond delete", responseJson)
                             if (responseJson.delete) {
+                                storeProductRelode();
                                 getToast({ title: "Product Deleted ", dec: "Successful", status: "success" });
 
                             } else {
@@ -272,7 +342,7 @@ const ProductByBrand = () => {
                             //  console.error(error); 
                         });
 
-                    reloadData();
+                 
 
 
 
@@ -320,6 +390,22 @@ const ProductByBrand = () => {
                 //  console.error(error);
             });
     }
+    const changeStatusData = (value) => {
+        setRadioValue1(value)
+
+
+        if (value == 1) {
+            const newParentData = storeProductsData.filter(obj => obj.status == 1 &&  obj.brand_id == brandID)
+            setShowData(newParentData);
+
+        }
+        else {
+            const newChildData = storeProductsData.filter(obj => obj.status == 0 &&  obj.brand_id == brandID)
+            setShowData(newChildData);
+        }
+
+    }
+
 
 
     return (
@@ -337,6 +423,27 @@ const ProductByBrand = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="row g-2">
+
+                        <div className="col-sm-auto ">
+                                <div className="list-grid-nav hstack gap-1">
+                                    <ButtonGroup>
+                                        {radios1.map((radio, idx) => (
+                                            <ToggleButton
+                                                key={idx}
+                                                id={`radio-${idx}`}
+                                                type="radio"
+                                                variant={idx % 2 ? 'outline-danger' : 'outline-success'}
+                                                name="radio"
+                                                value={radio.value}
+                                                checked={radioValue1 === radio.value}
+                                                onChange={(e) => changeStatusData(e.currentTarget.value)}
+                                            >
+                                                {radio.name}
+                                            </ToggleButton>
+                                        ))}
+                                    </ButtonGroup>
+                                </div>
+                            </div>{/*end col*/}
 
                             <div className="col-sm-auto ms-auto">
                                 <div className="list-grid-nav hstack gap-1">
@@ -407,6 +514,51 @@ const ProductByBrand = () => {
                     </div>
                 </div>
 
+
+      
+
+                <div className="modal fade" id="showImage" tabIndex={-1} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered w-50">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="myModalLabel"> Product Image View</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <div className="modal-body">
+                                <ProductImageView productDetails={UpdateProductPrice} />
+                            </div>
+                        </div>{/*end modal-content*/}
+                    </div>{/*end modal-dialog*/}
+                </div>{/*end modal*/}
+                
+
+                <div className="modal fade" id="updateImage" tabIndex={-1} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered w-50">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="myModalLabel">Update Product Image</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <div className="modal-body">
+                                <UpdateProductImage productDetails={UpdateProductPrice} />
+                            </div>
+                        </div>{/*end modal-content*/}
+                    </div>{/*end modal-dialog*/}
+                </div>{/*end modal*/}
+
+                <div  className="modal fade" id="UpdateProductComp" tabIndex={-1} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered w-50">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="myModalLabel">Update Product</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <div className="modal-body">
+                                <UpdateProductComp productDetails={UpdateProductPrice} />
+                            </div>
+                        </div>{/*end modal-content*/}
+                    </div>{/*end modal-dialog*/}
+                </div>{/*end modal*/}
 
 
 

@@ -1,16 +1,24 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useState, useContext, useRef, useEffect } from 'react';
 import ContextData from "../../context/MainContext";
 import { Navigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Switch from "react-switch";
+
+
 const cookies = new Cookies();
 
 const Header = () => {
 
-    const { logOut, auth } = useContext(ContextData);
+    const { logOut, auth ,Store_bussiness_info} = useContext(ContextData); 
     const data = useContext(ContextData);
+    const [checked, setChecked] = useState(false); 
+  const handleChangeStore = nextChecked => {
+    setChecked(nextChecked);
+  };
+
 
     const ExpandSlider = () => {
         sessionStorage.setItem("data-sidebar-size", "sm");
@@ -64,6 +72,15 @@ const Header = () => {
    <ButtonGroup aria-label="Basic example" className="mx-2">
    <Link to="/billing/sale" >   <Button variant="success" className="mx-2"> SALE </Button> </Link>
    <Link to="/billing/purchased">  <Button variant="dark">  PURCHASE </Button></Link>
+    </ButtonGroup>
+                            </div>
+
+                            <div>
+
+                            <ButtonGroup aria-label="Basic example" className="mx-2">
+                            <h3 className="text-bold"> Store    </h3>
+                            <Switch onChange={handleChangeStore} checked={checked} />
+                           
     </ButtonGroup>
                             </div>
 

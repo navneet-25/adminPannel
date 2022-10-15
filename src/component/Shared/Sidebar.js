@@ -173,14 +173,14 @@ const Sidebar = () => {
                                 </a>
                                 <div className="collapse menu-dropdown" id="websiteSettings">
                                     <ul className="nav nav-sm flex-column">
-                                        <li className="nav-item">
+                                        {/* <li className="nav-item">
                                             <Link to="/settings/banners" className="nav-link" data-key="t-cover"> Banners
                                             </Link>
                                         </li>
                                         <li className="nav-item">
                                             <Link to="/settings/testimonial" className="nav-link" data-key="t-cover"> Testimonial
                                             </Link>
-                                        </li>
+                                        </li> */}
                                         <li className="nav-item">
                                             <Link to="/company" className="nav-link" data-key="t-cover"> Company Info
                                             </Link>

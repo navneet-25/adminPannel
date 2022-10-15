@@ -194,7 +194,7 @@ const PartnerEdit = () => {
                                     <li className="nav-item">
                                         <a className="nav-link active" data-bs-toggle="tab" href="#personalDetails" role="tab">
                                             <i className="fas fa-home" />
-                                            Bussness Details
+                                            Business Info
                                         </a>
                                     </li>
                                     <li className="nav-item">
@@ -225,8 +225,7 @@ const PartnerEdit = () => {
                                             <div className="row">
                                                 <div className="col-lg-6">
                                                     <div className="mb-3">
-                                                        <label htmlFor="firstnameInput" className="form-label">Bussness
-                                                            Name</label>
+                                                        <label htmlFor="firstnameInput" className="form-label">Business  Name</label>
                                                         <input type="text" className="form-control" id="firstnameInput" value={Store_bussiness_infoEdit?.buss_name} onChange={e => setPartner({ ...Store_bussiness_infoEdit, buss_name: e.target.value })} placeholder="Enter your firstname" />
                                                     </div>
                                                 </div>
@@ -269,6 +268,7 @@ const PartnerEdit = () => {
                                                 </div>
 
                                                 {/*end col*/}
+                                                
                                                 <div className="col-lg-12">
                                                     <div className="mb-3 pb-2">
                                                         <label htmlFor="exampleFormControlTextarea" className="form-label">Description</label>
