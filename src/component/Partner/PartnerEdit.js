@@ -5,12 +5,16 @@ import URLDomain from "../../URL";
 import { FaFacebookF } from 'react-icons/fa';
 import { AiOutlineInstagram, AiOutlineTwitter } from 'react-icons/ai';
 import { FaLinkedinIn, FaMapMarkedAlt } from 'react-icons/fa';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 
 const PartnerEdit = () => {
 
-    const { user, Store_bussiness_info, isLoading } = useContext(ContextData);
-
+    const { user, Store_bussiness_info, storeBussinessRelode } = useContext(ContextData);
+    const adminStoreId = cookies.get("adminStoreId");
     const [Store_bussiness_infoEdit, setPartner] = useState(Store_bussiness_info);
+    const [isLoading, setIL] = useState(false);
     const [logo, setLogo] = useState();
     const [banner, setBanner] = useState();
 
@@ -18,9 +22,11 @@ const PartnerEdit = () => {
         setPartner(Store_bussiness_info);
     }, [Store_bussiness_info]);
 
-    const update = () => {
-        console.log("kit kat", Store_bussiness_infoEdit);
-        fetch(URLDomain + "/APP-API/App/updatePartner", {
+    const updateBusinessInfo = () => {
+
+        setIL(true);
+
+        fetch(URLDomain + "/APP-API/Billing/updatePartner", {
             method: 'POST',
             header: {
                 'Accept': 'application/json',
@@ -31,13 +37,10 @@ const PartnerEdit = () => {
             })
         }).then((response) => response.json())
             .then((responseJson) => {
-                console.log("respond", responseJson)
-                // if (responseJson.user) {
-                //     alert("Member Exists");
-                // } else {
-                //     console.log("added");
-                // }
-                // document.getElementsByClassName("btn-close")[0].click();
+                console.log("respond business info ", responseJson)
+                setIL(false);
+                storeBussinessRelode()
+           
             })
             .catch((error) => {
                 //  console.error(error);
@@ -45,16 +48,21 @@ const PartnerEdit = () => {
     }
 
     const updateImage = () => {
+
+        setIL(true);
+        
         console.log("sesodine", logo, "banner", banner);
 
         const formData = new FormData();
 
         logo ? formData.append(`file`, logo, logo.name) : formData.append("file", banner, banner.name);
         logo ? formData.append(`logo`, logo.name) : formData.append("banner", banner.name);
-        formData.append('bussiness_id', Store_bussiness_info.bussiness_id);
+        formData.append('store_id', adminStoreId);
+        formData.append('old_logo', Store_bussiness_info?.logo);
+        formData.append('old_banner', Store_bussiness_info?.banner);
 
         console.log("formdata", formData)
-        fetch(URLDomain + "/APP-API/App/uploadImage", {
+        fetch(URLDomain + "/APP-API/Billing/UpdateStoreLogo", {
             method: 'POST',
             header: {
                 'Accept': 'application/json',
@@ -64,6 +72,8 @@ const PartnerEdit = () => {
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log("respond", responseJson)
+                storeBussinessRelode()
+                setIL(false);
                 // if (responseJson.user) {
                 //     alert("Member Exists");
                 // } else {
@@ -81,12 +91,15 @@ const PartnerEdit = () => {
             <div>
                 <div className="position-relative mx-n4 mt-n4">
                     <div className="profile-wid-bg profile-setting-img">
-                        <img src={banner ? URL.createObjectURL(banner) : URLDomain + "/APP-API/" + Store_bussiness_info?.banner} className="profile-wid-img" alt="" />
+                        <img src={banner ? URL.createObjectURL(banner) : Store_bussiness_info?.banner} className="profile-wid-img" alt="" />
                         <div className="overlay-content">
                             <div className="text-end p-3">
                                 <div className="p-0 ms-auto rounded-circle profile-photo-edit">
                                     <input id="profile-foreground-img-file-input" onChange={e => setBanner(e.target.files[0])} type="file" className="profile-foreground-img-file-input" />
-                                    {banner ? <button type="button" onClick={updateImage} className="btn btn-light mt-2">Upload Banner</button> : <label htmlFor="profile-foreground-img-file-input" className="profile-photo-edit btn btn-light">
+                                    {banner ? <>
+                                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={updateImage} className="btn btn-primary">Update</button>}
+
+                                              </> : <label htmlFor="profile-foreground-img-file-input" className="profile-photo-edit btn btn-light">
                                         <i className="ri-image-edit-line align-bottom me-1" /> Change Cover
                                     </label>}
                                 </div>
@@ -100,7 +113,7 @@ const PartnerEdit = () => {
                             <div className="card-body p-4">
                                 <div className="text-center">
                                     <div className="profile-user position-relative d-inline-block mx-auto  mb-4">
-                                        <img src={logo ? URL.createObjectURL(logo) : URLDomain + "/APP-API/" + Store_bussiness_info?.logo} className="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image" />
+                                        <img src={logo ? URL.createObjectURL(logo) : Store_bussiness_info?.logo} className="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image" />
                                         <div className="avatar-xs p-0 rounded-circle profile-photo-edit">
                                             <input id="profile-img-file-input" onChange={e => setLogo(e.target.files[0])} type="file" className="profile-img-file-input" />
                                             <label htmlFor="profile-img-file-input" className="profile-photo-edit avatar-xs">
@@ -111,8 +124,12 @@ const PartnerEdit = () => {
                                         </div>
                                     </div>
                                     <h5 className="fs-16 mb-1">{Store_bussiness_info?.buss_name}</h5>
-                                    <p className="text-muted mb-0">Property</p>
-                                    {logo && <button type="button" onClick={updateImage} className="btn btn-primary mt-2">Upload Image</button>}
+                                    <p className="text-muted mb-0">{Store_bussiness_info.store_slug_name}</p>
+                                    {logo &&  <>
+                                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={updateImage} className="btn btn-primary">Update</button>}
+
+                                              </>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -187,9 +204,16 @@ const PartnerEdit = () => {
                                         </a>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" data-bs-toggle="tab" href="#experience" role="tab">
+                                        <a className="nav-link" data-bs-toggle="tab" href="#contact" role="tab">
                                             <i className="far fa-envelope" />
                                             Contact
+                                        </a>
+                                    </li>
+
+                                    <li className="nav-item">
+                                        <a className="nav-link" data-bs-toggle="tab" href="#privacy" role="tab">
+                                            <i className="far fa-envelope" />
+                                            Privacy & Terms
                                         </a>
                                     </li>
                                 </ul>
@@ -229,6 +253,21 @@ const PartnerEdit = () => {
                                                         <input type="text" value={Store_bussiness_infoEdit?.website} onChange={e => setPartner({ ...Store_bussiness_infoEdit, website: e.target.value })} className="form-control" id="websiteInput1" placeholder="www.example.com" />
                                                     </div>
                                                 </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="websiteInput1" className="form-label">GST NO</label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.gst_no} onChange={e => setPartner({ ...Store_bussiness_infoEdit, gst_no: e.target.value })} className="form-control" id="websiteInput1" placeholder="GST NO" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="websiteInput1" className="form-label">Fssai NO</label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.fassai_no} onChange={e => setPartner({ ...Store_bussiness_infoEdit, fassai_no: e.target.value })} className="form-control" id="websiteInput1" placeholder="Fssai NO" />
+                                                    </div>
+                                                </div>
+
                                                 {/*end col*/}
                                                 <div className="col-lg-12">
                                                     <div className="mb-3 pb-2">
@@ -309,7 +348,7 @@ const PartnerEdit = () => {
                                         </form>
                                     </div>
                                     {/*end tab-pane*/}
-                                    <div className="tab-pane" id="experience" role="tabpanel">
+                                    <div className="tab-pane" id="contact" role="tabpanel">
                                         <form>
                                             <div id="newlink">
                                                 <div id={1}>
@@ -354,9 +393,57 @@ const PartnerEdit = () => {
                                         </form>
                                     </div>
                                     {/*end tab-pane*/}
+
+                                    <div className="tab-pane" id="privacy" role="tabpanel">
+                                        <form>
+                                            <div id="newlink">
+                                                <div id={1}>
+                                                    <div className="row">
+                                                    <div className="col-lg-12">
+                                                    <div className="mb-3 pb-2">
+                                                        <label htmlFor="exampleFormControlTextarea" className="form-label">Privacy & Policy</label>
+                                                        <textarea className="form-control" value={Store_bussiness_infoEdit?.privacy} onChange={e => setPartner({ ...Store_bussiness_infoEdit, privacy: e.target.value })} id="exampleFormControlTextarea" placeholder="Privacy & Policy" rows={6} />
+                                                    </div>
+                                                   </div>
+
+
+                                                   <div className="col-lg-12">
+                                                    <div className="mb-3 pb-2">
+                                                        <label htmlFor="exampleFormControlTextarea" className="form-label">Terms & Condition</label>
+                                                        <textarea className="form-control" value={Store_bussiness_infoEdit?.terms} onChange={e => setPartner({ ...Store_bussiness_infoEdit, terms: e.target.value })} id="exampleFormControlTextarea" placeholder="Terms & Condition" rows={6} />
+                                                    </div>
+                                                   </div>
+
+                                                   <div className="col-lg-12">
+                                                    <div className="mb-3 pb-2">
+                                                        <label htmlFor="exampleFormControlTextarea" className="form-label">Returns Policy</label>
+                                                        <textarea className="form-control" value={Store_bussiness_infoEdit?.returns} onChange={e => setPartner({ ...Store_bussiness_infoEdit, returns: e.target.value })} id="exampleFormControlTextarea" placeholder="Returns Policy" rows={6} />
+                                                    </div>
+                                                   </div>
+
+
+                                                   <div className="col-lg-12">
+                                                    <div className="mb-3 pb-2">
+                                                        <label htmlFor="exampleFormControlTextarea" className="form-label">Shiiping Condition</label>
+                                                        <textarea className="form-control" value={Store_bussiness_infoEdit?.shiiping} onChange={e => setPartner({ ...Store_bussiness_infoEdit, shiiping: e.target.value })} id="exampleFormControlTextarea" placeholder="Shiiping Condition" rows={6} />
+                                                    </div>
+                                                   </div>
+
+
+                                                       
+                                                    </div>
+                                                    {/*end row*/}
+                                                </div>
+                                            </div>
+                                            {/*end col*/}
+                                        </form>
+                                    </div>
+                                    {/*end tab-pane*/}
+
                                     <div className="col-lg-12">
                                         <div className="hstack gap-2 justify-content-end">
-                                            <button type="button" onClick={update} className="btn btn-primary">Update</button>
+                                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={updateBusinessInfo} className="btn btn-primary">Update</button>}
+
                                         </div>
                                     </div>
                                     {/*end col*/}

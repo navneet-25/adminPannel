@@ -105,6 +105,32 @@ const ContextProvider = props => {
 
 }
 
+const storeBussinessRelode = () => {
+
+    const store_id = cookies.get("adminStoreId");
+    const adminId =  MainData.adminId;
+     fetch(URL + "/APP-API/Reload/Store_bussiness_info", {
+                  method: 'POST',
+                  header: {
+                      'Accept': 'application/json',
+                      'Content-type': 'application/json'
+                  },
+                  body: JSON.stringify({ store_id, adminId  })
+              }).then((response) => response.json())
+                  .then((responseJson) => {
+
+                      functionality.fetchAllData({ ...responseJson })
+                 
+                  })
+                  .catch((error) => {
+                    
+                  });
+
+
+}
+
+
+
 
   
 
@@ -167,7 +193,7 @@ const ContextProvider = props => {
             cookies.remove("adminStoreType");
             dispatch({ type: "LOGOUT" });
         },
-        reloadData,storeBrandRelode,storeCategoryRelode,storeProductRelode,
+        reloadData,storeBrandRelode,storeCategoryRelode,storeProductRelode,storeBussinessRelode,
         getToast: (e) => {
             toast({
                 title: e.title,

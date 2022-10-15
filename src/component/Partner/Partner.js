@@ -14,14 +14,14 @@ console.log("Store_bussiness_info",Store_bussiness_info)
           
                 <div className="profile-foreground position-relative mx-n4 mt-n4">
                     <div className="profile-wid-bg">
-                        <img src={URLDomain + "/APP-API/" + Store_bussiness_info?.banner} alt="" className="profile-wid-img" />
+                        <img src={Store_bussiness_info?.banner} alt="" className="profile-wid-img" />
                     </div>
                 </div>
                 <div className="pt-4 mb-4 mb-lg-3 pb-lg-4">
                     <div className="row g-4">
                         <div className="col-auto">
                             <div className="avatar-lg">
-                                <img src={URLDomain + "/APP-API/" + Store_bussiness_info?.logo} alt="user-img" className="img-thumbnail rounded-circle" />
+                                <img src={Store_bussiness_info?.logo} alt="user-img" className="img-thumbnail rounded-circle" />
                             </div>
                         </div>
                         {/*end col*/}
