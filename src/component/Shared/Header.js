@@ -21,8 +21,16 @@ const Header = () => {
 
 
     const ExpandSlider = () => {
-        sessionStorage.setItem("data-sidebar-size", "sm");
-        sessionStorage.setItem("defaultAttribute", '{"lang":"en","data-layout":"vertical","data-topbar":"light","data-sidebar":"dark","data-sidebar-size":"sm"}');
+        
+        var e = document.documentElement.clientWidth;
+        767 < e && document.querySelector(".hamburger-icon").classList.toggle("open")
+            // "horizontal" === document.documentElement.getAttribute("data-layout") && (document.body.classList.contains("menu") ? document.body.classList.remove("menu") : document.body.classList.add("menu"))
+            // "vertical" === document.documentElement.getAttribute("data-layout") && (e < 1025 && 767 < e ? (document.body.classList.remove("vertical-sidebar-enable"), "sm" == document.documentElement.getAttribute("data-sidebar-size") ? document.documentElement.setAttribute("data-sidebar-size", "") : document.documentElement.setAttribute("data-sidebar-size", "sm")) : 1025 < e ? (document.body.classList.remove("vertical-sidebar-enable"), "lg" == document.documentElement.getAttribute("data-sidebar-size") ? document.documentElement.setAttribute("data-sidebar-size", "sm") : document.documentElement.setAttribute("data-sidebar-size", "lg")) : e <= 767 && (document.body.classList.add("vertical-sidebar-enable"), document.documentElement.setAttribute("data-sidebar-size", "lg"))),
+            // "twocolumn" == document.documentElement.getAttribute("data-layout") && (document.body.classList.contains("twocolumn-panel") ? document.body.classList.remove("twocolumn-panel") : document.body.classList.add("twocolumn-panel"))
+  
+// return <></>;
+        // sessionStorage.setItem("data-sidebar-size", "sm");
+        // sessionStorage.setItem("defaultAttribute", '{"lang":"en","data-layout":"vertical","data-topbar":"light","data-sidebar":"dark","data-sidebar-size":"sm"}');
     }
 
 
