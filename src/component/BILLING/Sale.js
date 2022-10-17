@@ -10,6 +10,7 @@ import { Checkbox } from '@chakra-ui/react';
 import ReactToPrint from 'react-to-print';
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from '../../URL';
+import { useReactToPrint } from 'react-to-print';
 
 
 
@@ -43,6 +44,11 @@ export const Sale = () => {
     });
     const componentRef = useRef();
 
+
+
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
 
     useEffect(() => {
         setAllProducts(storeProductsData);
@@ -140,8 +146,9 @@ export const Sale = () => {
     }, [allTotals.fully_paid]);
 
     const handleOnSelect = (item) => {
-        const allReadyExist = addedItems.some(elem => elem.product_bar_code === item.product_bar_code);
-        const index = addedItems.findIndex(elem => elem.product_bar_code === item.product_bar_code);
+        console.log("barcode ---->", item.product_bar_code);
+        const allReadyExist = addedItems.some(elem => elem.product_full_name === item.product_full_name);
+        const index = addedItems.findIndex(elem => elem.product_full_name === item.product_full_name);
         !allReadyExist ? setAddedItems([...addedItems, { ...item, billing_quantity: 1, amount_total: item.sale_price }]) : setAddedItems(previousState => {
             let obj = previousState[index];
             if (obj !== undefined) {
@@ -418,6 +425,7 @@ export const Sale = () => {
                                                     <ReactToPrint
                                                         trigger={() => <button type="button" class="btn btn-warning waves-effect waves-light w-100 mt-3">Print</button>}
                                                         content={() => componentRef.current}
+                                                    // print={() => console.log("hey nanveet")}
                                                     />
                                                 </div>
                                             </div>
@@ -499,50 +507,37 @@ export const Sale = () => {
                             <th class="heading name">Item</th>
                             <th class="heading qty">Qty</th>
                             <th class="heading rate">Rate</th>
+                            <th class="heading amount">GST</th>
                             <th class="heading amount">Amount</th>
                         </tr>
                     </thead>
 
                     <tbody>
+                        {
+                            addedItems.map((items, index) => {
+                                return (
+                                    <tr>
+                                        <td>{items.product_full_name}</td>
+                                        <td>{items.billing_quantity}</td>
+                                        <td class="price">{items.sale_price}</td>
+                                        <td class="price">{items.i_gst}</td>
+                                        <td class="price">{items.amount_total}</td>
+                                    </tr>
+                                )
+                            })
+                        }
+
                         <tr>
-                            <td>Chocolate milkshake frappe</td>
-                            <td>1</td>
-                            <td class="price">200.00</td>
-                            <td class="price">200.00</td>
+                            <td colspan="4" class="sum-up line">Subtotal</td>
+                            <td class="line price">{allTotals.subTotal.toLocaleString('en-IN')}</td>
                         </tr>
                         <tr>
-                            <td>Non-Veg Focaccoa S/W</td>
-                            <td>2</td>
-                            <td class="price">300.00</td>
-                            <td class="price">600.00</td>
+                            <td colspan="4" class="sum-up">GST</td>
+                            <td class="price">{allTotals.sGstTotal.toLocaleString('en-IN')}</td>
                         </tr>
                         <tr>
-                            <td>Classic mojito</td>
-                            <td>1</td>
-                            <td class="price">800.00</td>
-                            <td class="price">800.00</td>
-                        </tr>
-                        <tr>
-                            <td>Non-Veg Ciabatta S/W</td>
-                            <td>1</td>
-                            <td class="price">500.00</td>
-                            <td class="price">500.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="sum-up line">Subtotal</td>
-                            <td class="line price">12112.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="sum-up">CGST</td>
-                            <td class="price">10.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="sum-up">SGST</td>
-                            <td class="price">10.00</td>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="total text">Total</th>
-                            <th class="total price">12132.00</th>
+                            <th colspan="4" class="total text">Total</th>
+                            <th class="total price">{allTotals.grandTotal.toLocaleString('en-IN')}</th>
                         </tr>
                     </tbody>
                 </table>

@@ -127,6 +127,10 @@ button:focus {
 
 @media print {
 
+    #section-to-print {
+        display: block !important;
+    }
+
     .col-print-1 {
         width: 8%;
         float: left;
@@ -267,6 +271,10 @@ button:focus {
     margin-right: 0cm;
 }
 
+#section-to-print {
+    display: none;
+}
+
 .POS_table {
     width: 100%;
 }
@@ -327,9 +335,9 @@ button:focus {
 
 .items thead tr th:first-child,
 .items tbody tr td:first-child {
-    width: 47%;
+    /* width: 47%;
     min-width: 47%;
-    max-width: 47%;
+    max-width: 47%; */
     word-break: break-all;
     text-align: left;
 }
