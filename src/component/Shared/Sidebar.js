@@ -1,7 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ImBook } from 'react-icons/im';
-import { GoGraph } from 'react-icons/go';
+import { AiFillDashboard } from 'react-icons/ai';
 import { AiFillSetting } from 'react-icons/ai';
+import { FcSalesPerformance } from 'react-icons/fc';
+import { BiPurchaseTagAlt } from 'react-icons/bi';
+import { FaProductHunt } from 'react-icons/fa';
+import { AiOutlineStock } from 'react-icons/ai';
+import { BsFillRecordCircleFill } from 'react-icons/bs';
+
+
+
 import { RiUserSettingsFill } from 'react-icons/ri';
 
 const Sidebar = () => {
@@ -38,7 +46,7 @@ const Sidebar = () => {
                         <ul className="navbar-nav" id="navbar-nav">
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
-                                    <ImBook style={{ fill: "#fff" }} /><span data-key="t-authentication">DASHBOARD</span>
+                                    <AiFillDashboard  size={24} style={{ fill: "#e9e9e9" }} /><span data-key="t-authentication">DASHBOARD</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="sidebarAuth">
                                     <ul className="nav nav-sm flex-column">
@@ -56,7 +64,7 @@ const Sidebar = () => {
 
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sales-managmenet" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sales-managmenet">
-                                    <AiFillSetting size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">SALES</span>
+                                    <FcSalesPerformance size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">SALES</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="sales-managmenet">
                                     <ul className="nav nav-sm flex-column">
@@ -82,7 +90,7 @@ const Sidebar = () => {
 
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#purchase-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="purchase-management">
-                                    <i class="ri-building-2-fill" /><span data-key="t-authentication">PURCHASE</span>
+                                <BiPurchaseTagAlt size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-authentication">PURCHASE</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="purchase-management">
                                     <ul className="nav nav-sm flex-column">
@@ -104,9 +112,10 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
+                            
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#product-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="product-management">
-                                    <i class="ri-building-2-fill" /><span data-key="t-authentication">PRODUCT</span>
+                                <FaProductHunt size={24} style={{ fill: "#e9e9e9" }} /><span data-key="t-authentication">PRODUCT</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="product-management">
                                     <ul className="nav nav-sm flex-column">
@@ -125,9 +134,10 @@ const Sidebar = () => {
                                     </ul>
                                 </div>
                             </li>
+                            
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#stocks-management" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="stocks-management">
-                                    <GoGraph style={{ fill: "#fff" }} /><span data-key="t-authentication">STOCK</span>
+                                <AiOutlineStock size={24} style={{ fill: "#e9e9e9" }} /><span data-key="t-authentication">STOCK</span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="stocks-management">
                                     <ul className="nav nav-sm flex-column">
@@ -149,10 +159,10 @@ const Sidebar = () => {
                             </li>
 
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
-
+                            
                             <li className="nav-item">
                                 <a className="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
-                                    <i class="ri-group-fill"></i> <span data-key="t-dashboards">ONLINE ORDER </span>
+                                <BsFillRecordCircleFill size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-dashboards">ONLINE ORDER </span>
                                 </a>
                                 <div className="collapse menu-dropdown" id="sidebarDashboards">
                                     <ul className="nav nav-sm flex-column">

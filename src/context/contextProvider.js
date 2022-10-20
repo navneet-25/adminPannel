@@ -194,6 +194,7 @@ const storeBussinessRelode = () => {
             dispatch({ type: "LOGOUT" });
         },
         reloadData,storeBrandRelode,storeCategoryRelode,storeProductRelode,storeBussinessRelode,
+        
         getToast: (e) => {
             toast({
                 title: e.title,
@@ -210,13 +211,8 @@ const storeBussinessRelode = () => {
     
 
     useEffect(() => {
-        // let userCookie = btoa("userID");
-        // lets see...
         const store_id = cookies.get("adminStoreId");
         if (MainData.adminId) {
-            // getUserDetails(adminId);
-            // fetchData(store_id, adminId)
-            // letsCheck(store_id, MainData.adminId);
             fetchIntialData(store_id, MainData.adminId);
         }
     }, [MainData.adminId]);

@@ -133,58 +133,7 @@ const PartnerEdit = () => {
                                 </div>
                             </div>
                         </div>
-                        {/*end card*/}
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center mb-4">
-                                    <div className="flex-grow-1">
-                                        <h5 className="card-title mb-0">Social Links</h5>
-                                    </div>
-                                  
-                                </div>
-                                <div className="mb-3 d-flex">
-                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
-                                        <span className="avatar-title rounded-circle fs-16 bg-light text-dark border">
-                                            <FaMapMarkedAlt />
-                                        </span>
-                                    </div>
-                                    <input type="text" value={Store_bussiness_infoEdit?.google_map_link} onChange={e => setPartner({ ...Store_bussiness_infoEdit, google_map_link: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.google.com/maps/embed?#########" />
-                                </div>
-                                <div className="mb-3 d-flex">
-                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
-                                        <span className="avatar-title rounded-circle fs-16 bg-primary text-light">
-                                            <FaFacebookF />
-                                        </span>
-                                    </div>
-                                    <input type="text" value={Store_bussiness_infoEdit?.facebook} onChange={e => setPartner({ ...Store_bussiness_infoEdit, facebook: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.facebook.com/xxxxxxxxxx/" />
-                                </div>
-                                <div className="mb-3 d-flex">
-                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
-                                        <span className="avatar-title rounded-circle fs-16" style={{ background: "#d85252" }}>
-                                            <AiOutlineInstagram />
-                                        </span>
-                                    </div>
-                                    <input type="text" value={Store_bussiness_infoEdit?.instagram} onChange={e => setPartner({ ...Store_bussiness_infoEdit, instagram: e.target.value })} className="form-control" id="websiteInput" placeholder="https://www.instagram.com/xxxxxxxx" />
-                                </div>
-                                <div className="mb-3 d-flex">
-                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
-                                        <span className="avatar-title rounded-circle fs-16 bg-success">
-                                            <FaLinkedinIn />
-                                        </span>
-                                    </div>
-                                    <input type="text" value={Store_bussiness_infoEdit?.linkedin} onChange={e => setPartner({ ...Store_bussiness_infoEdit, linkedin: e.target.value })} className="form-control" id="dribbleName" placeholder="https://www.linkedin.com/in/xxxxxxx-xxxxxx-xxxxxx/" />
-                                </div>
-                                <div className="d-flex">
-                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
-                                        <span className="avatar-title rounded-circle fs-16" style={{ background: "#1e5dff" }}>
-                                            <AiOutlineTwitter />
-                                        </span>
-                                    </div>
-                                    <input type="text" value={Store_bussiness_infoEdit?.twitter} onChange={e => setPartner({ ...Store_bussiness_infoEdit, twitter: e.target.value })} className="form-control" id="pinterestName" placeholder="https://twitter.com/xxxxxxxxxx" />
-                                </div>
-                            </div>
-                        </div>
-                        {/*end card*/}
+                     
                     </div>
                     {/*end col*/}
                     <div className="col-xxl-9">
@@ -216,6 +165,14 @@ const PartnerEdit = () => {
                                             Privacy & Terms
                                         </a>
                                     </li>
+
+                                    <li className="nav-item">
+                                        <a className="nav-link" data-bs-toggle="tab" href="#delivery_charge" role="tab">
+                                            <i className="far fa-envelope" />
+                                           Delivery & Charge
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </div>
                             <div className="card-body p-4">
@@ -440,6 +397,58 @@ const PartnerEdit = () => {
                                     </div>
                                     {/*end tab-pane*/}
 
+
+                                    <div className="tab-pane" id="delivery_charge" role="tabpanel">
+                                    <form action="javascript:void(0);">
+                                            <div className="row g-2">
+                                            
+                                                <div className="col-lg-4">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="countryInput" className="form-label">Minimum Order Value ₹ </label>
+                                                        <input type="number" value={Store_bussiness_infoEdit?.minimum_order} onChange={e => setPartner({ ...Store_bussiness_infoEdit, minimum_order: e.target.value })} className="form-control" id="countryInput" placeholder="Minimum Order Value" />
+                                                    </div>
+                                                </div>
+                                                {/*end col*/}
+                                                <div className="col-lg-4">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="cityInput" className="form-label">Carry Bag Required (Item Quantity)</label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.carry_bag_charge_minimum_qty} onChange={e => setPartner({ ...Store_bussiness_infoEdit, carry_bag_charge_minimum_qty: e.target.value })} className="form-control" id="cityInput" placeholder="Carry Bag Required (Item Quantity)" />
+                                                    </div>
+                                                </div>
+                                                {/*end col*/}
+                                                <div className="col-lg-4">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="countryInput" className="form-label">Carry Bag Charge ₹ </label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.carry_bag_charge} onChange={e => setPartner({ ...Store_bussiness_infoEdit, carry_bag_charge: e.target.value })} className="form-control" id="countryInput" placeholder="Carry Bag Charge" />
+                                                    </div>
+                                                </div>
+                                                {/*end col*/}
+                                                <div className="col-lg-6">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="zipcodeInput" className="form-label">Delivery Charge (Min Order Value)
+                                                            </label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.shipping} onChange={e => setPartner({ ...Store_bussiness_infoEdit, shipping: e.target.value })} className="form-control" minLength={5} maxLength={6} id="zipcodeInput" placeholder="Delivery Charge (Min Order Value)" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="zipcodeInput" className="form-label">Delivery Charge ₹ </label>
+                                                        <input type="text" value={Store_bussiness_infoEdit?.charges} onChange={e => setPartner({ ...Store_bussiness_infoEdit, charges: e.target.value })} className="form-control"  id="latInput" placeholder="Delivery Charge" />
+                                                    </div>
+                                                </div>
+
+
+                                                
+                                                {/*end col*/}
+                                            </div>
+                                            {/*end row*/}
+                                        </form>
+                                    </div>
+                                    {/*end tab-pane*/}
+
+
+
                                     <div className="col-lg-12">
                                         <div className="hstack gap-2 justify-content-end">
                                         {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={updateBusinessInfo} className="btn btn-primary">Update</button>}
@@ -452,6 +461,67 @@ const PartnerEdit = () => {
                         </div>
                     </div>
                     {/*end col*/}
+
+                       {/*end card*/}
+                       <div className="card">
+                            <div className="card-body">
+                                <div className="d-flex align-items-center mb-4">
+                                    <div className="flex-grow-1">
+                                        <h5 className="card-title mb-0">Social Links</h5>
+                                    </div>
+                                  
+                                </div>
+                                <div className="mb-3 d-flex">
+                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
+                                        <span className="avatar-title rounded-circle fs-16 bg-light text-dark border">
+                                            <FaMapMarkedAlt />
+                                        </span>
+                                    </div>
+                                    <input type="text" value={Store_bussiness_infoEdit?.google_map_link} onChange={e => setPartner({ ...Store_bussiness_infoEdit, google_map_link: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.google.com/maps/embed?#########" />
+                                </div>
+                                <div className="mb-3 d-flex">
+                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
+                                        <span className="avatar-title rounded-circle fs-16 bg-primary text-light">
+                                            <FaFacebookF />
+                                        </span>
+                                    </div>
+                                    <input type="text" value={Store_bussiness_infoEdit?.facebook} onChange={e => setPartner({ ...Store_bussiness_infoEdit, facebook: e.target.value })} className="form-control" id="gitUsername" placeholder="https://www.facebook.com/xxxxxxxxxx/" />
+                                </div>
+                                <div className="mb-3 d-flex">
+                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
+                                        <span className="avatar-title rounded-circle fs-16" style={{ background: "#d85252" }}>
+                                            <AiOutlineInstagram />
+                                        </span>
+                                    </div>
+                                    <input type="text" value={Store_bussiness_infoEdit?.instagram} onChange={e => setPartner({ ...Store_bussiness_infoEdit, instagram: e.target.value })} className="form-control" id="websiteInput" placeholder="https://www.instagram.com/xxxxxxxx" />
+                                </div>
+                                <div className="mb-3 d-flex">
+                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
+                                        <span className="avatar-title rounded-circle fs-16 bg-success">
+                                            <FaLinkedinIn />
+                                        </span>
+                                    </div>
+                                    <input type="text" value={Store_bussiness_infoEdit?.linkedin} onChange={e => setPartner({ ...Store_bussiness_infoEdit, linkedin: e.target.value })} className="form-control" id="dribbleName" placeholder="https://www.linkedin.com/in/xxxxxxx-xxxxxx-xxxxxx/" />
+                                </div>
+                                <div className="d-flex">
+                                    <div className="avatar-xs d-block flex-shrink-0 me-3">
+                                        <span className="avatar-title rounded-circle fs-16" style={{ background: "#1e5dff" }}>
+                                            <AiOutlineTwitter />
+                                        </span>
+                                    </div>
+                                    <input type="text" value={Store_bussiness_infoEdit?.twitter} onChange={e => setPartner({ ...Store_bussiness_infoEdit, twitter: e.target.value })} className="form-control" id="pinterestName" placeholder="https://twitter.com/xxxxxxxxxx" />
+                                </div>
+
+                                <div className="col-lg-12 mt-2">
+                                        <div className="hstack gap-2 justify-content-end">
+                                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Updating </a> : <button type="button" onClick={updateBusinessInfo} className="btn btn-primary">Update</button>}
+
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        {/*end card*/}
+
                 </div>
             </div>
         </>

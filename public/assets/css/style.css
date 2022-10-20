@@ -13,6 +13,7 @@ span {
 
 body {
     background: #f3f3f9 !important;
+    overflow : scroll;
 }
 
 .dropzone {
