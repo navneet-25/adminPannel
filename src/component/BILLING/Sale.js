@@ -16,12 +16,15 @@ import { useReactToPrint } from 'react-to-print';
 
 export const Sale = () => {
 
-    const { store_customer_list, storeProductsData, store_login_user } = useContext(ContextData);
+    const { store_customer_list,store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [customerList, setCustomerList] = useState([]);
     const [Saledate, setSaledate] = useState(new Date());
     const [selectedCustomer, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
+    const [couponData, setCouponData] = useState([]);
+    
+    
     const [allTotals, setAllTotals] = useState({
         subTotal: 0,
         sGstTotal: 0,
@@ -52,8 +55,11 @@ export const Sale = () => {
 
     useEffect(() => {
         setAllProducts(storeProductsData);
+        const CouponData = store_coupon_list.filter(obj => obj.status == 1)
+        setCouponData(CouponData);
+
         console.log("store prod", store_login_user);
-    }, [storeProductsData]);
+    }, [storeProductsData],allTotals);
 
     useScanDetection({
         onComplete: (code) => {
@@ -402,6 +408,32 @@ export const Sale = () => {
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 17, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
                                                     <h5 style={{ fontSize: 17, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
+                                                </div>
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Available Coupon</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>
+                                                        <select class="form-select " onChange={e => setRestInfo({ ...restInfo, payment_mode: e.target.value })} aria-label="Default select example">
+                                                        {couponData.map((items, index) => {
+                                                            if(Number(allTotals.grandTotal) >= Number(items.minimum_order_amount))
+                                                            {
+                                                                return (
+                                                                    <>
+                                                                     <option value={items.coupon_id}>{items.coupon_code} ( {Math.round(items.coupon_discount)}  {items.coupon_type=='amount' ? '₹ OFF':'% OFF'} )</option>
+                                                                    </>
+                                                                     )
+                                                            }
+                                                            else
+                                                            {
+                                                                return (
+                                                                <>
+                                                                     <option value={null}>Buy {Number(items.minimum_order_amount) - Number(allTotals.grandTotal)} ₹ and Get {Math.round(items.coupon_discount)} {items.coupon_type=='amount' ? '₹ OFF':'% OFF'}  </option>
+                                                               </>)
+                                                            }
+                                                            }
+                                                                 )}
+                                                        
+                                                        </select>
+                                                    </h5>
                                                 </div>
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                                                     <Checkbox onChange={e => setAllTotals({ ...allTotals, round_off: e.target.checked })}>

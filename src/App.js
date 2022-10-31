@@ -27,6 +27,8 @@ import VendorManagement from './component/PURCHASE/vendor-management';
 import DeliveryManagment from './component/Delivery/delivery-managment';
 import DeliveryBoyManagment from './component/Delivery/delivery-boy';
 
+import CouponManagment from './component/Delivery/coupon-managment';
+
 
 
 import SaleIndex from './component/SALE/sale-index';
@@ -119,7 +121,8 @@ const App = () => {
 
             <Route path="/delivery" element={<DeliveryManagment />} />
             <Route path="/delivery-boy" element={<DeliveryBoyManagment />} />
-
+            <Route path="/coupon" element={<CouponManagment />} />
+            
             
             <Route path="/company" element={<Partner />} />
             

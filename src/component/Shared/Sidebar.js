@@ -169,6 +169,7 @@ const Sidebar = () => {
                                         <li className="nav-item">
                                             <Link to="/order" className="nav-link"> ORDER </Link>
                                             <Link to="/delivery" className="nav-link" data-key="t-cover"> DELIVERY</Link>
+                                            <Link to="/coupon" className="nav-link" data-key="t-cover"> COUPON</Link>
                                         </li>
                                     </ul>
                                 </div>
