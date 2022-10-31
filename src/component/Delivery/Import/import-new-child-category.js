@@ -4,95 +4,78 @@ import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
 import { useRef } from 'react';
-import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
-export const ImportNewArea = (props) => {
+export const ImportNewChildCategory = (props) => {
 
-    const {Store_bussiness_info, master_delivery_area, store_delivery_area,  storeBussinessRelode } = useContext(ContextData);
-    const [filteredBrandsData, setFilterBrandData] = useState([]);
+    const { masterCategoryData, storeCategoryData, getToast, reloadData } = useContext(ContextData);
+    const [filteredCategoryData, setFilterCategoryData] = useState([]);
     const [isLoading, setIL] = useState(false);
     const getSelectedItemsRef = useRef(null);
     const [getAllSelectedItems, setAllSelectedItems] = useState([]);
     const adminStoreId = cookies.get("adminStoreId");
-    const adminStoreType = cookies.get("adminStoreType");
     const adminId = cookies.get("adminId");
-    const toast = useToast();
 
-    const getToast = (e) => {
-        toast({
-            title: e.title,
-            description: e.desc,
-            status: e.status,
-            duration: 3000,
-            isClosable: true,
-            position: "bottom-right"
-        })
-    }
+    const adminStoreType = cookies.get("adminStoreType");
+    const [showMasterData, setShowMasterData] = useState(masterCategoryData);
+    const [showStoreData, setShowStoreData] = useState(storeCategoryData);
 
-
-    const [showMasterData, setShowMasterData] = useState(master_delivery_area);
-    const [showStoreData, setShowStoreData] = useState(store_delivery_area);
-
-    useEffect(() => {
-        setShowStoreData(store_delivery_area); 
-    }, [store_delivery_area])
-
-    // const [master_delivery_area, setmaster_delivery_area] = useState({
+    // const [masterCategoryData, setmasterCategoryData] = useState({
     //     'store_id': adminStoreId,
-    //     'brand_type': adminStoreType,
-    //     'brand_name': null,
-    //     'brand_feature_image': null,
+    //     'Category_type': adminStoreType,
+    //     'category_name': null,
+    //     'Category_feature_image': null,
     //     'date': +new Date(),
     // });
     useEffect(() => {
 
         // const getSelectedItemsRef = useRef(null);
 
-        console.log("Store_bussiness_info.city",Store_bussiness_info.city)
-
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = store_delivery_area.filter(b => ((a.area === b.area) && (a.city === b.city)));
+            let matched = storeCategoryData.filter(b => a.id == b.master_category_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
-            } else if ((a.city.replace(/\s/g, "-").toLowerCase()) ==(Store_bussiness_info.city).replace(/\s/g, "-").toLowerCase()) {
-                obj3.push({
-                    key: a.area+ ", "+a.city+", "+a.state,
-                    id: a.id,
-                    cat: 'Group 1',
-                    area: a.area,
-                    city: a.city,
-                    state: a.state,
-                    
-                });
+            } else {
+                if (a.category_level != 0) {
+                    obj3.push({
+                        key: a.category_name,
+                        id: a.id,
+                        cat: 'Group 1',
+                        category_type: a.category_type,
+                        category_image: a.category_image,
+                        category_level: a.category_level,
+                        deceptions: a.deceptions,
+                        date: a.date
+                    });
+                }
+
             }
         })
-
-        setFilterBrandData(obj3);
-
-        console.log("filter ---->", showStoreData);
-        console.log("filter 222 ---->", store_delivery_area);
+        setFilterCategoryData(obj3);
 
         // console.log("filter", res)
 
 
-    }, [store_delivery_area]);
+    }, [storeCategoryData]);
 
 
 
-    const AddBrandToSeller = () => {
+    const AddCategoryToSeller = () => {
+
+
+        // console.log('category', getSelectedItemsRef.current.state.selectedValues)
 
         if (getSelectedItemsRef.current.state.selectedValues[0] === undefined) {
-            getToast({ title: "Please Select Brands", dec: "Requird", status: "error" });
+            getToast({ title: "Please Select Category", dec: "Requird", status: "error" });
         }
         else {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreDeliveryArea", {
+            fetch(URL + "/APP-API/Billing/importStoreChildCategory", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -102,23 +85,23 @@ export const ImportNewArea = (props) => {
 
                     store_id: adminStoreId,
                     adminId:adminId,
-                    area: getSelectedItemsRef.current.state.selectedValues
+                    Category: getSelectedItemsRef.current.state.selectedValues
 
                 })
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    // console.log("respond plot upload", responseJson)
+                    console.log("respond plot upload", responseJson)
                     if (responseJson.success) {
-                        storeBussinessRelode();
-                        getToast({ title: "Area Added ", dec: "Successful", status: "success" });
+
+                        getToast({ title: "Category Added ", dec: "Successful", status: "success" });
                         getSelectedItemsRef.current.resetSelectedValues();
 
                     } else {
                         console.log("added");
-                        // addDataToCurrentGlobal({ type: "plots", payload: store_delivery_area });
+                        // addDataToCurrentGlobal({ type: "plots", payload: storeCategoryData });
                         getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
                     }
-                    storeBussinessRelode();
+                    reloadData();
                     setIL(false);
                     for (let i = 0; i < 10; i++) {
                         document.getElementsByClassName("btn-close")[i].click();
@@ -137,8 +120,8 @@ export const ImportNewArea = (props) => {
             <div className="row">
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Select Delivery Area</label>
-                        {filteredBrandsData.length && (
+                        <label htmlFor="firstNameinput" className="form-label">Select Child Category</label>
+                        {filteredCategoryData.length && (
 
                             <Multiselect
                                 displayValue="key"
@@ -150,21 +133,19 @@ export const ImportNewArea = (props) => {
                                 onSelect={() => {
                                     setAllSelectedItems(getSelectedItemsRef.current.state.selectedValues)
                                 }}
-                                options={filteredBrandsData}
+                                options={filteredCategoryData}
                                 ref={getSelectedItemsRef}
                             // showCheckbox
                             />
 
                         )}
-  <p><small>Can't find your area ? CALL US - 639-1000-415</small></p>
 
                     </div>
                 </div>{/*end col*/}
 
-
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Area</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddCategoryToSeller} className="btn btn-primary">Add Category</button>}
                     </div>
                 </div>{/*end col*/}
             </div>{/*end row*/}

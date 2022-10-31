@@ -4,13 +4,12 @@ import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
 import { useRef } from 'react';
-import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
-export const ImportNewArea = (props) => {
+export const ImportNewBrand = (props) => {
 
-    const {Store_bussiness_info, master_delivery_area, store_delivery_area,  storeBussinessRelode } = useContext(ContextData);
+    const { masterBrandsData, storeBrandsData, getToast, reloadData } = useContext(ContextData);
     const [filteredBrandsData, setFilterBrandData] = useState([]);
     const [isLoading, setIL] = useState(false);
     const getSelectedItemsRef = useRef(null);
@@ -18,28 +17,15 @@ export const ImportNewArea = (props) => {
     const adminStoreId = cookies.get("adminStoreId");
     const adminStoreType = cookies.get("adminStoreType");
     const adminId = cookies.get("adminId");
-    const toast = useToast();
 
-    const getToast = (e) => {
-        toast({
-            title: e.title,
-            description: e.desc,
-            status: e.status,
-            duration: 3000,
-            isClosable: true,
-            position: "bottom-right"
-        })
-    }
-
-
-    const [showMasterData, setShowMasterData] = useState(master_delivery_area);
-    const [showStoreData, setShowStoreData] = useState(store_delivery_area);
+    const [showMasterData, setShowMasterData] = useState(masterBrandsData);
+    const [showStoreData, setShowStoreData] = useState(storeBrandsData);
 
     useEffect(() => {
-        setShowStoreData(store_delivery_area); 
-    }, [store_delivery_area])
+        setShowStoreData(storeBrandsData);
+    }, [storeBrandsData])
 
-    // const [master_delivery_area, setmaster_delivery_area] = useState({
+    // const [masterBrandsData, setmasterBrandsData] = useState({
     //     'store_id': adminStoreId,
     //     'brand_type': adminStoreType,
     //     'brand_name': null,
@@ -50,23 +36,21 @@ export const ImportNewArea = (props) => {
 
         // const getSelectedItemsRef = useRef(null);
 
-        console.log("Store_bussiness_info.city",Store_bussiness_info.city)
-
         let obj3 = []
 
         showMasterData.map(function (a) {
-            let matched = store_delivery_area.filter(b => ((a.area === b.area) && (a.city === b.city)));
+            let matched = storeBrandsData.filter(b => a.id === b.master_brand_id);
             if (matched.length) {
                 // obj3.push({ name: a.name, matched: true });
-            } else if ((a.city.replace(/\s/g, "-").toLowerCase()) ==(Store_bussiness_info.city).replace(/\s/g, "-").toLowerCase()) {
+            } else {
                 obj3.push({
-                    key: a.area+ ", "+a.city+", "+a.state,
+                    key: a.brand_name,
                     id: a.id,
                     cat: 'Group 1',
-                    area: a.area,
-                    city: a.city,
-                    state: a.state,
-                    
+                    brand_type: a.brand_type,
+                    brand_image: a.brand_image,
+                    deceptions: a.deceptions,
+                    date: a.date
                 });
             }
         })
@@ -74,12 +58,12 @@ export const ImportNewArea = (props) => {
         setFilterBrandData(obj3);
 
         console.log("filter ---->", showStoreData);
-        console.log("filter 222 ---->", store_delivery_area);
+        console.log("filter 222 ---->", storeBrandsData);
 
         // console.log("filter", res)
 
 
-    }, [store_delivery_area]);
+    }, [storeBrandsData]);
 
 
 
@@ -92,7 +76,7 @@ export const ImportNewArea = (props) => {
             setIL(true);
 
 
-            fetch(URL + "/APP-API/Billing/importStoreDeliveryArea", {
+            fetch(URL + "/APP-API/Billing/importStoreBrands", {
                 method: 'POST',
                 header: {
                     'Accept': 'application/json',
@@ -102,23 +86,23 @@ export const ImportNewArea = (props) => {
 
                     store_id: adminStoreId,
                     adminId:adminId,
-                    area: getSelectedItemsRef.current.state.selectedValues
+                    Brands: getSelectedItemsRef.current.state.selectedValues
 
                 })
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    // console.log("respond plot upload", responseJson)
+                    console.log("respond plot upload", responseJson)
                     if (responseJson.success) {
-                        storeBussinessRelode();
-                        getToast({ title: "Area Added ", dec: "Successful", status: "success" });
+
+                        getToast({ title: "Brand Added ", dec: "Successful", status: "success" });
                         getSelectedItemsRef.current.resetSelectedValues();
 
                     } else {
                         console.log("added");
-                        // addDataToCurrentGlobal({ type: "plots", payload: store_delivery_area });
+                        // addDataToCurrentGlobal({ type: "plots", payload: storeBrandsData });
                         getToast({ title: "Failed Something Error", dec: "Successful", status: "error" });
                     }
-                    storeBussinessRelode();
+                    reloadData();
                     setIL(false);
                     for (let i = 0; i < 10; i++) {
                         document.getElementsByClassName("btn-close")[i].click();
@@ -137,7 +121,7 @@ export const ImportNewArea = (props) => {
             <div className="row">
                 <div className="col-md-12">
                     <div className="mb-3">
-                        <label htmlFor="firstNameinput" className="form-label">Select Delivery Area</label>
+                        <label htmlFor="firstNameinput" className="form-label">Select Brands</label>
                         {filteredBrandsData.length && (
 
                             <Multiselect
@@ -156,7 +140,6 @@ export const ImportNewArea = (props) => {
                             />
 
                         )}
-  <p><small>Can't find your area ? CALL US - 639-1000-415</small></p>
 
                     </div>
                 </div>{/*end col*/}
@@ -164,7 +147,7 @@ export const ImportNewArea = (props) => {
 
                 <div className="col-lg-12">
                     <div className="text-center mt-2">
-                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Area</button>}
+                        {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Adding </a> : <button type="button" onClick={AddBrandToSeller} className="btn btn-primary">Add Brand</button>}
                     </div>
                 </div>{/*end col*/}
             </div>{/*end row*/}

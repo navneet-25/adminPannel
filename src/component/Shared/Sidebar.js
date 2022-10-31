@@ -51,7 +51,7 @@ const Sidebar = () => {
                                 <div className="collapse menu-dropdown" id="sidebarAuth">
                                     <ul className="nav nav-sm flex-column">
                                         <li className="nav-item">
-                                            <Link to="/dashboard" className="nav-link" data-key="t-cover"> Dashboard
+                                            <Link to="/stock-dashboard" className="nav-link" data-key="t-cover">Stock Dashboard
                                             </Link>
                                         </li>
                                     </ul>

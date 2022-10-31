@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import HomePage from './page/HomePage';
+import StockDashPage from './page/StockDashPage';
+
 import MainContainer from './component/Shared/MainContainer';
 // import CustomerDetails from './component/Employee/CustomerDetails';
 // import EditCustomer from './component/Employee/EditCustomer';
@@ -20,6 +22,12 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import PurchaseIndex from './component/PURCHASE/purchase-index';
 import VendorManagement from './component/PURCHASE/vendor-management';
+
+
+import DeliveryManagment from './component/Delivery/delivery-managment';
+import DeliveryBoyManagment from './component/Delivery/delivery-boy';
+
+
 
 import SaleIndex from './component/SALE/sale-index';
 import CustomerManagement from './component/SALE/customer-management';
@@ -71,7 +79,9 @@ const App = () => {
           <Routes>
 
             <Route path="/" element={<HomePage />} />
+            <Route path="/stock-dashboard" element={<StockDashPage />} />
 
+            
             <Route path="/purchaseManagement" >
               <Route index element={<PurchaseIndex />} />
               <Route path="purchase" element={<VendorManagement />} />
@@ -106,6 +116,13 @@ const App = () => {
               <Route path="brand" element={<BrandManagement />} />
             </Route>
 
+
+            <Route path="/delivery" element={<DeliveryManagment />} />
+            <Route path="/delivery-boy" element={<DeliveryBoyManagment />} />
+
+            
+            <Route path="/company" element={<Partner />} />
+            
             <Route path="/company" element={<Partner />} />
             <Route path="/company/edit" element={<PartnerEdit />} />
 
