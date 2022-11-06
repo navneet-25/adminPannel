@@ -22,6 +22,16 @@ body {
     border: 1px solid black;
 }
 
+.prinerLogo {
+
+    padding: 0.25rem;
+    background-color: var(--vz-body-bg);
+    border: 1pxsolidvar(--vz-border-color);
+    border-radius: 0.25rem;
+    max-width: 25%;
+    height: auto;
+}
+
 .dzu-dropzone {
     overflow: hidden !important;
     border: 2px dashed #bebebe !important;

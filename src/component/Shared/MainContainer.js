@@ -1,15 +1,21 @@
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { useContext,  } from 'react';
 
+import ContextData from '../../context/MainContext';
 
 const MainContainer = ({ children }) => {
+    const { Store_bussiness_info} = useContext(ContextData);
 
     const location = useLocation();
 
     return (
         <>
             <div>
+            <Helmet> <title>{Store_bussiness_info?.buss_name}</title>  </Helmet>
+
                 {location.pathname === "/login" ? <>{children}</> :
                     <div id="layout-wrapper">
                         <Header />
