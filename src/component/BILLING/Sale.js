@@ -12,36 +12,41 @@ import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from '../../URL';
 import { useReactToPrint } from 'react-to-print';
 import { useToast } from '@chakra-ui/react';
+import QRCode from "react-qr-code";
 
 
 
-export const Sale = () => { 
 
-    const { store_customer_list,Store_bussiness_info,store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
+export const Sale = () => {
+
+    const { store_customer_list, Store_bussiness_info, store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [customerList, setCustomerList] = useState([]);
     const [Saledate, setSaledate] = useState(new Date());
     const [selectedCustomer, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
     const [couponData, setCouponData] = useState([]);
+    const [isLoading, setIL] = useState(false);
     const toast = useToast();
 
     var DateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    var BillDate  = new Date(Saledate);
+    var BillDate = new Date(Saledate);
 
 
     const [customerShoppingDetails, setcustomerShoppingDetails] = useState({
-        'mobile': selectedCustomer?.mobile,
-        'customer_type': '',
-        'no_of_shopping_time': 0,
-        'shopping_value': 0 });
+        mobile: selectedCustomer?.mobile,
+        customer_type: '',
+        no_of_shopping_time: 0,
+        shopping_value: 0
+    });
 
 
-        const [useCouponData, setuseCouponData] = useState({
+    const [useCouponData, setuseCouponData] = useState({
 
-            'is_coupon_applied':0,
-            'coupon_code': 0,
-            'coupon_id': null });
+        is_coupon_applied: 0,
+        coupon_code: 0,
+        coupon_id: null
+    });
 
 
 
@@ -51,14 +56,14 @@ export const Sale = () => {
         cGstTotal: 0,
         grandTotal: 0,
         discount: 0,
-        coupon_discount_value:0,
+        coupon_discount_value: 0,
         additional_charges: 0,
         amount_paid: 0,
         outstanding: 0,
         round_off: false,
         round_off_value: 0,
         fully_paid: false,
-      
+
 
     });
     const [restInfo, setRestInfo] = useState({
@@ -66,11 +71,11 @@ export const Sale = () => {
         payment_mode: "Cash",
         notes: "",
         stock_location: 'Store',
-        order_no: (new Date()).getTime()+new Date().getDate()+""+new Date().getHours()+""+new Date().getMinutes()+""+new Date().getSeconds(),
+        order_no: (new Date()).getTime() + new Date().getDate() + "" + new Date().getHours() + "" + new Date().getMinutes() + "" + new Date().getSeconds(),
     });
     const componentRef = useRef();
 
-    
+
 
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
@@ -94,10 +99,10 @@ export const Sale = () => {
         setCouponData(CouponData);
 
         console.log("store prod", store_login_user);
-    }, [storeProductsData],allTotals);
+    }, [storeProductsData], allTotals);
 
 
-  
+
     useScanDetection({
         onComplete: (code) => {
             const prod = allProducts?.find(o => o.product_bar_code == code);
@@ -150,11 +155,13 @@ export const Sale = () => {
         const grandTotal = subTotal + sGstTotal + cGstTotal;
 
         setAllTotals({
+            ...allTotals,
             discount,
             subTotal,
             sGstTotal,
             cGstTotal,
-            grandTotal
+            grandTotal,
+            
         })
     }, [addedItems]);
 
@@ -166,7 +173,7 @@ export const Sale = () => {
             ...allTotals,
             // grandTotal: discountedPrice
         })
-    }, [allTotals.discount]);
+    }, [allTotals?.discount]);
 
     useEffect(() => {
         const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } = allTotals;
@@ -176,7 +183,7 @@ export const Sale = () => {
             ...allTotals,
             grandTotal: AdditionalChargesTotal
         })
-    }, [allTotals.additional_charges]);
+    }, [allTotals?.additional_charges]);
 
     useEffect(() => {
         const { grandTotal, amount_paid } = allTotals;
@@ -186,7 +193,7 @@ export const Sale = () => {
             ...allTotals,
             outstanding: outstanding
         })
-    }, [allTotals.amount_paid]);
+    }, [allTotals?.amount_paid]);
 
     useEffect(() => {
         const { fully_paid } = allTotals;
@@ -194,7 +201,7 @@ export const Sale = () => {
             ...allTotals,
             outstanding: 0,
         })
-    }, [allTotals.fully_paid]);
+    }, [allTotals?.fully_paid]);
 
     const handleOnSelect = (item) => {
         console.log("barcode ---->", item.product_bar_code);
@@ -245,157 +252,183 @@ export const Sale = () => {
     }
 
     const submitSale = () => {
-        const data = JSON.stringify({
+
+        console.log("cpupon value",allTotals?.coupon_discount_value)
+        
+
+        setIL(true);
+        if (selectedCustomer.mobile == undefined || selectedCustomer.mobile == null) {
+            getToast({ title: "Customer Mobile Number", dec: "Requird", status: "error" });
+            setIL(false);
+        }
+
+        else if (allTotals?.grandTotal == 0) {
+            getToast({ title: "Please add items", dec: "Requird", status: "error" });
+            setIL(false);
+
+        }
+        else {
+
+            const data = JSON.stringify({
 
 
-            store_id: store_login_user.store_id,
-            customer_mobile: selectedCustomer.mobile,
-            user_id: store_login_user.id,
-            sub_total: allTotals.subTotal,
-            i_gst: Number(allTotals.sGstTotal) + Number(allTotals.cGstTotal),
-            s_gst: Number(allTotals.sGstTotal),
-            c_gst: Number(allTotals.cGstTotal),
-            extra_charge: allTotals.additional_charges,
-            discount: allTotals.discount,
-            notes: restInfo.notes,
-            total_payment: allTotals.grandTotal,
-            amount_paid: allTotals.amount_paid,
-            outstanding: allTotals.outstanding,
-            stock_location: restInfo.stock_location,
-            payment_mode: restInfo.payment_mode,
-            purchaes_date: Saledate.toLocaleDateString(),
-            product_list: addedItems
-
-        });
-
-        console.log(" all data from data ---->", data);
-
-        fetch(URLDomain + "/APP-API/Billing/SaleStoreProducts", {
-            method: 'POST',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-
-            },
-            body: data
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                // functionality.fetchAllData(responseJson);
-                console.log(" Sale server res ---->", responseJson);
+                store_id: store_login_user.store_id,
+                customer_mobile: selectedCustomer.mobile,
+                user_id: store_login_user.id,
+                sub_total: allTotals?.subTotal,
+                i_gst: Number(allTotals?.sGstTotal) + Number(allTotals?.cGstTotal),
+                s_gst: Number(allTotals?.sGstTotal),
+                c_gst: Number(allTotals?.cGstTotal),
+                extra_charge: allTotals?.additional_charges,
+                discount: allTotals?.discount,
+                notes: restInfo.notes,
+                order_no: restInfo.order_no,
+                total_payment: allTotals?.grandTotal,
+                amount_paid: allTotals?.amount_paid,
+                outstanding: allTotals?.outstanding,
+                stock_location: restInfo.stock_location,
+                payment_mode: restInfo.payment_mode,
+                is_coupon_applied: useCouponData.is_coupon_applied,
+                coupon_code: useCouponData.coupon_code,
+                coupon_discount_value: allTotals?.coupon_discount_value,
+                coupon_id: useCouponData.coupon_id,
+                purchaes_date: Saledate.toLocaleDateString(),
+                product_list: addedItems,
 
 
-            })
-            .catch((error) => {
-                console.error(error);
             });
+
+            fetch(URLDomain + "/APP-API/Billing/SaleStoreProducts", {
+                method: 'POST',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+
+                },
+                body: data
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    // functionality.fetchAllData(responseJson);
+                    console.log(" Sale server res ---->", responseJson);
+                    setIL(false);
+
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
     };
 
-  const  formatAMPM =(date)=> {
+    const formatAMPM = (date) => {
         var hours = date.getHours();
         var minutes = date.getMinutes();
         var ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0'+minutes : minutes;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
         var strTime = hours + ':' + minutes + ' ' + ampm;
         return strTime;
-      }
+    }
 
-const getCustomerDetails = (mobile) =>
-{
-    setSelectCustomer({ mobile})
-    fetch(URLDomain + "/APP-API/Billing/getCustomerBuyingDetails", {
-        method: 'POST',
-        header: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ mobile:mobile ,store_id: store_login_user.store_id })    })
-        .then((response) => response.json())
-        .then((responseJson) => {
-           
-            setcustomerShoppingDetails({
-                customer_type:responseJson.customer_type,
-                no_of_shopping_time:responseJson.no_of_shopping_time,
-                shopping_value:responseJson.shopping_value,
-            })
-          
-        })
-        .catch((error) => {
-            //  console.error(error);
-        });
-
-
-}
-
-const getCouponUseDetails  = (coupon_id) =>
-{
-    
-    setuseCouponData({is_coupon_applied:0, coupon_code:0,coupon_id:null})
-    setAllTotals({ ...allTotals,grandTotal:Number(allTotals.grandTotal)+Number(allTotals.coupon_discount_value),coupon_discount_value:0, })
-
-    if(!isNaN(parseFloat(coupon_id)))
-    {
-
-        fetch(URLDomain + "/APP-API/Billing/cheakUserUsedCoupon", {
+    const getCustomerDetails = (mobile) => {
+        setSelectCustomer({ mobile })
+        fetch(URLDomain + "/APP-API/Billing/getCustomerBuyingDetails", {
             method: 'POST',
             header: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify({ 
-                coupon_id:coupon_id ,
-                mobile:selectedCustomer.mobile,
-                store_id: store_login_user.store_id })    })
+            body: JSON.stringify({ mobile: mobile, store_id: store_login_user.store_id })
+        })
             .then((response) => response.json())
             .then((responseJson) => {
 
-              
-                if(responseJson.coupon_used==0)
-                {
-                   if(responseJson.coupon_data.coupon_type=='amount')
-                   {
-                    setAllTotals({
-                        ...allTotals,
-                        coupon_discount_value:Math.round(responseJson.coupon_data.coupon_discount),
-                        grandTotal:Number(allTotals.grandTotal)-Number(responseJson.coupon_data.coupon_discount)              
-                    })
+                setcustomerShoppingDetails({
+                    customer_type: responseJson.customer_type,
+                    no_of_shopping_time: responseJson.no_of_shopping_time,
+                    shopping_value: responseJson.shopping_value,
+                })
 
-                   }
-                   else
-                   {
-                    setAllTotals({
-                        ...allTotals,
-                        coupon_discount_value:Math.round(responseJson.coupon_data.coupon_discount),
-                        grandTotal:(allTotals.grandTotal)-(responseJson.coupon_data.coupon_discount)               
-                    })
-                   }
-
-                    setuseCouponData({
-                        is_coupon_applied:1,
-                        coupon_code:responseJson.coupon_data.coupon_code,
-                        coupon_id:responseJson.coupon_data.coupon_id,
-                    })
-                     getToast({ title: "Coupon Applied ", dec: "Successful", status: "success" });
-
-
-                            } else {
-                        getToast({ title: "Coupon used already for this customer", dec: "ERROR", status: "error" });
-
-                }
-               
-        
-              
             })
             .catch((error) => {
                 //  console.error(error);
             });
-    
+
 
     }
 
+    const getCouponUseDetails = (coupon_id) => {
 
-}
+        setuseCouponData({ is_coupon_applied: 0, coupon_code: 0, coupon_id: null })
+        setAllTotals({grandTotal: Number(allTotals?.grandTotal) + Number(allTotals?.coupon_discount_value), coupon_discount_value: 0,
+
+            ...allTotals
+            
+        })
+
+        if (!isNaN(parseFloat(coupon_id))) {
+
+            fetch(URLDomain + "/APP-API/Billing/cheakUserUsedCoupon", {
+                method: 'POST',
+                header: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    coupon_id: coupon_id,
+                    mobile: selectedCustomer.mobile,
+                    store_id: store_login_user.store_id
+                })
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+
+
+                    if (responseJson.coupon_used == 0) {
+                        if (responseJson.coupon_data.coupon_type == 'amount') {
+                            setAllTotals({
+                                 coupon_discount_value: Math.round(responseJson.coupon_data.coupon_discount),
+                                 grandTotal: Number(allTotals?.grandTotal) - Number(responseJson.coupon_data.coupon_discount),
+                                 ...allTotals
+                            })
+
+                        }
+                        else {
+                            setAllTotals({
+                               
+                                coupon_discount_value: Math.round(responseJson.coupon_data.coupon_discount),
+                                grandTotal: (allTotals?.grandTotal) - (responseJson.coupon_data.coupon_discount),
+                                ...allTotals
+                            })
+                        }
+
+                        setuseCouponData({
+                            is_coupon_applied: 1,
+                            coupon_code: responseJson.coupon_data.coupon_code,
+                            coupon_id: responseJson.coupon_data.coupon_id,
+                        })
+                        getToast({ title: "Coupon Applied ", dec: "Successful", status: "success" });
+
+
+                    } else {
+                        getToast({ title: "Coupon used already for this customer", dec: "ERROR", status: "error" });
+
+                    }
+
+
+
+                })
+                .catch((error) => {
+                    //  console.error(error);
+                });
+
+
+        }
+
+
+    }
     return (
         <>
 
@@ -452,7 +485,7 @@ const getCouponUseDetails  = (coupon_id) =>
                                                             <h5 className=''>Times: <strong> {customerShoppingDetails?.no_of_shopping_time}</strong></h5>
                                                             <h5 className=''>Total: <strong> ₹ {(customerShoppingDetails?.shopping_value)}</strong></h5>
                                                             <h5 className=''>Mobile: <strong> {selectedCustomer?.mobile}</strong></h5>
-                                                          
+
                                                         </div>
                                                     </div> : null}
                                                 </div>
@@ -560,34 +593,32 @@ const getCouponUseDetails  = (coupon_id) =>
                                             <div className="col-md-6">
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 17, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
-                                                    <h5 style={{ fontSize: 17, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal.toLocaleString('en-IN')}</h5>
+                                                    <h5 style={{ fontSize: 17, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals?.grandTotal.toLocaleString('en-IN')}</h5>
                                                 </div>
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Available Coupon</h5>
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>
                                                         <select class="form-select "
-                                                         onChange={e =>  getCouponUseDetails(e.target.value)}
-                                                         aria-label="Default select example">
+                                                            onChange={e => getCouponUseDetails(e.target.value)}
+                                                            aria-label="Default select example">
                                                             <option value={null}>Choose Coupon</option>
-                                                        {couponData.map((items, index) => {
-                                                            if(Number(allTotals.grandTotal) >= Number(items.minimum_order_amount))
-                                                            {
-                                                                return (
-                                                                    <>
-                                                                     <option  value={items.coupon_id}>{items.coupon_code} ( {Math.round(items.coupon_discount)}  {items.coupon_type=='amount' ? '₹ OFF':'% OFF'} )</option>
-                                                                    </>
-                                                                     )
+                                                            {couponData.map((items, index) => {
+                                                                if (Number(allTotals?.grandTotal) >= Number(items.minimum_order_amount)) {
+                                                                    return (
+                                                                        <>
+                                                                            <option value={items.coupon_id}>{items.coupon_code} ( {Math.round(items.coupon_discount)}  {items.coupon_type == 'amount' ? '₹ OFF' : '% OFF'} )</option>
+                                                                        </>
+                                                                    )
+                                                                }
+                                                                else {
+                                                                    return (
+                                                                        <>
+                                                                            <option value={null}> Buy {Number(items.minimum_order_amount) - Number(allTotals?.grandTotal)} ₹ More and Get {Math.round(items.coupon_discount)} {items.coupon_type == 'amount' ? '₹ OFF' : '% OFF'}  </option>
+                                                                        </>)
+                                                                }
                                                             }
-                                                            else
-                                                            {
-                                                                return (
-                                                                <>
-                                                                     <option value={null}> Buy {Number(items.minimum_order_amount) - Number(allTotals.grandTotal)} ₹ More and Get {Math.round(items.coupon_discount)} {items.coupon_type=='amount' ? '₹ OFF':'% OFF'}  </option>
-                                                               </>)
-                                                            }
-                                                            }
-                                                                 )}
-                                                        
+                                                            )}
+
                                                         </select>
                                                     </h5>
                                                 </div>
@@ -608,7 +639,10 @@ const getCouponUseDetails  = (coupon_id) =>
                                                     </h5>
                                                 </div>
                                                 <div className="py-3 px-5 mt-5">
-                                                    <button type="button" onClick={submitSale} class="btn btn-success waves-effect waves-light w-100 ">Submit</button>
+
+
+                                                    {isLoading ? <a href="javascript:void(0)" className="text-success"><i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" /> Wait.. </a> : <button type="button" onClick={submitSale} class="btn btn-success waves-effect waves-light w-100 ">Submit</button>}
+
                                                     <ReactToPrint
                                                         trigger={() => <button type="button" class="btn btn-warning waves-effect waves-light w-100 mt-3">Print</button>}
                                                         content={() => componentRef.current}
@@ -618,53 +652,55 @@ const getCouponUseDetails  = (coupon_id) =>
                                             </div>
                                             <div className="col-md-6 px-0 py-3" style={{ borderLeft: "1px solid #d9d9d9" }}>
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Pre Discount</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>-<BiRupee /> {allTotals?.discount?.toLocaleString('en-IN')}</h5>
+                                                </div>
+
+
+                                                <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Sub Total</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.subTotal?.toLocaleString('en-IN')}</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals?.subTotal?.toLocaleString('en-IN')}</h5>
                                                 </div>
 
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>SGST</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.sGstTotal?.toLocaleString('en-IN')}</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals?.sGstTotal?.toLocaleString('en-IN')}</h5>
                                                 </div>
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>CGST</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals.cGstTotal?.toLocaleString('en-IN')}</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>+<BiRupee /> {allTotals?.cGstTotal?.toLocaleString('en-IN')}</h5>
                                                 </div>
- <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
- <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Discount</h5>
- <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>-<BiRupee /> {allTotals.discount?.toLocaleString('en-IN')}</h5>
-</div>
 
-{useCouponData.is_coupon_applied==1?(
- <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
- <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Extra Discount</h5>
- <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>-<BiRupee /> {allTotals.coupon_discount_value?.toLocaleString('en-IN')}</h5>
-</div>
-):null}
-                                               
+                                                {useCouponData.is_coupon_applied == 1 ? (
+                                                    <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                                                        <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Extra Discount</h5>
+                                                        <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>-<BiRupee /> {allTotals?.coupon_discount_value?.toLocaleString('en-IN')}</h5>
+                                                    </div>
+                                                ) : null}
+
 
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Total Amount</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals.grandTotal?.toLocaleString('en-IN')}</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /> {allTotals?.grandTotal?.toLocaleString('en-IN')}</h5>
                                                 </div>
 
 
 
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}></h5>
-                                                    {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
+                                                    {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals?.grandTotal.toLocaleString('en-IN')}</h5> */}
                                                     <Checkbox onChange={e => setAllTotals({ ...allTotals, fully_paid: e.target.checked })}>
                                                         <h5 style={{ fontSize: 14, margin: 0, fontWeight: "700", color: "black" }}>Mark as fully paid</h5>
                                                     </Checkbox>
                                                 </div>
                                                 <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>Amount Paid</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /><input type="number" disabled={allTotals.fully_paid}
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}><BiRupee /><input type="number" disabled={allTotals?.fully_paid}
                                                         onChange={e => setAllTotals({ ...allTotals, amount_paid: e.target.value })} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></h5>
                                                 </div>
                                                 <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                                                     <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "green" }}>Outstanding</h5>
-                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "green" }}><BiRupee /> {allTotals.outstanding ? allTotals.outstanding.toLocaleString('en-IN') : 0}</h5>
+                                                    <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "green" }}><BiRupee /> {allTotals?.outstanding ? allTotals?.outstanding.toLocaleString('en-IN') : 0}</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -679,39 +715,39 @@ const getCouponUseDetails  = (coupon_id) =>
                 {/* end col */}
             </div>
             {/* section-to-print */}
-            <div 
-            // id='section-to-print'
-             ref={componentRef}>
+            <div
+                // id='section-to-print'
+                ref={componentRef}>
                 <div className='POS_header px-1'>
 
-                <div className=" d-flex justify-content-center">
-                                <img src={Store_bussiness_info?.logo} alt="user-img" className="prinerLogo rounded-circle" />
-                            </div>
+                    <div className=" d-flex justify-content-center">
+                        <img src={Store_bussiness_info?.logo} alt="user-img" className="prinerLogo rounded-circle" />
+                    </div>
 
-  <div className="col-auto ">
+                    <div className="col-auto ">
 
 
-                           
-                            <h3 className="text-dark mb-1">{Store_bussiness_info?.buss_name}</h3>
-                                <p className="text-dark-75">{Store_bussiness_info?.tag_line}</p>
 
-                            <p className="text-dark-75">{Store_bussiness_info?.strteet_linn1} {Store_bussiness_info?.strteet_linn2} {Store_bussiness_info?.area} {Store_bussiness_info?.city} </p>
-                            <p className="text-dark-75">{Store_bussiness_info?.mobile1} {Store_bussiness_info?.mobile2} </p>
-                            
-    </div>
+                        <h3 className="text-dark mb-1">{Store_bussiness_info?.buss_name}</h3>
+                        <p className="text-dark-75">{Store_bussiness_info?.tag_line}</p>
+
+                        <p className="text-dark-75">{Store_bussiness_info?.strteet_linn1} {Store_bussiness_info?.strteet_linn2} {Store_bussiness_info?.area} {Store_bussiness_info?.city} </p>
+                        <p className="text-dark-75">{Store_bussiness_info?.mobile1} {Store_bussiness_info?.mobile2} </p>
+
+                    </div>
                 </div>
                 <table class="bill-details">
                     <tbody >
-                        {Store_bussiness_info.gst_no!=null?(
+                        {Store_bussiness_info.gst_no != null ? (
                             <tr><td className='text-center'>
                                 GST No : <span > {Store_bussiness_info?.gst_no}</span>
-                                </td></tr>
-                        ):null}
-                         {Store_bussiness_info.fassai_no!=null?(
+                            </td></tr>
+                        ) : null}
+                        {Store_bussiness_info.fassai_no != null ? (
                             <tr><td className='text-center'>
                                 Fassai No : <span> {Store_bussiness_info?.fassai_no}</span>
-                                </td></tr>
-                        ):null}
+                            </td></tr>
+                        ) : null}
                         <tr>
                             <td className='text-center'>Date : <span>{(BillDate).toLocaleDateString("en-US", DateOptions)} , {formatAMPM(BillDate)}</span></td>
                         </tr>
@@ -719,7 +755,7 @@ const getCouponUseDetails  = (coupon_id) =>
                             <td className='text-center'>Bill No : <span>{restInfo.order_no}</span></td>
                         </tr>
                         <tr>
-                            <th class="center-align text-center" colspan="2"><span class="receipt">No Of Items</span></th>
+                            <th class="center-align text-center" colspan="2"><span class="receipt">Mo {selectedCustomer?.mobile}</span></th>
                         </tr>
                     </tbody>
                 </table>
@@ -727,7 +763,7 @@ const getCouponUseDetails  = (coupon_id) =>
                 <table class="items m-1">
                     <thead>
                         <tr>
-                            <th style={{width:'60%'}} class="heading name">Item</th>
+                            <th style={{ width: '60%' }} class="heading name">Item</th>
                             <th class="heading qty">Qty</th>
                             <th class="heading rate">Rate</th>
                             <th class="heading amount">Amt</th>
@@ -739,7 +775,7 @@ const getCouponUseDetails  = (coupon_id) =>
                             addedItems.map((items, index) => {
                                 return (
                                     <tr>
-                                        <td style={{width:'60%'}}>{items.product_full_name}</td>
+                                        <td style={{ width: '60%' }}>{items.product_full_name}</td>
                                         <td>{items.billing_quantity}</td>
                                         <td class="price">{items.sale_price}</td>
                                         <td class="price">{items.amount_total}</td>
@@ -749,31 +785,32 @@ const getCouponUseDetails  = (coupon_id) =>
                         }
 
                         <tr>
-                            <td colspan="4" class="sum-up line">Subtotal</td>
-                            <td class="line price">{allTotals.subTotal?.toLocaleString('en-IN')}</td>
+                            <td colspan="4" class="sum-up line">Pre Discount</td>
+                            <td class="line price">{(allTotals?.discount).toLocaleString('en-IN')}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="sum-up ">Subtotal</td>
+                            <td class=" price">{allTotals?.subTotal?.toLocaleString('en-IN')}</td>
                         </tr>
                         <tr>
                             <td colspan="4" class="sum-up">GST</td>
-                            <td class="price">{(allTotals.sGstTotal+allTotals.cGstTotal).toLocaleString('en-IN')}</td>
+                            <td class="price">{(allTotals?.sGstTotal + allTotals?.cGstTotal).toLocaleString('en-IN')}</td>
                         </tr>
 
-                        <tr>
-                            <td colspan="4" class="sum-up">Discount</td>
-                            <td class="price">{(allTotals.discount).toLocaleString('en-IN')}</td>
-                        </tr>
 
-{useCouponData.is_coupon_applied==1?(
-  <tr>
-  <td colspan="4" class="sum-up">Extra Discount</td>
-  <td class="price">{(allTotals.coupon_discount_value).toLocaleString('en-IN')}</td>
-</tr>
-):null}
+
+                        {useCouponData.is_coupon_applied == 1 ? (
+                            <tr>
+                                <td colspan="4" class="sum-up">Extra Discount</td>
+                                <td class="price">{(allTotals?.coupon_discount_value).toLocaleString('en-IN')}</td>
+                            </tr>
+                        ) : null}
 
 
 
                         <tr>
                             <th colspan="4" class="total text">Total</th>
-                            <th class="total price">{allTotals.grandTotal.toLocaleString('en-IN')}</th>
+                            <th class="total price">{allTotals?.grandTotal.toLocaleString('en-IN')}</th>
                         </tr>
                     </tbody>
                 </table>
@@ -782,11 +819,19 @@ const getCouponUseDetails  = (coupon_id) =>
                         Paid by : <span>{restInfo.payment_mode}</span>
                     </p>
                     <p style={{ textAlign: "center" }}>
-                        Thank you for your shopping...!
+                        Thank you for shopping with {Store_bussiness_info?.buss_name}
                     </p>
                 </section>
+                <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" }}>
+                    <QRCode
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        value={URLDomain + '/online-bill/' + restInfo?.order_no}
+                        viewBox={`0 0 256 256`}
+                    />
+                </div>
                 <div className='POS_footer' style={{ textAlign: "center" }}>
-                    <p>{Store_bussiness_info?.buss_name}</p>
+                    <p>Scan QR Code </p>
                 </div>
             </div>
         </>
