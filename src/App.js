@@ -17,7 +17,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 // import BuyLeads from './component/Leads/BuyLeads';
 // import ManageLeads from './component/Leads/ManageLeads';
 // import AddPlots from './component/Plot/AddPlots';
-// import BannerSettings from './component/Settings/Website/Banner';
+import BannerSettings from './component/Settings/Website/Banner';
 // import TestimonialSettings from './component/Settings/Website/Testimonial/Testimonial';
 
 import PurchaseIndex from './component/PURCHASE/purchase-index';
@@ -37,6 +37,9 @@ import CustomerManagement from './component/SALE/customer-management';
 
 import PurchaseHistory from './component/PURCHASE/purchase-history';
 import PurchaseHistoryRecord from './component/PURCHASE/purchase-history-record';
+
+
+import SalesHistory from './component/SALE/sale-history';
 
 
 import ProductIndex from './component/PRODUCT/product-index';
@@ -94,6 +97,7 @@ const App = () => {
 
             <Route path="/salesManagement" >
               <Route index element={<SaleIndex />} />
+              <Route path="sales-history" element={<SalesHistory />} />
               <Route path="customers" element={<CustomerManagement />} />
             </Route>
 
@@ -124,7 +128,7 @@ const App = () => {
             <Route path="/coupon" element={<CouponManagment />} />
             
             
-            <Route path="/company" element={<Partner />} />
+            <Route path="/settings/banners" element={<BannerSettings />} />
             
             <Route path="/company" element={<Partner />} />
             <Route path="/company/edit" element={<PartnerEdit />} />

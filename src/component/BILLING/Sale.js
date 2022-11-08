@@ -19,8 +19,7 @@ import QRCode from "react-qr-code";
 
 export const Sale = () => {
 
-    const { store_customer_list, Store_bussiness_info, store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
-    const [customerList, setCustomerList] = useState([]);
+    const {  Store_bussiness_info, store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [Saledate, setSaledate] = useState(new Date());
     const [selectedCustomer, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
@@ -71,7 +70,7 @@ export const Sale = () => {
         payment_mode: "Cash",
         notes: "",
         stock_location: 'Store',
-        order_no: (new Date()).getTime() + new Date().getDate() + "" + new Date().getHours() + "" + new Date().getMinutes() + "" + new Date().getSeconds(),
+        order_no: (new Date()).getTime() + new Date().getDate() + "" + new Date().getHours() + "" + new Date().getMinutes() + "" + new Date().getSeconds()+""+store_login_user.id,
     });
     const componentRef = useRef();
 
@@ -131,9 +130,6 @@ export const Sale = () => {
         },
     });
 
-    useEffect(() => {
-        setCustomerList(store_customer_list)
-    }, [store_customer_list]);
 
     useEffect(() => {
         const subTotalGet = addedItems.reduce((acc, obj) => {
@@ -271,7 +267,7 @@ export const Sale = () => {
 
             const data = JSON.stringify({
 
-
+                customer_type:customerShoppingDetails?.customer_type,
                 store_id: store_login_user.store_id,
                 customer_mobile: selectedCustomer.mobile,
                 user_id: store_login_user.id,
@@ -469,13 +465,7 @@ export const Sale = () => {
                                                     <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                         <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
                                                         <div>
-                                                            <datalist id="suggestions" onSelect={e => console.log("heyeyyeyeye ---->", e)}>
-                                                                {customerList?.map((customers, index) => {
-                                                                    return (
-                                                                        <option>{customers.mobile}</option>
-                                                                    )
-                                                                })}
-                                                            </datalist>
+                                                           
                                                             <input type="text" list="suggestions" class="form-control" onChange={e => e.target.value.length == 10 && getCustomerDetails(e.target.value)} placeholder="Mobile..." autocomplete="on" id="search-options" />
                                                         </div>
                                                     </div>
@@ -716,7 +706,7 @@ export const Sale = () => {
             </div>
             {/* section-to-print */}
             <div
-                // id='section-to-print'
+                id='section-to-print'
                 ref={componentRef}>
                 <div className='POS_header px-1'>
 

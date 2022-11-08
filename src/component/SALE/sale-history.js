@@ -4,11 +4,11 @@ import ContextData from "../../context/MainContext";
 import URL from '../../URL';
 
 import { ImportNewProduct } from "./Import/import-new-product";
-import { AddVendorForm } from "./Add/vendor-add-form";
+// import { AddVendorForm } from "./Add/vendor-add-form";
 // import { AddUnitForm } from "./Add/unit-add-form";
 // import { vendorDataComp } from "./Update/vendorDataComp";
 // import { UpdateProductStockComp } from "./Update/UpdateProductStockComp";
-import { UpdateVendor } from "./Update/UpdateVendor";
+// import { UpdateVendor } from "./Update/UpdateVendor";
 import { useNavigate } from 'react-router';
 
 import SweetAlert from 'react-bootstrap-sweetalert';
@@ -35,13 +35,13 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 
-const PurchaseHistory = () => {
-    const { store_vendor_purchase_record, removeDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
+const SalesHistory = () => {
+    const { store_customer_purchase_record, removeDataToCurrentGlobal, getToast, reloadData } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [vendorData, getVendorData] = useState({});
     // const [downloadBarcode, setdownloadBarcode] = useState({}); 
-    const [showData, setShowData] = useState(store_vendor_purchase_record);
+    const [showData, setShowData] = useState(store_customer_purchase_record);
     const navigate = useNavigate();
 
     const adminStoreId = cookies.get("adminStoreId");
@@ -51,8 +51,8 @@ const PurchaseHistory = () => {
 
 
     useEffect(() => {
-        setShowData(store_vendor_purchase_record);
-    }, [store_vendor_purchase_record]);
+        setShowData(store_customer_purchase_record);
+    }, [store_customer_purchase_record]);
 
     const ChangeStatus = () => {
 
@@ -62,83 +62,42 @@ const PurchaseHistory = () => {
 
     const STORY_HEADERS = [
       
+   
         {
-            prop: "no_of_items",
-            title: "Items",
+            prop: "customer_mobile",
+            title: "Mobile",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-dark">{row.no_of_items}</p>
+                    <p className="text-success">{row.customer_mobile}</p>
                 );
             }
         },
         {
-            prop: "vendor_firm_name",
-            title: "Firm Name",
+            prop: "order_id",
+            title: "O.NO.",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-success">{row.vendor_firm_name}</p>
+                    <p className="text-dark">{row.order_id}</p>
                 );
             }
         },
         {
-            prop: "sale_man_name",
-            title: "Sales Man",
+            prop: "plateform",
+            title: "Plateform",
             isFilterable: true,
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-dark">{row.sale_man_name}</p>
+                    <p className="text-primary">{row.plateform}</p>
                 );
             }
         },
-        {
-            prop: "sub_total",
-            title: "Sub Total",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-primary"> ₹ {row.sub_total}</p>
-                );
-            }
-        },
-        {
-            prop: "i_gst",
-            title: "GST",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark"> ₹ {row.i_gst}</p>
-                );
-            }
-        },
-        {
-            prop: "discount",
-            title: "Discount",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark"> ₹ {row.discount}</p>
-                );
-            }
-        },
-        {
-            prop: "extra_charge",
-            title: "Extra",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark"> ₹ {row.extra_charge}</p>
-                );
-            }
-        },
+     
+     
         {
             prop: "total_payment",
             title: "Total Payment",
@@ -150,17 +109,7 @@ const PurchaseHistory = () => {
                 );
             }
         },
-        {
-            prop: "outstanding",
-            title: "Outstanding",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark"> ₹ {row.outstanding}</p>
-                );
-            }
-        },
+       
         {
             prop: "payment_mode",
             title: "Pay Mode",
@@ -172,18 +121,7 @@ const PurchaseHistory = () => {
                 );
             }
         },
-        {
-            prop: "purchaes_date",
-            title: "Purchaes Date",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark">{row.purchaes_date}</p>
-                );
-            }
-        },
-
+    
         {
             prop: "date",
             title: "Bill Date",
@@ -319,7 +257,7 @@ const PurchaseHistory = () => {
             .then((responseJson) => {
                 console.log("respond", responseJson)
                 if (responseJson.deleted) {
-                    removeDataToCurrentGlobal({ type: "store_vendor_purchase_record", payload: delID, where: "id" });
+                    removeDataToCurrentGlobal({ type: "store_customer_purchase_record", payload: delID, where: "id" });
                     getToast({ title: "Plot Deleted", dec: "", status: "error" });
                 } else {
                     alert("Error");
@@ -424,11 +362,11 @@ const PurchaseHistory = () => {
                     <div className="modal-dialog modal-dialog-centered w-50">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="myModalLabel">Add Vendor</h5>
+                                <h5 className="modal-title" id="myModalLabel">Sale History</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">
-                                <AddVendorForm />
+                                {/* <AddVendorForm /> */}
                             </div>
                         </div>{/*end modal-content*/}
                     </div>{/*end modal-dialog*/}
@@ -442,7 +380,7 @@ const PurchaseHistory = () => {
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">
-                                <UpdateVendor vendorDetails={vendorData} />
+                                {/* <UpdateVendor vendorDetails={vendorData} /> */}
                             </div>
                         </div>{/*end modal-content*/}
                     </div>{/*end modal-dialog*/}
@@ -457,4 +395,4 @@ const PurchaseHistory = () => {
 
 }
 
-export default PurchaseHistory;
+export default SalesHistory;
