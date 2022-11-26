@@ -3,13 +3,15 @@ import URL from '../../../URL';
 import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
-import { useRef } from 'react';
+import { useRef } from 'react'; 
+import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
 export const ImportNewCategory = (props) => {
+    const toast = useToast();
 
-    const { masterCategoryData, storeCategoryData, getToast, reloadData } = useContext(ContextData);
+    const { masterCategoryData, storeCategoryData,  reloadData } = useContext(ContextData);
     const [filteredCategoryData, setFilterCategoryData] = useState([]);
     const [isLoading, setIL] = useState(false);
     const getSelectedItemsRef = useRef(null);
@@ -28,6 +30,17 @@ export const ImportNewCategory = (props) => {
     //     'date': +new Date(),
     // });
 
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
+
     useEffect(() => {
 
         // const getSelectedItemsRef = useRef(null);
@@ -41,9 +54,11 @@ export const ImportNewCategory = (props) => {
             } else {
                 if (a.category_level == 0) {
                     obj3.push({
-                        key: a.category_name,
+                        key: a.category_name + " "+ a.hindi_name,
                         id: a.id,
                         cat: 'Group 1',
+                        category_name:a.category_name,
+                        hindi_name:a.hindi_name,
                         category_type: a.category_type,
                         category_image: a.category_image,
                         category_level: a.category_level,

@@ -109,7 +109,7 @@ export const UpdateProductComp = (EditProductData) => {
 
             if (Category.category_level == 0) {
                 CategorysData.push({
-                    key: Category.category_name,
+                    key: Category.category_name + " "+Category.hindi_name,
                     ...Category
                 });
             }

@@ -107,8 +107,19 @@ const ProductManagement = () => {
                 );
             }
         },
+        
      
-
+        {
+            prop: "product_bar_code",
+            title: "Bar Code",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                    <p className="text-dark">{row.product_bar_code}</p>
+                );
+            }
+        },
 
         {
             prop: "child_category_name",
@@ -133,17 +144,17 @@ const ProductManagement = () => {
             }
         },
      
-        {
-            prop: "discount_in_rs",
-            title: "Discount",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-danger"> ₹ {row.discount_in_rs}</p>
-                );
-            }
-        },
+        // {
+        //     prop: "discount_in_rs",
+        //     title: "Discount",
+        //     isFilterable: true,
+        //     isSortable: true,
+        //     cell: (row) => {
+        //         return (
+        //             <p className="text-danger"> ₹ {row.discount_in_rs}</p>
+        //         );
+        //     }
+        // },
         {
             prop: "sale_price",
             title: "Sale Price",

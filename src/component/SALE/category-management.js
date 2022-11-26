@@ -49,7 +49,17 @@ const CategoryManagement = () => {
             prop: "category_name",
             title: "Category Name",
             isFilterable: true,
-            isSortable: true
+            isSortable: true,
+            cell: (row) => {
+
+            
+                    return (
+                        <> <p className="text-dark">{row.category_name}</p></>
+                       
+                    );
+               
+
+            }
 
         },
 
@@ -71,16 +81,6 @@ const CategoryManagement = () => {
                     return (
                         <p className="text-success">{row.parent_name}</p>
                     );
-
-
-
-
-
-
-
-
-
-
 
                 }
 

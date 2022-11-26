@@ -89,13 +89,21 @@ const CategoryManagement = () => {
 
                 if (row.category_level == 0) {
                     return (
-                        <p className="text-danger">{row.category_name}</p>
+                        <>
+                         <p className="text-danger">{row.category_name}</p>
+                         <p className="text-danger">{row.hindi_name}</p>
+                        </>
+                       
                     );
                 }
                 else {
 
                     return (
-                        <p className="text-success">{row.category_name}</p>
+                        <>
+                          <p className="text-success">{row.category_name}</p>
+                          <p className="text-success">{row.hindi_name}</p>
+                        </>
+                      
                     );
                 }
 
@@ -118,7 +126,11 @@ const CategoryManagement = () => {
                 else {
 
                     return (
-                        <p className="text-success">{row.parent_name}</p>
+                        <>
+                         <p className="text-success">{row.parent_name}</p>
+                         <p className="text-success">{row.parent_hindi_name}</p>
+                        </>
+                       
                     );
                 }
 
