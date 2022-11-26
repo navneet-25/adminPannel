@@ -12,11 +12,25 @@ const ContextProvider = props => {
 
 
     const toast = useToast();
+    const [allDataLoaded, setAllDataLoaded] = useState(false);
     const MainData = {
         isLoading: true,
         auth: {
             isUserLogin: false
         },
+        StoreProducts:[], 
+        CustomerInformation:[],
+        StoreProductsAssetes:[],
+        StoreCategory:[],
+        StoreBrand:[],
+        MasterProducts:[],
+        VendorInformation:[],
+        StockInformation:[],
+        StoreInformation:[],
+        Store_bussiness_info:[],
+        storeProductUnits:[],
+        storeBrandsData:[],
+        storeCategoryData:[],
         adminId: cookies.get("adminId")
     };
 
@@ -162,6 +176,8 @@ const storeBussinessRelode = () => {
                 {
                     functionality.fetchAllData({ ...responseJson })
                     functionality.setGloabalLoading(false)
+                    setAllDataLoaded(true)
+
 
                 }
               
@@ -224,7 +240,8 @@ const storeBussinessRelode = () => {
     return (
         <Context.Provider value={{
             ...MainDataExport,
-            ...functionality
+            ...functionality,
+            allDataLoaded
         }}>
             {props.children}
         </Context.Provider>

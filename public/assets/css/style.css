@@ -85,9 +85,9 @@ button:focus {
 .otpWidth {
     width: 3em !important;
 }
-.chips { 
-    /* // To change css chips(Selected options) */
-	background: red;
+
+  .chip, .singleChip {
+    white-space: pre-wrap !important;
   }
 
 .month {

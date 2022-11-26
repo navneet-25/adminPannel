@@ -40,7 +40,7 @@ const cookies = new Cookies();
 
 
 const ProductManagement = () => {
-    const { storeProductsData, removeDataToCurrentGlobal,  storeProductRelode } = useContext(ContextData);
+    const { storeProductsData, removeDataToCurrentGlobal,  storeProductRelode, allDataLoaded } = useContext(ContextData);
     const [delID, setProductDelID] = useState(0);
     const [isDeletAction, setDeletAction] = useState(false);
     const [UpdateProductPrice, setUpdateProductPrice] = useState({});
@@ -407,6 +407,11 @@ const ProductManagement = () => {
 
     }
 
+    if(!allDataLoaded) {
+        return <>
+        <h2>Loading..</h2>
+        </>
+    }
 
     return (
         <>

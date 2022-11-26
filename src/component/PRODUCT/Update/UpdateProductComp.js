@@ -332,7 +332,7 @@ export const UpdateProductComp = (EditProductData) => {
                         {filteredCategorysData.length && (
 
                             <Multiselect
-                                // singleSelect={true}
+                                // singleSelect={true}'
                                 selectionLimit={1}
                                 displayValue="key"
                                 onKeyPressFn={function noRefCheck() { }}
