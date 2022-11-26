@@ -19,7 +19,7 @@ import QRCode from "react-qr-code";
 
 export const Sale = () => {
 
-    const {  Store_bussiness_info, store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
+    const { Store_bussiness_info, store_coupon_list, storeProductsData, store_login_user } = useContext(ContextData);
     const [Saledate, setSaledate] = useState(new Date());
     const [selectedCustomer, setSelectCustomer] = useState({});
     const [allProducts, setAllProducts] = useState([]);
@@ -70,7 +70,7 @@ export const Sale = () => {
         payment_mode: "Cash",
         notes: "",
         stock_location: 'Store',
-        order_no: (new Date()).getTime() + new Date().getDate() + "" + new Date().getHours() + "" + new Date().getMinutes() + "" + new Date().getSeconds()+""+store_login_user.id,
+        order_no: (new Date()).getTime() + new Date().getDate() + "" + new Date().getHours() + "" + new Date().getMinutes() + "" + new Date().getSeconds() + "" + store_login_user.id,
     });
     const componentRef = useRef();
 
@@ -157,7 +157,7 @@ export const Sale = () => {
             sGstTotal,
             cGstTotal,
             grandTotal,
-            
+
         })
     }, [addedItems]);
 
@@ -249,8 +249,8 @@ export const Sale = () => {
 
     const submitSale = () => {
 
-        console.log("cpupon value",allTotals?.coupon_discount_value)
-        
+        console.log("cpupon value", allTotals?.coupon_discount_value)
+
 
         setIL(true);
         if (selectedCustomer.mobile == undefined || selectedCustomer.mobile == null) {
@@ -267,7 +267,7 @@ export const Sale = () => {
 
             const data = JSON.stringify({
 
-                customer_type:customerShoppingDetails?.customer_type,
+                customer_type: customerShoppingDetails?.customer_type,
                 store_id: store_login_user.store_id,
                 customer_mobile: selectedCustomer.mobile,
                 user_id: store_login_user.id,
@@ -358,10 +358,11 @@ export const Sale = () => {
     const getCouponUseDetails = (coupon_id) => {
 
         setuseCouponData({ is_coupon_applied: 0, coupon_code: 0, coupon_id: null })
-        setAllTotals({grandTotal: Number(allTotals?.grandTotal) + Number(allTotals?.coupon_discount_value), coupon_discount_value: 0,
+        setAllTotals({
+            grandTotal: Number(allTotals?.grandTotal) + Number(allTotals?.coupon_discount_value), coupon_discount_value: 0,
 
             ...allTotals
-            
+
         })
 
         if (!isNaN(parseFloat(coupon_id))) {
@@ -385,15 +386,15 @@ export const Sale = () => {
                     if (responseJson.coupon_used == 0) {
                         if (responseJson.coupon_data.coupon_type == 'amount') {
                             setAllTotals({
-                                 coupon_discount_value: Math.round(responseJson.coupon_data.coupon_discount),
-                                 grandTotal: Number(allTotals?.grandTotal) - Number(responseJson.coupon_data.coupon_discount),
-                                 ...allTotals
+                                coupon_discount_value: Math.round(responseJson.coupon_data.coupon_discount),
+                                grandTotal: Number(allTotals?.grandTotal) - Number(responseJson.coupon_data.coupon_discount),
+                                ...allTotals
                             })
 
                         }
                         else {
                             setAllTotals({
-                               
+
                                 coupon_discount_value: Math.round(responseJson.coupon_data.coupon_discount),
                                 grandTotal: (allTotals?.grandTotal) - (responseJson.coupon_data.coupon_discount),
                                 ...allTotals
@@ -465,7 +466,7 @@ export const Sale = () => {
                                                     <div className="col-md-7 px-5" style={{ borderRight: "1px solid #c1c1c1" }}>
                                                         <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
                                                         <div>
-                                                           
+
                                                             <input type="text" list="suggestions" class="form-control" onChange={e => e.target.value.length == 10 && getCustomerDetails(e.target.value)} placeholder="Mobile..." autocomplete="on" id="search-options" />
                                                         </div>
                                                     </div>
@@ -753,7 +754,7 @@ export const Sale = () => {
                 <table class="items m-1">
                     <thead>
                         <tr>
-                            <th style={{ width: '60%' }} class="heading name">Item</th>
+                            <th class="heading name">Item</th>
                             <th class="heading qty">Qty</th>
                             <th class="heading rate">Rate</th>
                             <th class="heading amount">Amt</th>
@@ -765,7 +766,7 @@ export const Sale = () => {
                             addedItems.map((items, index) => {
                                 return (
                                     <tr>
-                                        <td style={{ width: '60%' }}>{items.product_full_name}</td>
+                                        <td >{items.product_full_name}</td>
                                         <td>{items.billing_quantity}</td>
                                         <td class="price">{items.sale_price}</td>
                                         <td class="price">{items.amount_total}</td>
@@ -775,15 +776,15 @@ export const Sale = () => {
                         }
 
                         <tr>
-                            <td colspan="4" class="sum-up line">Pre Discount</td>
+                            <td colspan="3" class="sum-up line">Pre Discount</td>
                             <td class="line price">{(allTotals?.discount).toLocaleString('en-IN')}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="sum-up ">Subtotal</td>
+                            <td colspan="3" class="sum-up ">Subtotal</td>
                             <td class=" price">{allTotals?.subTotal?.toLocaleString('en-IN')}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="sum-up">GST</td>
+                            <td colspan="3" class="sum-up">GST</td>
                             <td class="price">{(allTotals?.sGstTotal + allTotals?.cGstTotal).toLocaleString('en-IN')}</td>
                         </tr>
 
@@ -791,7 +792,7 @@ export const Sale = () => {
 
                         {useCouponData.is_coupon_applied == 1 ? (
                             <tr>
-                                <td colspan="4" class="sum-up">Extra Discount</td>
+                                <td colspan="3" class="sum-up">Extra Discount</td>
                                 <td class="price">{(allTotals?.coupon_discount_value).toLocaleString('en-IN')}</td>
                             </tr>
                         ) : null}
@@ -799,7 +800,7 @@ export const Sale = () => {
 
 
                         <tr>
-                            <th colspan="4" class="total text">Total</th>
+                            <th colspan="3" class="total text">Total</th>
                             <th class="total price">{allTotals?.grandTotal.toLocaleString('en-IN')}</th>
                         </tr>
                     </tbody>

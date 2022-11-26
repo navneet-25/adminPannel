@@ -13,7 +13,7 @@ span {
 
 body {
     background: #f3f3f9 !important;
-    overflow : scroll;
+    overflow: scroll;
 }
 
 .dropzone {
@@ -86,9 +86,10 @@ button:focus {
     width: 3em !important;
 }
 
-  .chip, .singleChip {
+.chip,
+.singleChip {
     white-space: pre-wrap !important;
-  }
+}
 
 .month {
     background: #d8d8d8;
@@ -288,6 +289,9 @@ button:focus {
 
 #section-to-print {
     display: none;
+    color: #000;
+    font-weight: 700;
+    height: fit-content;
 }
 
 .POS_table {
