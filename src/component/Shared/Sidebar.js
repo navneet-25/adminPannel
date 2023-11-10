@@ -161,15 +161,15 @@ const Sidebar = () => {
                             {/* <li className="menu-title"><i className="ri-more-fill" /> <span data-key="t-pages">Settings</span></li> */}
                             
                             <li className="nav-item">
-                                <a className="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                <a className="nav-link menu-link" href="#onlineManagment" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="onlineManagment">
                                 <BsFillRecordCircleFill size={24} style={{ fill: "#e9e9e9" }} /> <span data-key="t-dashboards">ONLINE ORDER </span>
                                 </a>
-                                <div className="collapse menu-dropdown" id="sidebarDashboards">
+                                <div className="collapse menu-dropdown" id="onlineManagment">
                                     <ul className="nav nav-sm flex-column">
                                         <li className="nav-item">
-                                            <Link to="/order" className="nav-link"> ORDER </Link>
-                                            <Link to="/delivery" className="nav-link" data-key="t-cover"> DELIVERY</Link>
-                                            <Link to="/coupon" className="nav-link" data-key="t-cover"> COUPON</Link>
+                                            <Link to="/online/order" className="nav-link"> ORDER </Link>
+                                            <Link to="/online/delivery" className="nav-link" data-key="t-cover"> DELIVERY</Link>
+                                            <Link to="/online/coupon" className="nav-link" data-key="t-cover"> COUPON</Link>
                                         </li>
                                     </ul>
                                 </div>

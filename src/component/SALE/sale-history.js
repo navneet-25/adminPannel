@@ -51,6 +51,7 @@ const SalesHistory = () => {
 
 
     useEffect(() => {
+
         setShowData(store_customer_purchase_record);
     }, [store_customer_purchase_record]);
 
@@ -154,7 +155,7 @@ const SalesHistory = () => {
 
                         <Dropdown.Menu>
 
-                        <Dropdown.Item onClick={() => navigate("/purchaseManagement/purchase-history-record/" + row.order_id + "/" + row.vendor_id)}>View Record</Dropdown.Item>
+                        <Dropdown.Item onClick={() => navigate("/salesManagement/sales-history-record/" + row.order_id + "/" + row.customer_mobile)}>View Record</Dropdown.Item>
 
                             { (row.outstanding!=null) ?(
              <Dropdown.Item onClick={() => getVendorData(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductPricing" >Clear Outstanding</Dropdown.Item>

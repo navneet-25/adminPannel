@@ -12,9 +12,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from '../../URL';
 import { useReactToPrint } from 'react-to-print';
 import { useToast } from '@chakra-ui/react';
-import QRCode from "react-qr-code";
-
-
 
 
 export const Sale = () => {
@@ -222,7 +219,10 @@ export const Sale = () => {
         // console.log('index: ' + index);
         // console.log('property name: ' + e.target.name);
         let newArr = [...addedItems];
+        
+        e.target.name === "price" && (newArr[index].price = e.target.value);
         e.target.name === "quantity" && (newArr[index].billing_quantity = e.target.value);
+        e.target.name === "product_full_name" && (newArr[index].product_full_name = e.target.value);
         e.target.name === "sale_price" && (newArr[index].sale_price = e.target.value);
         e.target.name === "discount" && (newArr[index].discount_in_rs = e.target.value);
         newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].sale_price);
@@ -307,6 +307,7 @@ export const Sale = () => {
                     // functionality.fetchAllData(responseJson);
                     console.log(" Sale server res ---->", responseJson);
                     setIL(false);
+                    handlePrint()
 
 
                 })
@@ -467,7 +468,7 @@ export const Sale = () => {
                                                         <h4 className='mb-0 text-center mb-4'>Enter Mobile Number</h4>
                                                         <div>
 
-                                                            <input type="text" list="suggestions" class="form-control" onChange={e => e.target.value.length == 10 && getCustomerDetails(e.target.value)} placeholder="Mobile..." autocomplete="on" id="search-options" />
+                                                            <input type="number" min="1" max="10" list="suggestions" class="form-control" onChange={e => e.target.value.length == 10 && getCustomerDetails(e.target.value)} placeholder="Mobile..." autocomplete="on" id="search-options" />
                                                         </div>
                                                     </div>
                                                     {selectedCustomer?.mobile ? <div className="col-md-5">
@@ -529,7 +530,9 @@ export const Sale = () => {
                                                         <th scope="col">NO</th>
                                                         <th scope="col">ITEMS</th>
                                                         <th scope="col">QTY</th>
-                                                        <th scope="col"><BiRupee />PRICE/ITEM</th>
+                                                        <th scope="col">MRP</th>
+                                                      
+                                                        <th scope="col"><BiRupee />PRICE</th>
                                                         <th scope="col">DISCOUNT</th>
                                                         {/* <th scope="col">HSN</th> */}
                                                         <th scope="col">GST</th>
@@ -545,14 +548,20 @@ export const Sale = () => {
                                                                 <>
                                                                     {items && < tr >
                                                                         <td width={"10%"} className="fw-medium">{index + 1}</td>
-                                                                        <td width={"40%"} >{items.product_full_name}</td>
+                                                                        <td width={"40%"}>
+                                                                            <input type="text" name="product_full_name"  onChange={updateFieldChanged(index)} value={items.product_full_name} className="invoice_input" style={{ width: "10rem" }} placeholder="" />
+                                                                        </td>
+                                                                        {/* <td width={"40%"} >{items.product_full_name}</td> */}
                                                                         <td width={"10%"} ><input type="number" name="quantity" onChange={updateFieldChanged(index)} value={items.billing_quantity ? items.billing_quantity : ""} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        
+                                                                        <td width={"10%"} ><input type="number" name="price" value={items.price} onChange={updateFieldChanged(index)} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
+
                                                                         <td width={"10%"} ><input type="number" name="sale_price" value={items.sale_price} onChange={updateFieldChanged(index)} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}>
-                                                                            <input type="number" name="discount" disabled onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
+                                                                            <input type="number" name="discount"  onChange={updateFieldChanged(index)} value={items.discount_in_rs} className="invoice_input" style={{ width: "3rem" }} placeholder="0" />
                                                                         </td>
                                                                         {/* <td width={"10%"} ><input type="number" value={items.hsn_code} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
-                                                                        <td width={"10%"} ><input type="number" disabled value={items.i_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
+                                                                        {/* <td width={"10%"} ><input type="number" disabled value={items.i_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
                                                                         {/* <td width={"10%"} ><input type="number" value={items.c_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
                                                                         <td width={"10%"} ><input type="number" disabled value={items.amount_total ? items.amount_total : ""} readOnly className="invoice_input" style={{ width: "6rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}  ><AiOutlineDelete style={{ cursor: "pointer", color: "red" }} onClick={() => deleteFeild(index)} size={24} /></td>
@@ -706,45 +715,46 @@ export const Sale = () => {
                 {/* end col */}
             </div>
             {/* section-to-print */}
+            
             <div
                 id='section-to-print'
                 ref={componentRef}>
                 <div className='POS_header px-1'>
 
-                    <div className=" d-flex justify-content-center">
+                    {/* <div className=" d-flex justify-content-center">
                         <img src={Store_bussiness_info?.logo} alt="user-img" className="prinerLogo rounded-circle" />
-                    </div>
+                    </div> */}
 
                     <div className="col-auto ">
 
 
 
                         <h3 className="text-dark mb-1">{Store_bussiness_info?.buss_name}</h3>
-                        <p className="text-dark-75">{Store_bussiness_info?.tag_line}</p>
+                        {/* <p className="text-dark-75">{Store_bussiness_info?.tag_line}</p> */}
 
-                        <p className="text-dark-75">{Store_bussiness_info?.strteet_linn1} {Store_bussiness_info?.strteet_linn2} {Store_bussiness_info?.area} {Store_bussiness_info?.city} </p>
-                        <p className="text-dark-75">{Store_bussiness_info?.mobile1} {Store_bussiness_info?.mobile2} </p>
+                        <h6 style={{ fontWeight: "800" }}>{Store_bussiness_info?.strteet_linn2} {Store_bussiness_info?.area}</h6>
+                        <h6 style={{ fontWeight: "800" }}>{Store_bussiness_info?.mobile1} {Store_bussiness_info?.mobile2} </h6>
 
                     </div>
                 </div>
                 <table class="bill-details">
                     <tbody >
-                        {Store_bussiness_info.gst_no != null ? (
+                        {/* {Store_bussiness_info?.gst_no != null ? (
                             <tr><td className='text-center'>
                                 GST No : <span > {Store_bussiness_info?.gst_no}</span>
                             </td></tr>
                         ) : null}
-                        {Store_bussiness_info.fassai_no != null ? (
+                        {Store_bussiness_info?.fassai_no != null ? (
                             <tr><td className='text-center'>
                                 Fassai No : <span> {Store_bussiness_info?.fassai_no}</span>
                             </td></tr>
-                        ) : null}
+                        ) : null} */}
                         <tr>
-                            <td className='text-center'>Date : <span>{(BillDate).toLocaleDateString("en-US", DateOptions)} , {formatAMPM(BillDate)}</span></td>
+                            <td className='text-center'><span>{(BillDate).toLocaleDateString("en-US", DateOptions)} , {formatAMPM(BillDate)}</span></td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <td className='text-center'>Bill No : <span>{restInfo.order_no}</span></td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th class="center-align text-center" colspan="2"><span class="receipt">Mo {selectedCustomer?.mobile}</span></th>
                         </tr>
@@ -755,7 +765,7 @@ export const Sale = () => {
                     <thead>
                         <tr>
                             <th class="heading name">Item</th>
-                            <th class="heading qty">Qty</th>
+                            <th class="heading qty">MRP</th>
                             <th class="heading rate">Rate</th>
                             <th class="heading amount">Amt</th>
                         </tr>
@@ -766,8 +776,8 @@ export const Sale = () => {
                             addedItems.map((items, index) => {
                                 return (
                                     <tr>
-                                        <td >{items.product_full_name}</td>
-                                        <td>{items.billing_quantity}</td>
+                                        <td >{items.billing_quantity} * {items?.product_full_name?.substring(0, 14)}</td>
+                                        <td>{items.price}</td>
                                         <td class="price">{items.sale_price}</td>
                                         <td class="price">{items.amount_total}</td>
                                     </tr>
@@ -777,16 +787,20 @@ export const Sale = () => {
 
                         <tr>
                             <td colspan="3" class="sum-up line">Pre Discount</td>
-                            <td class="line price">{(allTotals?.discount).toLocaleString('en-IN')}</td>
+                            <td class="line price">- {(allTotals?.discount).toLocaleString('en-IN')}</td>
                         </tr>
-                        <tr>
+
+
+                        {/* <tr>
                             <td colspan="3" class="sum-up ">Subtotal</td>
                             <td class=" price">{allTotals?.subTotal?.toLocaleString('en-IN')}</td>
-                        </tr>
-                        <tr>
+                        </tr> */}
+                        {/* <tr>
                             <td colspan="3" class="sum-up">GST</td>
                             <td class="price">{(allTotals?.sGstTotal + allTotals?.cGstTotal).toLocaleString('en-IN')}</td>
-                        </tr>
+                        </tr> */}
+
+
 
 
 
@@ -813,7 +827,7 @@ export const Sale = () => {
                         Thank you for shopping with {Store_bussiness_info?.buss_name}
                     </p>
                 </section>
-                <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" }}>
+                {/* <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" }}>
                     <QRCode
                         size={256}
                         style={{ height: "auto", maxWidth: "100%", width: "100%" }}
@@ -823,9 +837,11 @@ export const Sale = () => {
                 </div>
                 <div className='POS_footer' style={{ textAlign: "center" }}>
                     <p>Scan QR Code </p>
-                </div>
+                </div> */}
             </div>
         </>
     )
 
 }
+
+// 

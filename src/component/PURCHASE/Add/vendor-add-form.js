@@ -26,6 +26,7 @@ export const AddVendorForm = (props) => {
         firm_email:'',
         gst_no:'',
         fssai_no:'',
+        deal_items:"",
        
 
     });
@@ -59,12 +60,7 @@ export const AddVendorForm = (props) => {
         else if (vendorDetails.address == '') {
             getToast({ title: "Vendor Address Requird", dec: "Requird", status: "error" });
         }
-        else if (vendorDetails.city == '') {
-            getToast({ title: "Vendor City Requird", dec: "Requird", status: "error" });
-        }
-        else if (vendorDetails.pin_code == '') {
-            getToast({ title: "Vendor Pincode Requird", dec: "Requird", status: "error" });
-        }
+       
        
         else {
 
@@ -86,6 +82,8 @@ export const AddVendorForm = (props) => {
             formData.append('firm_email', vendorDetails.firm_email)
             formData.append('gst_no', vendorDetails.gst_no)
             formData.append('fssai_no', vendorDetails.fssai_no)
+            formData.append('deal_items', vendorDetails.deal_items)
+            
 
 
 
@@ -222,7 +220,7 @@ export const AddVendorForm = (props) => {
 
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label  text-danger ">City</label>
+                        <label htmlFor="compnayNameinput" className="form-label  text-dark ">City</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, city: e.target.value })}
                             value={vendorDetails.city} className="form-control" placeholder="City" id="compnayNameinput" />
                     </div>
@@ -230,9 +228,16 @@ export const AddVendorForm = (props) => {
 
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label  text-danger">Pincode</label>
+                        <label htmlFor="compnayNameinput" className="form-label  text-dark">Pincode</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, pin_code: e.target.value })}
                             value={vendorDetails.pin_code} className="form-control" placeholder="Pincode" id="compnayNameinput" />
+                    </div>
+                </div>
+
+                <div className="col-md-12">
+                    <div className="mb-3">
+                        <label htmlFor="compnayNameinput" className="form-label text-dark ">Deal Items</label>
+                        <textarea onChange={e => setvendorDetails({ ...vendorDetails, deal_items: e.target.value })} value={vendorDetails.deal_items} class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
                     </div>
                 </div>
 

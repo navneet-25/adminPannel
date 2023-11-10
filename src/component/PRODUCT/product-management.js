@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import ContextData from "../../context/MainContext";
 import URL from '../../URL';
 
-// import { ImportNewProduct } from "./Import/import-new-product";
+import { ImportNewProduct } from "./Import/import-new-product";
 import { AddProductForm } from "./Add/product-add-form";
 import { AddUnitForm } from "./Add/unit-add-form";
 import { UpdateProductPriceComp } from "./Update/UpdateProductPriceComp";
@@ -12,7 +12,7 @@ import { UpdateProductComp } from "./Update/UpdateProductComp";
 import { DownloadBarcode } from "./Update/DownloadBarcode";
 import { UpdateProductImage } from "./Update/UpdateProductImage";
 import { ProductImageView } from "./Update/ProductImageView";
-
+import ReactToPrint from 'react-to-print';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { useToast } from '@chakra-ui/react';
@@ -208,6 +208,7 @@ const ProductManagement = () => {
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#UpdateProductComp" >Update Product</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#downloadBarcode" >Download Barcode</Dropdown.Item>
                             <Dropdown.Item onClick={() => setUpdateProductPrice(row)} data-bs-toggle="modal" data-bs-target="#updateImage" >Update Image</Dropdown.Item>
+
                             <Dropdown.Item onClick={() => deleteAction(row.id, row.product_name + " " + row.product_size + " " + row.product_unit)}>Delete Product</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -219,6 +220,8 @@ const ProductManagement = () => {
         },
 
     ];
+
+    
 
 
     const UpdateStatusAction = (product_id, product_name,status) => {
@@ -531,7 +534,7 @@ const ProductManagement = () => {
                                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                                         </div>
                                         <div className="modal-body">
-                                            {/* <ImportNewProduct /> */}
+                                            <ImportNewProduct />
                                         </div>
                                     </div>{/*end modal-content*/}
                                 </div>{/*end modal-dialog*/}
@@ -671,6 +674,10 @@ const ProductManagement = () => {
                     <symbol viewBox="0 0 24 24" stroke="currentColor" fill="var(--color-svg)" id="icon-star"><path strokeWidth=".4" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></symbol>
                 </svg>
             </div>
+
+
+    
+
         </>
     )
 

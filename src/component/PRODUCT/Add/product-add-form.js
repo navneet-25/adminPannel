@@ -88,7 +88,7 @@ export const AddProductForm = (props) => {
 
             if (Category.category_level == 0) {
                 CategorysData.push({
-                    key: Category.category_name,
+                    key: Category.category_name + " | "+Category.hindi_name+" |",
                     ...Category
                 });
             }
@@ -114,7 +114,7 @@ export const AddProductForm = (props) => {
             storeCategoryData.map(function (Category) {
                 if (Category.master_category_level == getSelectedCategoryIDD) {
                     ChildCategorysData.push({
-                        key: Category.category_name,
+                        key: Category.category_name + " | "+Category.hindi_name+" |",
                         ...Category
                     });
                 }

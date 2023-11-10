@@ -39,7 +39,16 @@ import PurchaseHistory from './component/PURCHASE/purchase-history';
 import PurchaseHistoryRecord from './component/PURCHASE/purchase-history-record';
 
 
+
+
+
+import OnlineSale from './component/online/online-sale';
+import OnlineSalesHistoryRecord from './component/online/online-sales-history-record';
+
+
 import SalesHistory from './component/SALE/sale-history';
+import SalesHistoryRecord from './component/SALE/sales-history-record';
+
 
 
 import ProductIndex from './component/PRODUCT/product-index';
@@ -99,6 +108,7 @@ const App = () => {
               <Route index element={<SaleIndex />} />
               <Route path="sales-history" element={<SalesHistory />} />
               <Route path="customers" element={<CustomerManagement />} />
+              <Route path="/salesManagement/sales-history-record/:orderID/:customer_mobile" element={<SalesHistoryRecord />} />
             </Route>
 
             <Route path="/billing" >
@@ -123,9 +133,17 @@ const App = () => {
             </Route>
 
 
-            <Route path="/delivery" element={<DeliveryManagment />} />
-            <Route path="/delivery-boy" element={<DeliveryBoyManagment />} />
-            <Route path="/coupon" element={<CouponManagment />} />
+            <Route path="/online" >
+            <Route index element={<h4>Online 11</h4>} />
+              <Route path="/online/order" element={<OnlineSale />} /> 
+              <Route path="/online/online-sales-history-record/:orderID/:customer_address/:order_status" element={<OnlineSalesHistoryRecord />} />
+            <Route path="/online/delivery-boy" element={<DeliveryBoyManagment />} />
+            <Route path="/online/coupon" element={<CouponManagment />} />
+            </Route>
+
+
+
+         
             
             
             <Route path="/settings/banners" element={<BannerSettings />} />

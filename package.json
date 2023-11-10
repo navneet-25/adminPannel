@@ -1,8 +1,8 @@
 {
-  "name": "martpayadmin",
+  "name": "supergadmin",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://admin.martpay.in",
+  "homepage": "https://admin.superg.in",
   "dependencies": {
     "@chakra-ui/react": "^1.8.6",
     "@emotion/react": "^11.8.2",

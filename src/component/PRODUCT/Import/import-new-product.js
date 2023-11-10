@@ -4,12 +4,14 @@ import Cookies from 'universal-cookie';
 import ContextData from '../../../context/MainContext';
 import Multiselect from 'multiselect-react-dropdown';
 import { useRef } from 'react';
+import { useToast } from '@chakra-ui/react';
 
 const cookies = new Cookies();
 
 export const ImportNewProduct = (props) => {
 
-    const { masterProductsData, storeProductsData, getToast, reloadData } = useContext(ContextData);
+    const toast = useToast();
+    const { masterProductsData, storeProductsData,  reloadData } = useContext(ContextData);
     const [filteredProductData, setFilterProductData] = useState([]);
     const [isLoading, setIL] = useState(false);
     const getSelectedItemsRef = useRef(null); 
@@ -27,6 +29,19 @@ export const ImportNewProduct = (props) => {
     //     'Product_feature_image': null,
     //     'date': +new Date(),
     // });
+
+    const getToast = (e) => {
+        toast({
+            title: e.title,
+            description: e.desc,
+            status: e.status,
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-right"
+        })
+    }
+
+
     useEffect(() => {
 
         // const getSelectedItemsRef = useRef(null);

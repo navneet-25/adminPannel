@@ -145,8 +145,9 @@ export const Purchased = () => {
         e.target.name === "s_gst" && (newArr[index].s_gst = e.target.value);
         e.target.name === "s_gst" && (newArr[index].c_gst = e.target.value);
         e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
+        e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
         // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
-        // console.log("new arrya --->", newArr);
+        console.log("new arrya --->", newArr);
         newArr = newArr.filter(item => item);
         setAddedItems(newArr)
     }
@@ -316,9 +317,10 @@ export const Purchased = () => {
                                                     <tr>
                                                         <th scope="col">NO</th>
                                                         <th scope="col">ITEMS</th>
+                                                        <th scope="col">MRP</th>
                                                         <th scope="col">QTY</th>
-                                                        <th scope="col"><BiRupee />PRICE/ITEM</th>
-                                                        <th scope="col">DISCOUNT</th>
+                                                        <th scope="col"><BiRupee />PRICE</th>
+                                                        <th scope="col">DIS</th>
                                                         <th scope="col">HSN</th>
                                                         <th scope="col">SGST</th>
                                                         <th scope="col">CGST</th>
@@ -334,6 +336,7 @@ export const Purchased = () => {
                                                                     {items && < tr >
                                                                         <td width={"10%"} className="fw-medium">{index + 1}</td>
                                                                         <td width={"40%"} >{items.product_full_name}</td>
+                                                                        <td width={"10%"} ><input type="text" onChange={changeGst(index)}  name="mrp" value={items.mrp} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"} ><input type="number" name="quantity" onChange={updateFieldChanged(index)} value={items.billing_quantity ? items.billing_quantity : ""} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"} ><input type="number" name="purchase_price" value={items.purchase_price} onChange={updateFieldChanged(index)} className="invoice_input" style={{ width: "5rem" }} placeholder="0" /></td>
                                                                         <td width={"10%"}>

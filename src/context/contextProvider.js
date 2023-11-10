@@ -19,6 +19,8 @@ const ContextProvider = props => {
             isUserLogin: false
         },
         StoreProducts:[], 
+        storeProductsData:[],
+        showMasterData:[],
         CustomerInformation:[],
         StoreProductsAssetes:[],
         StoreCategory:[],
@@ -31,6 +33,7 @@ const ContextProvider = props => {
         storeProductUnits:[],
         storeBrandsData:[],
         storeCategoryData:[],
+        Store_bussiness_info:[],
         adminId: cookies.get("adminId")
     };
 
@@ -174,10 +177,11 @@ const storeBussinessRelode = () => {
             let resJson = await Promise.all(res.map(e => e.json()))
             resJson = resJson.map(responseJson => 
                 {
+
+                    // console.log("all data",responseJson)
                     functionality.fetchAllData({ ...responseJson })
                     functionality.setGloabalLoading(false)
                     setAllDataLoaded(true)
-
 
                 }
               
