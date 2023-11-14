@@ -1,28 +1,18 @@
 import { BiRupee, BiBarcodeReader } from "react-icons/bi";
-import { FcCalendar } from "react-icons/fc";
+import { FcCalendar, FcDeleteRow } from "react-icons/fc";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useContext, useEffect, useState, useRef } from "react";
 import ContextData from "../../context/MainContext";
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
-import { Box, Checkbox, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Text } from "@chakra-ui/react";
 import ReactToPrint from "react-to-print";
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
 import { useReactToPrint } from "react-to-print";
 import { useToast } from "@chakra-ui/react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from "@chakra-ui/react";
+import { EnterMobileNumber } from "./Sale/EnterMobileNumber";
 
 export const Sale = () => {
   const {
@@ -38,6 +28,7 @@ export const Sale = () => {
   const [couponData, setCouponData] = useState([]);
   const [isLoading, setIL] = useState(false);
   const toast = useToast();
+  const inputSearchRef = useRef(null);
 
   var DateOptions = {
     weekday: "long",
@@ -89,9 +80,33 @@ export const Sale = () => {
       "" +
       new Date().getSeconds() +
       "" +
-      store_login_user.id,
+      store_login_user?.id,
   });
   const componentRef = useRef();
+
+  useEffect(() => {
+    const keyDownHandler = (event) => {
+      if (event.keyCode === 220) {
+        event.preventDefault();
+        document.querySelectorAll("[data-test]")[0].focus();
+        document.querySelectorAll("#search-options")[0].scrollIntoView();
+        console.log("User pressed: ");
+
+        // 👇️ your logic here
+        // myFunction();
+      }
+    };
+
+    document.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, []);
+
+  const deleteAll = () => {
+    setAddedItems([]);
+  };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -111,7 +126,7 @@ export const Sale = () => {
   useEffect(
     () => {
       setAllProducts(storeProductsData);
-      const CouponData = store_coupon_list.filter((obj) => obj.status == 1);
+      const CouponData = store_coupon_list?.filter((obj) => obj.status == 1);
       setCouponData(CouponData);
 
       console.log("store prod", store_login_user);
@@ -326,7 +341,7 @@ export const Sale = () => {
         customer_type: customerShoppingDetails?.customer_type,
         store_id: store_login_user.store_id,
         customer_mobile: selectedCustomer.mobile,
-        user_id: store_login_user.id,
+        user_id: store_login_user?.id,
         sub_total: allTotals?.subTotal,
         i_gst: Number(allTotals?.sGstTotal) + Number(allTotals?.cGstTotal),
         s_gst: Number(allTotals?.sGstTotal),
@@ -496,19 +511,10 @@ export const Sale = () => {
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
-            <div className="card-header align-items-center d-flex px-5">
-              <h4 className="card-title mb-0 flex-grow-1">Sale</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="card">
             <div className="card-body">
               <div className="live-preview">
                 <div className="row">
-                  <div className="col-md-12">
+                  {/* <div className="col-md-12">
                     <div className="row py-4 mb-4 border-bottom align-items-center">
                       <div
                         className="col-lg-8 px-4"
@@ -586,7 +592,15 @@ export const Sale = () => {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
+                  <EnterMobileNumber
+                    Saledate={Saledate}
+                    customerShoppingDetails={customerShoppingDetails}
+                    selectedCustomer={selectedCustomer}
+                    setSaledate={setSaledate}
+                    setSelectCustomer={setSelectCustomer}
+                    setcustomerShoppingDetails={setcustomerShoppingDetails}
+                  />
                   <div className="col-lg-12 pb-4 border-bottom">
                     <div className="row g-3">
                       <div className="col-md-12 col-sm-12">
@@ -615,6 +629,20 @@ export const Sale = () => {
                           <h2 className="mb-0" style={{ marginLeft: "1rem" }}>
                             <BiBarcodeReader />
                           </h2>
+                          {addedItems.length ? (
+                            <Flex
+                              ml={10}
+                              alignItems={"center"}
+                              justifyContent={"center"}
+                              cursor={"pointer"}
+                              onClick={deleteAll}
+                            >
+                              <Text fontWeight={"700"} className="mb-0">
+                                Delete All
+                              </Text>
+                              <FcDeleteRow size={24} />
+                            </Flex>
+                          ) : null}
                         </div>
 
                         <div
@@ -650,8 +678,8 @@ export const Sale = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {addedItems.length && addedItems ? (
-                            addedItems.map((items, index) => {
+                          {addedItems?.length && addedItems ? (
+                            addedItems?.map((items, index) => {
                               return (
                                 <>
                                   {items && (
@@ -839,7 +867,7 @@ export const Sale = () => {
                               aria-label="Default select example"
                             >
                               <option value={null}>Choose Coupon</option>
-                              {couponData.map((items, index) => {
+                              {couponData?.map((items, index) => {
                                 if (
                                   Number(allTotals?.grandTotal) >=
                                   Number(items.minimum_order_amount)
@@ -1284,7 +1312,7 @@ export const Sale = () => {
                         </tr> */}
         </div>
 
-        <table class="items">
+        <table class="items ml-1">
           <thead>
             <tr>
               <th colSpan={2} class="">
@@ -1298,7 +1326,7 @@ export const Sale = () => {
           </thead>
 
           <tbody>
-            {addedItems.map((items, index) => {
+            {addedItems?.map((items, index) => {
               return (
                 <tr>
                   <td colSpan={2}>
