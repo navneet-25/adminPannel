@@ -168,6 +168,14 @@ export const Purchased = () => {
       Number(newArr[index].billing_quantity) *
       Number(newArr[index].purchase_price);
 
+    const sGst =
+      Number(newArr[index].purchase_price) *
+      Number(Number(newArr[index].s_gst) / 100);
+
+    const val = Number(newArr[index].billing_quantity) * sGst;
+
+    newArr[index].net_amount = newArr[index].amount_total - val;
+
     // console.log("new arrya --->", newArr);
     newArr = newArr.filter((item) => item);
     setAddedItems(newArr);
