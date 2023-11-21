@@ -63,13 +63,9 @@ export const Purchased = () => {
 
   useEffect(() => {
     const subTotalGet = addedItems.reduce((acc, obj) => {
-      return (
-        acc +
-        Number(
-          Number(obj?.purchase_price || 0) * Number(obj?.billing_quantity || 0)
-        )
-      );
+      return acc + Number(Number(obj?.net_amount || 0));
     }, 0);
+
     const discount = addedItems.reduce((acc, obj) => {
       return (
         acc +
@@ -162,8 +158,8 @@ export const Purchased = () => {
       (newArr[index].billing_quantity = e.target.value);
     e.target.name === "purchase_price" &&
       (newArr[index].purchase_price = e.target.value);
-    e.target.name === "discount" &&
-      (newArr[index].discount_in_rs = e.target.value);
+    // e.target.name === "discount" &&
+    //   (newArr[index].discount_in_rs = e.target.value);
     newArr[index].amount_total =
       Number(newArr[index].billing_quantity) *
       Number(newArr[index].purchase_price);
@@ -172,9 +168,9 @@ export const Purchased = () => {
       Number(newArr[index].purchase_price) *
       Number(Number(newArr[index].s_gst) / 100);
 
-    const val = Number(newArr[index].billing_quantity) * sGst;
+    const val = Number(newArr[index].billing_quantity) * (sGst * 2);
 
-    newArr[index].net_amount = newArr[index].amount_total - val;
+    newArr[index].net_amount = newArr[index].amount_total + val;
 
     // console.log("new arrya --->", newArr);
     newArr = newArr.filter((item) => item);
@@ -190,14 +186,12 @@ export const Purchased = () => {
         Number(newArr[index].purchase_price) *
         Number(Number(e.target.value) / 100);
 
-      const val = Number(newArr[index].billing_quantity) * sGst;
+      const val = Number(newArr[index].billing_quantity) * (sGst * 2);
 
-      newArr[index].net_amount = newArr[index].amount_total - val;
+      newArr[index].net_amount = newArr[index].amount_total + val;
     }
     e.target.name === "s_gst" && (newArr[index].c_gst = e.target.value);
     e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
-    e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
-    e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
     e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
 
     // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
@@ -531,13 +525,12 @@ export const Purchased = () => {
                                           type="number"
                                           name="discount"
                                           onChange={updateFieldChanged(index)}
-                                          value={"0"}
+                                          defaultValue={"0"}
                                           className="invoice_input"
                                           style={{ width: "100%" }}
                                           placeholder="0"
                                         />
                                       </td>
-
                                       <td width={"8%"}>
                                         <input
                                           type="number"
