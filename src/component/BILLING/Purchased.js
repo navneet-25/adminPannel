@@ -144,9 +144,10 @@ export const Purchased = () => {
 
   const handleOnSelect = (item) => {
     console.log("lolipop ---->", item);
-    const allReadyExist = addedItems.some(
-      (elem) => elem.product_full_name === item.product_full_name
-    );
+    const allReadyExist = addedItems.some((elem) => {
+      console.log("lolipop ---->", item, elem);
+      return elem.id === item.id;
+    });
     !allReadyExist && setAddedItems([...addedItems, item]);
     /*  setTimeout(() => {
              document.getElementsByClassName("clear-icon")[0].querySelector(':scope > svg')[0].click();
@@ -165,9 +166,8 @@ export const Purchased = () => {
       (newArr[index].discount_in_rs = e.target.value);
     newArr[index].amount_total =
       Number(newArr[index].billing_quantity) *
-        Number(newArr[index].purchase_price) -
-      Number(newArr[index].billing_quantity) *
-        Number(newArr[index].discount_in_rs);
+      Number(newArr[index].purchase_price);
+
     // console.log("new arrya --->", newArr);
     newArr = newArr.filter((item) => item);
     setAddedItems(newArr);
@@ -175,10 +175,23 @@ export const Purchased = () => {
 
   const changeGst = (index) => (e) => {
     let newArr = [...addedItems];
-    e.target.name === "s_gst" && (newArr[index].s_gst = e.target.value);
+    if (e.target.name === "s_gst") {
+      newArr[index].s_gst = e.target.value;
+
+      const sGst =
+        Number(newArr[index].purchase_price) *
+        Number(Number(e.target.value) / 100);
+
+      const val = Number(newArr[index].billing_quantity) * sGst;
+
+      newArr[index].net_amount = newArr[index].amount_total - val;
+    }
     e.target.name === "s_gst" && (newArr[index].c_gst = e.target.value);
     e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
     e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
+    e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
+    e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
+
     // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
     console.log("new arrya --->", newArr);
     newArr = newArr.filter((item) => item);
@@ -424,6 +437,7 @@ export const Purchased = () => {
                           <tr>
                             <th scope="col">NO</th>
                             <th scope="col">ITEMS</th>
+                            <th scope="col">HSN</th>
                             <th scope="col">MRP</th>
                             <th scope="col">QTY</th>
                             <Box
@@ -435,11 +449,11 @@ export const Purchased = () => {
                               <BiRupee />
                               PRICE
                             </Box>
-                            <th scope="col">DISCOUNT</th>
-                            <th scope="col">HSN</th>
+                            <th scope="col">DISC</th>
                             <th scope="col">SGST</th>
                             <th scope="col">CGST</th>
                             <th scope="col">AMOUNT</th>
+                            <th scope="col">NET AMT</th>
                             <th scope="col"></th>
                           </tr>
                         </thead>
@@ -460,6 +474,17 @@ export const Purchased = () => {
                                         <input
                                           type="text"
                                           onChange={changeGst(index)}
+                                          name="hsnCode"
+                                          value={items.hsn_code}
+                                          className="invoice_input"
+                                          style={{ width: "100%" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+                                      <td width={"10%"}>
+                                        <input
+                                          type="text"
+                                          onChange={changeGst(index)}
                                           name="mrp"
                                           value={items.mrp}
                                           className="invoice_input"
@@ -467,7 +492,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"8%"}>
                                         <input
                                           type="number"
                                           name="quantity"
@@ -482,7 +507,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"8%"}>
                                         <input
                                           type="number"
                                           name="purchase_price"
@@ -493,40 +518,30 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"6%"}>
                                         <input
                                           type="number"
                                           name="discount"
                                           onChange={updateFieldChanged(index)}
-                                          value={items.discount_in_rs}
+                                          value={"0"}
                                           className="invoice_input"
                                           style={{ width: "100%" }}
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
-                                        <input
-                                          type="text"
-                                          onChange={changeGst(index)}
-                                          name="hsnCode"
-                                          value={items.hsn_code}
-                                          className="invoice_input"
-                                          style={{ width: "100%" }}
-                                          placeholder="0"
-                                        />
-                                      </td>
-                                      <td width={"10%"}>
+
+                                      <td width={"8%"}>
                                         <input
                                           type="number"
                                           onChange={changeGst(index)}
                                           name="s_gst"
                                           value={items.s_gst}
                                           className="invoice_input"
-                                          style={{ width: "3rem" }}
+                                          style={{ width: "2.4rem" }}
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"8%"}>
                                         <input
                                           type="number"
                                           onChange={changeGst(index)}
@@ -534,7 +549,7 @@ export const Purchased = () => {
                                           value={items.s_gst}
                                           disabled
                                           className="invoice_input"
-                                          style={{ width: "3rem" }}
+                                          style={{ width: "2.4rem" }}
                                           placeholder="0"
                                         />
                                       </td>
@@ -548,7 +563,21 @@ export const Purchased = () => {
                                           }
                                           readOnly
                                           className="invoice_input"
-                                          style={{ width: "6rem" }}
+                                          style={{ width: "5rem" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+                                      <td width={"10%"}>
+                                        <input
+                                          type="number"
+                                          value={
+                                            items.net_amount
+                                              ? items.net_amount
+                                              : ""
+                                          }
+                                          readOnly
+                                          className="invoice_input"
+                                          style={{ width: "5rem" }}
                                           placeholder="0"
                                         />
                                       </td>
@@ -735,7 +764,11 @@ export const Purchased = () => {
                           >
                             Sub Total
                           </h5>
-                          <Flex>
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
+                          >
                             <BiRupee />{" "}
                             {allTotals.subTotal.toLocaleString("en-IN")}
                           </Flex>
@@ -751,13 +784,10 @@ export const Purchased = () => {
                           >
                             Discount
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             -<BiRupee />
                             <input
@@ -772,7 +802,7 @@ export const Purchased = () => {
                               style={{ width: "5rem" }}
                               placeholder="0"
                             />
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center  border-bottom">
                           <h5
@@ -785,13 +815,10 @@ export const Purchased = () => {
                           >
                             Additional Charges
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             +<BiRupee />
                             <input
@@ -806,7 +833,7 @@ export const Purchased = () => {
                               style={{ width: "5rem" }}
                               placeholder="0"
                             />
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                           <h5
@@ -819,17 +846,14 @@ export const Purchased = () => {
                           >
                             SGST
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             +<BiRupee />{" "}
                             {allTotals.sGstTotal.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                           <h5
@@ -842,17 +866,14 @@ export const Purchased = () => {
                           >
                             CGST
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             +<BiRupee />{" "}
                             {allTotals.cGstTotal.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
@@ -866,17 +887,14 @@ export const Purchased = () => {
                           >
                             Total Amount
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals.grandTotal.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
@@ -942,13 +960,10 @@ export const Purchased = () => {
                           >
                             Amount Paid
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />
                             <input
@@ -964,7 +979,7 @@ export const Purchased = () => {
                               style={{ width: "5rem" }}
                               placeholder="0"
                             />
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                           <h5
@@ -977,19 +992,16 @@ export const Purchased = () => {
                           >
                             Outstanding
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "green",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals.outstanding
                               ? allTotals.outstanding.toLocaleString("en-IN")
                               : 0}
-                          </h5>
+                          </Flex>
                         </div>
                       </div>
                     </div>

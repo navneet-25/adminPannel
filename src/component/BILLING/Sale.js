@@ -666,11 +666,15 @@ export const Sale = () => {
                             <th scope="col">ITEMS</th>
                             <th scope="col">QTY</th>
                             <th scope="col">MRP</th>
-
-                            <th scope="col">
+                            <Box
+                              as="th"
+                              display={"flex"}
+                              alignItems={"center"}
+                              scope="col"
+                            >
                               <BiRupee />
                               PRICE
-                            </th>
+                            </Box>
                             <th scope="col">DISCOUNT</th>
                             {/* <th scope="col">HSN</th> */}
                             <th scope="col">GST</th>
@@ -826,17 +830,14 @@ export const Sale = () => {
                           >
                             Total Amount
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 17,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals?.grandTotal.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                           <h5
@@ -1010,17 +1011,14 @@ export const Sale = () => {
                           >
                             Pre Discount
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             -<BiRupee />{" "}
                             {allTotals?.discount?.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
@@ -1034,17 +1032,14 @@ export const Sale = () => {
                           >
                             Sub Total
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals?.subTotal?.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
@@ -1058,17 +1053,14 @@ export const Sale = () => {
                           >
                             SGST
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             +<BiRupee />{" "}
                             {allTotals?.sGstTotal?.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                           <h5
@@ -1081,17 +1073,14 @@ export const Sale = () => {
                           >
                             CGST
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             +<BiRupee />{" "}
                             {allTotals?.cGstTotal?.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         {useCouponData.is_coupon_applied == 1 ? (
@@ -1106,19 +1095,16 @@ export const Sale = () => {
                             >
                               Extra Discount
                             </h5>
-                            <h5
-                              style={{
-                                fontSize: 14,
-                                margin: 0,
-                                fontWeight: "600",
-                                color: "black",
-                              }}
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
                             >
                               -<BiRupee />{" "}
                               {allTotals?.coupon_discount_value?.toLocaleString(
                                 "en-IN"
                               )}
-                            </h5>
+                            </Flex>
                           </div>
                         ) : null}
 
@@ -1133,17 +1119,14 @@ export const Sale = () => {
                           >
                             Total Amount
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals?.grandTotal?.toLocaleString("en-IN")}
-                          </h5>
+                          </Flex>
                         </div>
 
                         <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
@@ -1187,13 +1170,10 @@ export const Sale = () => {
                           >
                             Amount Paid
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />
                             <input
@@ -1209,7 +1189,7 @@ export const Sale = () => {
                               style={{ width: "5rem" }}
                               placeholder="0"
                             />
-                          </h5>
+                          </Flex>
                         </div>
                         <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
                           <h5
@@ -1222,19 +1202,16 @@ export const Sale = () => {
                           >
                             Outstanding
                           </h5>
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "green",
-                            }}
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
                           >
                             <BiRupee />{" "}
                             {allTotals?.outstanding
                               ? allTotals?.outstanding.toLocaleString("en-IN")
                               : 0}
-                          </h5>
+                          </Flex>
                         </div>
                       </div>
                     </div>
