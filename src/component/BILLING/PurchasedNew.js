@@ -426,19 +426,14 @@ export const Purchased = () => {
                             <th scope="col">ITEMS</th>
                             <th scope="col">MRP</th>
                             <th scope="col">QTY</th>
-                            <Box
-                              as="th"
-                              display={"flex"}
-                              alignItems={"center"}
-                              scope="col"
-                            >
+                            <th scope="col">
                               <BiRupee />
                               PRICE
-                            </Box>
+                            </th>
                             <th scope="col">DISCOUNT</th>
                             <th scope="col">HSN</th>
-                            <th scope="col">SGST</th>
-                            <th scope="col">CGST</th>
+                            {/* <th scope="col">SGST</th> */}
+                            {/* <th scope="col">CGST</th> */}
                             <th scope="col">AMOUNT</th>
                             <th scope="col"></th>
                           </tr>
@@ -515,29 +510,8 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
-                                        <input
-                                          type="number"
-                                          onChange={changeGst(index)}
-                                          name="s_gst"
-                                          value={items.s_gst}
-                                          className="invoice_input"
-                                          style={{ width: "3rem" }}
-                                          placeholder="0"
-                                        />
-                                      </td>
-                                      <td width={"10%"}>
-                                        <input
-                                          type="number"
-                                          onChange={changeGst(index)}
-                                          name="c_gst"
-                                          value={items.s_gst}
-                                          disabled
-                                          className="invoice_input"
-                                          style={{ width: "3rem" }}
-                                          placeholder="0"
-                                        />
-                                      </td>
+                                      {/* <td width={"10%"} ><input type="number" onChange={changeGst(index)} name="s_gst" value={items.s_gst} className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
+                                      {/* <td width={"10%"} ><input type="number" onChange={changeGst(index)} name="c_gst" value={items.s_gst} disabled className="invoice_input" style={{ width: "3rem" }} placeholder="0" /></td> */}
                                       <td width={"10%"}>
                                         <input
                                           type="number"
@@ -735,10 +709,17 @@ export const Purchased = () => {
                           >
                             Sub Total
                           </h5>
-                          <Flex>
+                          <h5
+                            style={{
+                              fontSize: 14,
+                              margin: 0,
+                              fontWeight: "600",
+                              color: "black",
+                            }}
+                          >
                             <BiRupee />{" "}
                             {allTotals.subTotal.toLocaleString("en-IN")}
-                          </Flex>
+                          </h5>
                         </div>
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                           <h5

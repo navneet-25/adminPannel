@@ -626,9 +626,11 @@ export const Sale = () => {
                             />
                           </div>
                           {/* <i className="ri-search-line search-icon" /> */}
-                          <h2 className="mb-0" style={{ marginLeft: "1rem" }}>
-                            <BiBarcodeReader />
-                          </h2>
+                          {/* <h2 className="mb-0" style={{ marginLeft: "1rem" }}> */}
+                          <Box ml={4}>
+                            <BiBarcodeReader size={28} />
+                          </Box>
+                          {/* </h2> */}
                           {addedItems.length ? (
                             <Flex
                               ml={10}
@@ -640,7 +642,7 @@ export const Sale = () => {
                               <Text fontWeight={"700"} className="mb-0">
                                 Delete All
                               </Text>
-                              <FcDeleteRow size={24} />
+                              <FcDeleteRow size={32} />
                             </Flex>
                           ) : null}
                         </div>
@@ -792,21 +794,17 @@ export const Sale = () => {
                           <div className="col-md-12 px-0">
                             <div className="d-flex align-items-center justify-content-center p-3 add_product_dashedBorder mt-4">
                               <div className="w-100">
-                                <h5
-                                  className="mb-0"
-                                  style={{
-                                    textAlign: "center",
-                                    color: "#001794",
-                                    fontSize: 18,
-                                    marginTop: 4,
-                                  }}
+                                <Flex
+                                  justifyContent={"center"}
+                                  alignItems={"center"}
+                                  gap={3}
+                                  color={"#001794"}
+                                  fontWeight={"600"}
+                                  fontSize={16}
                                 >
-                                  <BiBarcodeReader
-                                    size={30}
-                                    style={{ marginRight: 10, marginBottom: 4 }}
-                                  />{" "}
-                                  Scan Barcode / Add you product
-                                </h5>
+                                  <BiBarcodeReader size={30} /> Scan Barcode /
+                                  Add you product
+                                </Flex>
                               </div>
                             </div>
                           </div>

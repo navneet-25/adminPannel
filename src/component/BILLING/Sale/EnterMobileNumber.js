@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../../URL";
 import ContextData from "../../../context/MainContext";
+import { Flex } from "@chakra-ui/react";
 
 export const EnterMobileNumber = ({
   setSaledate,
@@ -102,9 +103,15 @@ export const EnterMobileNumber = ({
             </div>
           </div>
           <div className="col-lg-4 px-4">
-            <h4 className="mb-0 text-center mb-4">
+            <Flex
+              alignItems={"center"}
+              justifyContent={"center"}
+              mb={3}
+              gap={2}
+              fontSize={16}
+            >
               Sale Date <FcCalendar />
-            </h4>
+            </Flex>
             <DatePicker
               selected={Saledate}
               dateFormat="dd-MM-yyyy"
