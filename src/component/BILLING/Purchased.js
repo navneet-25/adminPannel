@@ -556,29 +556,33 @@ export const Purchased = () => {
                                       </td>
                                       <td width={"10%"}>
                                         <input
-                                          type="number"
+                                          type="text"
                                           value={
                                             items.amount_total
-                                              ? items.amount_total
+                                              ? items.amount_total.toLocaleString(
+                                                  "en-IN"
+                                                )
                                               : ""
                                           }
                                           readOnly
                                           className="invoice_input"
-                                          style={{ width: "5rem" }}
+                                          style={{ width: "6rem" }}
                                           placeholder="0"
                                         />
                                       </td>
                                       <td width={"10%"}>
                                         <input
-                                          type="number"
+                                          type="text"
                                           value={
                                             items.net_amount
-                                              ? items.net_amount
+                                              ? items.net_amount.toLocaleString(
+                                                  "en-IN"
+                                                )
                                               : ""
                                           }
                                           readOnly
                                           className="invoice_input"
-                                          style={{ width: "5rem" }}
+                                          style={{ width: "6rem" }}
                                           placeholder="0"
                                         />
                                       </td>
