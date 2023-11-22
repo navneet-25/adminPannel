@@ -7,7 +7,7 @@ import Multiselect from "multiselect-react-dropdown";
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
-import { Box, Checkbox, Flex, useToast } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Text, useToast } from "@chakra-ui/react";
 
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
@@ -148,7 +148,6 @@ export const Purchased = () => {
   }, [allTotals.fully_paid]);
 
   const handleOnSelect = (item) => {
-    console.log("lolipop ---->", item);
     const allReadyExist = addedItems.some((elem) => {
       console.log("lolipop ---->", item, elem);
       return elem.id === item.id;
@@ -235,7 +234,10 @@ export const Purchased = () => {
     }
 
     e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
-    e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
+    if (e.target.name === "mrp") {
+      newArr[index].mrp = e.target.value;
+      console.log("jaanu mai ya naa----->", newArr);
+    }
 
     calRowTotals({ index, newArr });
     // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
@@ -512,8 +514,13 @@ export const Purchased = () => {
                                       <td width={"4%"} className="fw-medium">
                                         {index + 1}
                                       </td>
-                                      <td width={"20%"}>
-                                        {items.product_full_name}
+                                      <td
+                                        style={{
+                                          maxWidth: "16rem",
+                                          overflow: "hidden",
+                                        }}
+                                      >
+                                        <Text>{items.product_full_name}</Text>
                                       </td>
                                       <td width={"8%"}>
                                         <input
