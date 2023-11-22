@@ -159,6 +159,34 @@ export const Purchased = () => {
          }, 1000) */ //1 second delay
   };
 
+  const calRowTotals = ({ index, newArr }) => {
+    const discount = newArr[index].discount_in_rs | 0;
+    const initialPurchasePrice =
+      Number(newArr[index].rate) +
+      Number(
+        (Number(newArr[index].s_gst) / 100) * 2 * Number(newArr[index].rate)
+      );
+
+    const discountedRupee = (initialPurchasePrice * Number(discount)) / 100;
+
+    const purchasePrice = initialPurchasePrice - discountedRupee;
+
+    newArr[index].purchase_price = purchasePrice;
+
+    newArr[index].net_amount =
+      Number(purchasePrice) * Number(newArr[index].billing_quantity);
+
+    console.log(
+      "hey there ---->",
+      Number(newArr[index].purchase_price),
+      discount,
+      purchasePrice
+    );
+
+    // newArr = newArr.filter((item) => item);
+    setAddedItems(newArr);
+  };
+
   const updateFieldChanged = (index) => (e) => {
     // console.log('index: ' + index);
     // console.log('property name: ' + e.target.name);
@@ -168,8 +196,8 @@ export const Purchased = () => {
     e.target.name === "purchase_price" &&
       (newArr[index].purchase_price = e.target.value);
     e.target.name === "rate" && (newArr[index].rate = e.target.value);
-    // e.target.name === "discount" &&
-    //   (newArr[index].discount_in_rs = e.target.value);
+    e.target.name === "rate" && (newArr[index].purchase_price = e.target.value);
+
     newArr[index].amount_total =
       Number(newArr[index].billing_quantity) * Number(newArr[index].rate);
 
@@ -181,15 +209,15 @@ export const Purchased = () => {
 
     newArr[index].net_amount = newArr[index].amount_total + val;
 
-    newArr[index].purchase_price =
-      Number(newArr[index].rate) +
-      Number(
-        (Number(newArr[index].s_gst) / 100) * 2 * Number(newArr[index].rate)
-      );
+    if (e.target.name === "discount") {
+      newArr[index].discount_in_rs = e.target.value;
+    }
+
+    calRowTotals({ index, newArr });
 
     // console.log("new arrya --->", newArr);
-    newArr = newArr.filter((item) => item);
-    setAddedItems(newArr);
+    // newArr = newArr.filter((item) => item);
+    // setAddedItems(newArr);
   };
 
   const changeGst = (index) => (e) => {
@@ -204,23 +232,14 @@ export const Purchased = () => {
       //   Number(Number(e.target.value) / 100);
 
       // const val =  * (sGst * 2);
-
-      newArr[index].purchase_price =
-        Number(newArr[index].rate) +
-        Number((Number(e.target.value) / 100) * 2 * Number(newArr[index].rate));
-
-      newArr[index].net_amount =
-        Number(newArr[index].purchase_price) *
-        Number(newArr[index].billing_quantity);
     }
 
     e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
     e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
 
+    calRowTotals({ index, newArr });
     // newArr[index].amount_total = Number(newArr[index].billing_quantity) * Number(newArr[index].purchase_price);
     console.log("new arrya --->", newArr);
-    newArr = newArr.filter((item) => item);
-    setAddedItems(newArr);
   };
 
   const deleteFeild = (index) => {
@@ -474,8 +493,9 @@ export const Purchased = () => {
                               {/* <BiRupee /> */}
                               RATE
                             </Box>
-                            <th scope="col">DISC</th>
                             <th scope="col">SGST%</th>
+                            <th scope="col">CGST%</th>
+                            <th scope="col">DISC%</th>
                             <th scope="col">PRICE</th>
                             <th scope="col">AMOUNT</th>
                             <th scope="col">NET AMT</th>
@@ -489,13 +509,13 @@ export const Purchased = () => {
                                 <>
                                   {items && (
                                     <tr key={`purchaseList-${index}`}>
-                                      <td width={"10%"} className="fw-medium">
+                                      <td width={"4%"} className="fw-medium">
                                         {index + 1}
                                       </td>
-                                      <td width={"40%"}>
+                                      <td width={"20%"}>
                                         {items.product_full_name}
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"8%"}>
                                         <input
                                           type="text"
                                           onChange={changeGst(index)}
@@ -506,7 +526,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td width={"7%"}>
                                         <input
                                           type="text"
                                           onChange={changeGst(index)}
@@ -517,7 +537,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"8%"}>
+                                      <td width={"7%"}>
                                         <input
                                           type="number"
                                           name="quantity"
@@ -532,12 +552,36 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"8%"}>
+                                      <td width={"7%"}>
                                         <input
                                           type="number"
                                           name="rate"
                                           value={items.rate ? items.rate : ""}
                                           onChange={updateFieldChanged(index)}
+                                          className="invoice_input"
+                                          style={{ width: "100%" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+
+                                      <td width={"5%"}>
+                                        <input
+                                          type="number"
+                                          onChange={changeGst(index)}
+                                          name="s_gst"
+                                          value={items.s_gst}
+                                          className="invoice_input"
+                                          style={{ width: "100%" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+                                      <td width={"5%"}>
+                                        <input
+                                          type="number"
+                                          onChange={changeGst(index)}
+                                          name="s_gst"
+                                          readOnly
+                                          value={items.s_gst}
                                           className="invoice_input"
                                           style={{ width: "100%" }}
                                           placeholder="0"
@@ -554,18 +598,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"5%"}>
-                                        <input
-                                          type="number"
-                                          onChange={changeGst(index)}
-                                          name="s_gst"
-                                          value={items.s_gst}
-                                          className="invoice_input"
-                                          style={{ width: "2.4rem" }}
-                                          placeholder="0"
-                                        />
-                                      </td>
-                                      <td width={"8%"}>
+                                      <td width={"7%"}>
                                         <input
                                           type="number"
                                           onChange={changeGst(index)}
@@ -573,11 +606,11 @@ export const Purchased = () => {
                                           value={items.purchase_price}
                                           disabled
                                           className="invoice_input"
-                                          style={{ width: "3.4rem" }}
+                                          style={{ width: "100%" }}
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td>
                                         <input
                                           type="text"
                                           value={
@@ -589,11 +622,11 @@ export const Purchased = () => {
                                           }
                                           readOnly
                                           className="invoice_input"
-                                          style={{ width: "6rem" }}
+                                          style={{ width: "100%" }}
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td>
                                         <input
                                           type="text"
                                           value={
@@ -605,11 +638,11 @@ export const Purchased = () => {
                                           }
                                           readOnly
                                           className="invoice_input"
-                                          style={{ width: "6rem" }}
+                                          style={{ width: "100%" }}
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"10%"}>
+                                      <td>
                                         <AiOutlineDelete
                                           style={{
                                             cursor: "pointer",
