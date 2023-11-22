@@ -63,50 +63,57 @@ export const Purchased = () => {
 
   useEffect(() => {
     const subTotalGet = addedItems.reduce((acc, obj) => {
+      return acc + Number(Number(obj?.amount_total || 0));
+    }, 0);
+
+    const grandTotal = addedItems.reduce((acc, obj) => {
       return acc + Number(Number(obj?.net_amount || 0));
     }, 0);
 
-    const discount = addedItems.reduce((acc, obj) => {
+    // const discount = addedItems.reduce((acc, obj) => {
+    //   return (
+    //     acc +
+    //     Number(
+    //       Number(obj?.discount_in_rs || 0) * Number(obj?.billing_quantity || 0)
+    //     )
+    //   );
+    // }, 0);
+
+    const sGstTotal = addedItems.reduce((acc, obj) => {
       return (
         acc +
-        Number(
-          Number(obj?.discount_in_rs || 0) * Number(obj?.billing_quantity || 0)
-        )
+        (Number(obj?.s_gst || 0) / 100) *
+          Number(obj?.rate) *
+          Number(obj?.billing_quantity || 0)
       );
     }, 0);
-    const sGstTotal = addedItems.reduce((acc, obj) => {
-      return acc + Number(obj?.s_gst || 0) * Number(obj?.billing_quantity || 0);
-    }, 0);
-    const cGstTotal = addedItems.reduce((acc, obj) => {
-      return acc + Number(obj?.c_gst || 0) * Number(obj?.billing_quantity || 0);
-    }, 0);
-    const subTotal = subTotalGet - (sGstTotal + cGstTotal);
-    const grandTotal = subTotal + sGstTotal + cGstTotal;
+    const subTotal = subTotalGet;
+    // const grandTotal = subTotal;
     setAllTotals({
       ...allTotals,
-      discount,
+      // discount,
       subTotal,
       sGstTotal,
-      cGstTotal,
+      cGstTotal: sGstTotal,
       grandTotal,
     });
-    console.log("hey there ----->", discount);
   }, [addedItems]);
 
-  useEffect(() => {
-    const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } =
-      allTotals;
-    const Total =
-      subTotal + sGstTotal + cGstTotal + Number(additional_charges || 0);
-    const discountedPrice = Number(Total || 0) - Number(discount || 0);
-    setAllTotals({
-      ...allTotals,
-      grandTotal: discountedPrice,
-    });
-    console.log("hey there 2 ----->", discount);
-  }, [allTotals.discount]);
+  // useEffect(() => {
+  //   const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } =
+  //     allTotals;
+  //   const Total =
+  //     subTotal + sGstTotal + cGstTotal + Number(additional_charges || 0);
+  //   const discountedPrice = Number(Total || 0) - Number(discount || 0);
+  //   setAllTotals({
+  //     ...allTotals,
+  //     grandTotal: discountedPrice,
+  //   });
+  //   console.log("hey there 2 ----->", discount);
+  // }, [allTotals.discount]);
 
   useEffect(() => {
+    console.log("additional chanregs useeffct");
     const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } =
       allTotals;
     const Total = subTotal + sGstTotal + cGstTotal - Number(discount || 0);
@@ -119,6 +126,7 @@ export const Purchased = () => {
   }, [allTotals.additional_charges]);
 
   useEffect(() => {
+    console.log("amount paid useeffct");
     const { grandTotal, amount_paid } = allTotals;
     const Total = Number(grandTotal || 0);
     const outstanding = Total - Number(amount_paid || 0);
@@ -129,6 +137,7 @@ export const Purchased = () => {
   }, [allTotals.amount_paid]);
 
   useEffect(() => {
+    console.log("fully payment useeffct");
     const { fully_paid } = allTotals;
     console.log(" is working ---??", fully_paid);
     fully_paid &&
@@ -158,11 +167,11 @@ export const Purchased = () => {
       (newArr[index].billing_quantity = e.target.value);
     e.target.name === "purchase_price" &&
       (newArr[index].purchase_price = e.target.value);
+    e.target.name === "rate" && (newArr[index].rate = e.target.value);
     // e.target.name === "discount" &&
     //   (newArr[index].discount_in_rs = e.target.value);
     newArr[index].amount_total =
-      Number(newArr[index].billing_quantity) *
-      Number(newArr[index].purchase_price);
+      Number(newArr[index].billing_quantity) * Number(newArr[index].rate);
 
     const sGst =
       Number(newArr[index].purchase_price) *
@@ -172,6 +181,12 @@ export const Purchased = () => {
 
     newArr[index].net_amount = newArr[index].amount_total + val;
 
+    newArr[index].purchase_price =
+      Number(newArr[index].rate) +
+      Number(
+        (Number(newArr[index].s_gst) / 100) * 2 * Number(newArr[index].rate)
+      );
+
     // console.log("new arrya --->", newArr);
     newArr = newArr.filter((item) => item);
     setAddedItems(newArr);
@@ -179,18 +194,26 @@ export const Purchased = () => {
 
   const changeGst = (index) => (e) => {
     let newArr = [...addedItems];
+
     if (e.target.name === "s_gst") {
       newArr[index].s_gst = e.target.value;
+      newArr[index].c_gst = e.target.value;
 
-      const sGst =
+      // const sGst =
+      //   Number(newArr[index].purchase_price) *
+      //   Number(Number(e.target.value) / 100);
+
+      // const val =  * (sGst * 2);
+
+      newArr[index].purchase_price =
+        Number(newArr[index].rate) +
+        Number((Number(e.target.value) / 100) * 2 * Number(newArr[index].rate));
+
+      newArr[index].net_amount =
         Number(newArr[index].purchase_price) *
-        Number(Number(e.target.value) / 100);
-
-      const val = Number(newArr[index].billing_quantity) * (sGst * 2);
-
-      newArr[index].net_amount = newArr[index].amount_total + val;
+        Number(newArr[index].billing_quantity);
     }
-    e.target.name === "s_gst" && (newArr[index].c_gst = e.target.value);
+
     e.target.name === "hsnCode" && (newArr[index].hsn_code = e.target.value);
     e.target.name === "mrp" && (newArr[index].mrp = e.target.value);
 
@@ -448,12 +471,12 @@ export const Purchased = () => {
                               alignItems={"center"}
                               scope="col"
                             >
-                              <BiRupee />
-                              PRICE
+                              {/* <BiRupee /> */}
+                              RATE
                             </Box>
                             <th scope="col">DISC</th>
-                            <th scope="col">SGST</th>
-                            <th scope="col">CGST</th>
+                            <th scope="col">SGST%</th>
+                            <th scope="col">PRICE</th>
                             <th scope="col">AMOUNT</th>
                             <th scope="col">NET AMT</th>
                             <th scope="col"></th>
@@ -512,8 +535,8 @@ export const Purchased = () => {
                                       <td width={"8%"}>
                                         <input
                                           type="number"
-                                          name="purchase_price"
-                                          value={items.purchase_price}
+                                          name="rate"
+                                          value={items.rate ? items.rate : ""}
                                           onChange={updateFieldChanged(index)}
                                           className="invoice_input"
                                           style={{ width: "100%" }}
@@ -531,7 +554,7 @@ export const Purchased = () => {
                                           placeholder="0"
                                         />
                                       </td>
-                                      <td width={"8%"}>
+                                      <td width={"5%"}>
                                         <input
                                           type="number"
                                           onChange={changeGst(index)}
@@ -546,11 +569,11 @@ export const Purchased = () => {
                                         <input
                                           type="number"
                                           onChange={changeGst(index)}
-                                          name="c_gst"
-                                          value={items.s_gst}
+                                          name="purchase_price"
+                                          value={items.purchase_price}
                                           disabled
                                           className="invoice_input"
-                                          style={{ width: "2.4rem" }}
+                                          style={{ width: "3.4rem" }}
                                           placeholder="0"
                                         />
                                       </td>
