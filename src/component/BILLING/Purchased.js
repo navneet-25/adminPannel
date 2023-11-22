@@ -7,18 +7,29 @@ import Multiselect from "multiselect-react-dropdown";
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
-import { Box, Checkbox, Flex, Text, useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Text,
+  useBoolean,
+  useToast,
+} from "@chakra-ui/react";
 
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
 
 export const Purchased = () => {
   const getAllVendorsRef = useRef(null);
+  const navigate = useNavigate();
   const { store_vendor_list, storeProductsData, store_login_user, reloadData } =
     useContext(ContextData);
   const [vendorLists, setVendorLists] = useState([]);
   const [PurchaseDate, setPurchaseDate] = useState(new Date());
-  const [selectedVendor, setSelectedVendor] = useState({});
+  const [selectedVendor, setSelectedVendor] = useState();
+  const [isLoading, setLoading] = useBoolean();
   const [allProducts, setAllProducts] = useState([]);
   const [addedItems, setAddedItems] = useState([]);
   const [allTotals, setAllTotals] = useState({
@@ -83,7 +94,7 @@ export const Purchased = () => {
       return (
         acc +
         (Number(obj?.s_gst || 0) / 100) *
-          Number(obj?.rate) *
+          Number(obj?.rate || 0) *
           Number(obj?.billing_quantity || 0)
       );
     }, 0);
@@ -252,9 +263,7 @@ export const Purchased = () => {
   };
 
   const submitPurchase = (adminId) => {
-    console.log("product_list_in_purchse", selectedVendor.firm_name);
-
-    if (selectedVendor.id) {
+    if (selectedVendor) {
       const data = JSON.stringify({
         store_id: store_login_user.store_id,
         vendor_id: selectedVendor.id,
@@ -281,6 +290,7 @@ export const Purchased = () => {
       console.log(" all data from data ---->", JSON.parse(data));
 
       if (addedItems.length) {
+        setLoading.on();
         fetch(URLDomain + "/APP-API/Billing/purchaseStoreProducts", {
           method: "POST",
           header: {
@@ -314,8 +324,13 @@ export const Purchased = () => {
           })
           .catch((error) => {
             console.error(error);
+          })
+          .finally(() => {
+            setLoading.off();
+            navigate("/");
           });
       } else {
+        setLoading.off();
         toast({
           title: "Please add products",
           // description: "We've created your account for you.",
@@ -817,13 +832,17 @@ export const Purchased = () => {
                         </div>
 
                         <div className="py-3 px-5 mt-5">
-                          <button
-                            type="button"
+                          <Button
+                            // type="button"
+                            isLoading={isLoading}
                             onClick={submitPurchase}
-                            class="btn btn-success waves-effect waves-light w-100 "
+                            fontSize={14}
+                            colorScheme="teal"
+                            width={"100%"}
+                            // class="btn btn-success waves-effect waves-light w-100 "
                           >
                             Submit
-                          </button>
+                          </Button>
                         </div>
                       </div>
                       <div
