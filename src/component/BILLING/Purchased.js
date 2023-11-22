@@ -254,70 +254,79 @@ export const Purchased = () => {
   const submitPurchase = (adminId) => {
     console.log("product_list_in_purchse", selectedVendor.firm_name);
 
-    const data = JSON.stringify({
-      store_id: store_login_user.store_id,
-      vendor_id: selectedVendor.id,
-      vendor_firm_name: selectedVendor.firm_name,
-      sale_man_name: restInfo.sales_man,
-      user_id: store_login_user.id,
-      sub_total: allTotals.subTotal,
-      i_gst: Number(allTotals.sGstTotal) + Number(allTotals.cGstTotal),
-      s_gst: Number(allTotals.sGstTotal),
-      c_gst: Number(allTotals.cGstTotal),
-      extra_charge: allTotals.additional_charges,
-      discount: allTotals.discount,
-      notes: restInfo.notes,
-      total_payment: allTotals.grandTotal,
-      amount_paid: allTotals.amount_paid,
-      outstanding: allTotals.outstanding,
-      stock_location: restInfo.stock_location,
-      payment_mode: restInfo.payment_mode,
-      purchaes_date: PurchaseDate.toLocaleDateString(),
-      product_list: addedItems,
-    });
+    if (selectedVendor.id) {
+      const data = JSON.stringify({
+        store_id: store_login_user.store_id,
+        vendor_id: selectedVendor.id,
+        vendor_firm_name: selectedVendor.firm_name,
+        sale_man_name: restInfo.sales_man,
+        user_id: store_login_user.id,
+        sub_total: allTotals.subTotal,
+        i_gst: Number(allTotals.sGstTotal) + Number(allTotals.cGstTotal),
+        s_gst: Number(allTotals.sGstTotal),
+        c_gst: Number(allTotals.cGstTotal),
+        extra_charge: allTotals.additional_charges,
+        discount: allTotals.discount,
+        notes: restInfo.notes,
+        total_payment: allTotals.grandTotal,
+        amount_paid: allTotals.amount_paid,
+        outstanding: allTotals.outstanding,
+        stock_location: restInfo.stock_location,
+        payment_mode: restInfo.payment_mode,
+        purchaes_date: PurchaseDate.toLocaleDateString(),
+        product_list: addedItems,
+      });
 
-    console.log(" all data from data ---->", allTotals);
-    console.log(" all data from data ---->", JSON.parse(data));
+      console.log(" all data from data ---->", allTotals);
+      console.log(" all data from data ---->", JSON.parse(data));
 
-    if (addedItems.length) {
-      fetch(URLDomain + "/APP-API/Billing/purchaseStoreProducts", {
-        method: "POST",
-        header: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-        body: data,
-      })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(" purchase server res ---->", responseJson);
-          if (responseJson.purchase_insert) {
-            reloadData();
-            setAddedItems([]);
-            toast({
-              title: "Purchase Inserted",
-              // description: "We've created your account for you.",
-              status: "success",
-              duration: 4000,
-              isClosable: true,
-            });
-          } else {
-            toast({
-              title: "Purchase Not Inserted",
-              // description: "We've created your account for you.",
-              status: "error",
-              duration: 4000,
-              isClosable: true,
-            });
-          }
+      if (addedItems.length) {
+        fetch(URLDomain + "/APP-API/Billing/purchaseStoreProducts", {
+          method: "POST",
+          header: {
+            Accept: "application/json",
+            "Content-type": "application/json",
+          },
+          body: data,
         })
-        .catch((error) => {
-          console.error(error);
+          .then((response) => response.json())
+          .then((responseJson) => {
+            console.log(" purchase server res ---->", responseJson);
+            if (responseJson.purchase_insert) {
+              reloadData();
+              setAddedItems([]);
+              toast({
+                title: "Purchase Inserted",
+                // description: "We've created your account for you.",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+              });
+            } else {
+              toast({
+                title: "Purchase Not Inserted",
+                // description: "We've created your account for you.",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        toast({
+          title: "Please add products",
+          // description: "We've created your account for you.",
+          status: "warning",
+          duration: 4000,
+          isClosable: true,
         });
+      }
     } else {
       toast({
-        title: "Please add products",
-        // description: "We've created your account for you.",
+        title: "Please select the vendor..!!",
         status: "warning",
         duration: 4000,
         isClosable: true,
