@@ -99,6 +99,24 @@ const ContextProvider = (props) => {
       .catch((error) => {});
   };
 
+  const storeVendorRelode = () => {
+    const store_id = cookies.get("adminStoreId");
+    const adminId = MainData.adminId;
+    fetch(URL + "/APP-API/Reload/VendorInformation", {
+      method: "POST",
+      header: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ store_id, adminId }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        functionality.fetchAllData({ ...responseJson });
+      })
+      .catch((error) => {});
+  };
+
   const storeBussinessRelode = () => {
     const store_id = cookies.get("adminStoreId");
     const adminId = MainData.adminId;
@@ -183,6 +201,7 @@ const ContextProvider = (props) => {
     storeCategoryRelode,
     storeProductRelode,
     storeBussinessRelode,
+    storeVendorRelode,
 
     getToast: (e) => {
       toast({

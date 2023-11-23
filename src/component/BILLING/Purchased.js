@@ -24,8 +24,12 @@ import URLDomain from "../../URL";
 export const Purchased = () => {
   const getAllVendorsRef = useRef(null);
   const navigate = useNavigate();
-  const { store_vendor_list, storeProductsData, store_login_user, reloadData } =
-    useContext(ContextData);
+  const {
+    store_vendor_list,
+    storeProductsData,
+    store_login_user,
+    storeVendorRelode,
+  } = useContext(ContextData);
   const [vendorLists, setVendorLists] = useState([]);
   const [PurchaseDate, setPurchaseDate] = useState(new Date());
   const [selectedVendor, setSelectedVendor] = useState();
@@ -64,6 +68,12 @@ export const Purchased = () => {
       const allReadyExist = addedItems.some(
         (elem) => elem.product_bar_code === code
       );
+      prod["mrp"] = prod.price;
+      prod["c_gst"] = 0;
+      prod["s_gst"] = 0;
+      prod["discount_in_percent"] = 0;
+      prod["discount_in_rs"] = 0;
+      prod["purchase_price"] = 0;
       !allReadyExist && setAddedItems([...addedItems, prod]);
     },
   });
@@ -163,10 +173,16 @@ export const Purchased = () => {
   }, [allTotals.fully_paid]);
 
   const handleOnSelect = (item) => {
+    console.log("lolipop ---->", item);
     const allReadyExist = addedItems.some((elem) => {
-      console.log("lolipop ---->", item, elem);
       return elem.id === item.id;
     });
+    item["mrp"] = item.price;
+    item["c_gst"] = 0;
+    item["s_gst"] = 0;
+    item["discount_in_percent"] = 0;
+    item["discount_in_rs"] = 0;
+    item["purchase_price"] = 0;
     !allReadyExist && setAddedItems([...addedItems, item]);
     /*  setTimeout(() => {
              document.getElementsByClassName("clear-icon")[0].querySelector(':scope > svg')[0].click();
@@ -307,7 +323,7 @@ export const Purchased = () => {
           .then((responseJson) => {
             console.log(" purchase server res ---->", responseJson);
             if (responseJson.purchase_insert) {
-              reloadData();
+              storeVendorRelode();
               setAddedItems([]);
               toast({
                 title: "Purchase Inserted",
