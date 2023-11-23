@@ -81,14 +81,18 @@ export const Purchased = () => {
       return acc + Number(Number(obj?.net_amount || 0));
     }, 0);
 
-    // const discount = addedItems.reduce((acc, obj) => {
-    //   return (
-    //     acc +
-    //     Number(
-    //       Number(obj?.discount_in_rs || 0) * Number(obj?.billing_quantity || 0)
-    //     )
-    //   );
-    // }, 0);
+    const discount = addedItems.reduce((acc, obj) => {
+      const initialPurchasePrice =
+        Number(obj?.rate) +
+        Number((Number(obj?.s_gst) / 100) * 2 * Number(obj?.rate));
+
+      const discountedRupee =
+        (initialPurchasePrice * Number(obj?.discount_in_percent)) / 100;
+      return (
+        acc +
+        Number(Number(discountedRupee) * Number(obj?.billing_quantity || 0))
+      );
+    }, 0);
 
     const sGstTotal = addedItems.reduce((acc, obj) => {
       return (
@@ -102,7 +106,7 @@ export const Purchased = () => {
     // const grandTotal = subTotal;
     setAllTotals({
       ...allTotals,
-      // discount,
+      discount,
       subTotal,
       sGstTotal,
       cGstTotal: sGstTotal,
@@ -170,7 +174,7 @@ export const Purchased = () => {
   };
 
   const calRowTotals = ({ index, newArr }) => {
-    const discount = newArr[index].discount_in_rs | 0;
+    const discount = newArr[index].discount_in_percent | 0;
     const initialPurchasePrice =
       Number(newArr[index].rate) +
       Number(
@@ -220,7 +224,7 @@ export const Purchased = () => {
     newArr[index].net_amount = newArr[index].amount_total + val;
 
     if (e.target.name === "discount") {
-      newArr[index].discount_in_rs = e.target.value;
+      newArr[index].discount_in_percent = e.target.value;
     }
 
     calRowTotals({ index, newArr });
@@ -327,7 +331,7 @@ export const Purchased = () => {
           })
           .finally(() => {
             setLoading.off();
-            navigate("/");
+            navigate("/purchaseManagement/purchase-history");
           });
       } else {
         setLoading.off();
@@ -355,21 +359,6 @@ export const Purchased = () => {
         <div className="col-12">
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 className="mb-sm-0">Purchase</h4>
-            {/* <div className="page-title-right">
-                            <ol className="breadcrumb m-0">
-                                <li className="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                <li className="breadcrumb-item active">Basic Tables</li>
-                            </ol>
-                        </div> */}
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="card">
-            <div className="card-header align-items-center d-flex px-5">
-              <h4 className="card-title mb-0 flex-grow-1">Purchase</h4>
-            </div>
           </div>
         </div>
       </div>
@@ -969,6 +958,26 @@ export const Purchased = () => {
                           >
                             +<BiRupee />{" "}
                             {allTotals.cGstTotal.toLocaleString("en-IN")}
+                          </Flex>
+                        </div>
+                        <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                          <h5
+                            style={{
+                              fontSize: 14,
+                              margin: 0,
+                              fontWeight: "600",
+                              color: "black",
+                            }}
+                          >
+                            Discount
+                          </h5>
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
+                          >
+                            -<BiRupee />{" "}
+                            {allTotals.discount.toLocaleString("en-IN")}
                           </Flex>
                         </div>
 
