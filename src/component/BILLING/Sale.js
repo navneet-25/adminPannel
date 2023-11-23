@@ -6,7 +6,7 @@ import ContextData from "../../context/MainContext";
 import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
-import { Box, Checkbox, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Text } from "@chakra-ui/react";
 import ReactToPrint from "react-to-print";
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
@@ -85,10 +85,15 @@ export const Sale = () => {
   const componentRef = useRef();
 
   useEffect(() => {
+    const func = () => {
+      document.querySelectorAll("[data-test]")[0].focus();
+      document.querySelectorAll("[data-test]")[0].select();
+    };
+
     const keyDownHandler = (event) => {
       if (event.keyCode === 220) {
         event.preventDefault();
-        document.querySelectorAll("[data-test]")[0].focus();
+        func();
         document.querySelectorAll("#search-options")[0].scrollIntoView();
         console.log("User pressed: ");
 
@@ -98,9 +103,11 @@ export const Sale = () => {
     };
 
     document.addEventListener("keydown", keyDownHandler);
+    document.querySelectorAll("[data-test]")[0].addEventListener("click", func);
 
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener("click", keyDownHandler);
     };
   }, []);
 
@@ -175,6 +182,13 @@ export const Sale = () => {
     const subTotalGet = addedItems.reduce((acc, obj) => {
       return (
         acc +
+        Number(Number(obj?.price || 0) * Number(obj?.billing_quantity || 0))
+      );
+    }, 0);
+
+    const grandTotal = addedItems.reduce((acc, obj) => {
+      return (
+        acc +
         Number(
           Number(obj?.sale_price || 0) * Number(obj?.billing_quantity || 0)
         )
@@ -191,20 +205,24 @@ export const Sale = () => {
     }, 0);
 
     const sGstTotal = addedItems.reduce((acc, obj) => {
-      return acc + Number(obj?.s_gst || 0) * Number(obj?.billing_quantity || 0);
+      return (
+        acc +
+        (Number(obj?.s_gst || 0) / 100) *
+          Number(obj?.sale_price || 0) *
+          Number(obj?.billing_quantity || 0)
+      );
     }, 0);
-    const cGstTotal = addedItems.reduce((acc, obj) => {
-      return acc + Number(obj?.c_gst || 0) * Number(obj?.billing_quantity || 0);
-    }, 0);
-    const subTotal = subTotalGet - (sGstTotal + cGstTotal);
-    const grandTotal = subTotal + sGstTotal + cGstTotal;
+
+    const subTotal = subTotalGet;
+
+    console.log("sub total =========>", sGstTotal);
 
     setAllTotals({
       ...allTotals,
       discount,
       subTotal,
       sGstTotal,
-      cGstTotal,
+      cGstTotal: sGstTotal,
       grandTotal,
     });
   }, [addedItems]);
@@ -320,20 +338,19 @@ export const Sale = () => {
   };
 
   const submitSale = () => {
-    console.log("cpupon value", allTotals?.coupon_discount_value);
-
     setIL(true);
-    if (
-      selectedCustomer.mobile == undefined ||
-      selectedCustomer.mobile == null
-    ) {
-      getToast({
-        title: "Customer Mobile Number",
-        dec: "Requird",
-        status: "error",
-      });
-      setIL(false);
-    } else if (allTotals?.grandTotal == 0) {
+    // if (
+    //   selectedCustomer.mobile == undefined ||
+    //   selectedCustomer.mobile == null
+    // ) {
+    //   getToast({
+    //     title: "Customer Mobile Number",
+    //     dec: "Requird",
+    //     status: "error",
+    //   });
+    //   setIL(false);
+    // } else
+    if (allTotals?.grandTotal == 0) {
       getToast({ title: "Please add items", dec: "Requird", status: "error" });
       setIL(false);
     } else {
@@ -375,6 +392,7 @@ export const Sale = () => {
         .then((responseJson) => {
           // functionality.fetchAllData(responseJson);
           console.log(" Sale server res ---->", responseJson);
+          setAddedItems([]);
           setIL(false);
           handlePrint();
         })
@@ -499,12 +517,6 @@ export const Sale = () => {
         <div className="col-12">
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 className="mb-sm-0">Sale</h4>
-            {/* <div className="page-title-right">
-                            <ol className="breadcrumb m-0">
-                                <li className="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                <li className="breadcrumb-item active">Basic Tables</li>
-                            </ol>
-                        </div> */}
           </div>
         </div>
       </div>
@@ -677,7 +689,7 @@ export const Sale = () => {
                             </Box>
                             <th scope="col">DISCOUNT</th>
                             {/* <th scope="col">HSN</th> */}
-                            <th scope="col">GST</th>
+                            {/* <th scope="col">GST</th> */}
                             {/* <th scope="col">CGST</th> */}
                             <th scope="col">AMOUNT</th>
                             <th scope="col"></th>
@@ -964,25 +976,19 @@ export const Sale = () => {
                           </h5>
                         </div>
                         <div className="py-3 px-5 mt-5">
-                          {isLoading ? (
-                            <a
-                              href="javascript:void(0)"
-                              className="text-success"
-                            >
-                              <i className="mdi mdi-loading mdi-spin fs-20 align-middle me-2" />{" "}
-                              Wait..{" "}
-                            </a>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={submitSale}
-                              class="btn btn-success waves-effect waves-light w-100 "
-                            >
-                              Submit
-                            </button>
-                          )}
+                          <Button
+                            // type="button"
+                            isLoading={isLoading}
+                            onClick={submitSale}
+                            fontSize={14}
+                            colorScheme="teal"
+                            width={"100%"}
+                            // class="btn btn-success waves-effect waves-light w-100 "
+                          >
+                            Submit
+                          </Button>
 
-                          <ReactToPrint
+                          {/* <ReactToPrint
                             trigger={() => (
                               <button
                                 type="button"
@@ -993,34 +999,13 @@ export const Sale = () => {
                             )}
                             content={() => componentRef.current}
                             // print={() => console.log("hey nanveet")}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div
                         className="col-md-6 px-0 py-3"
                         style={{ borderLeft: "1px solid #d9d9d9" }}
                       >
-                        <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              margin: 0,
-                              fontWeight: "600",
-                              color: "black",
-                            }}
-                          >
-                            Pre Discount
-                          </h5>
-                          <Flex
-                            fontWeight={"600"}
-                            fontSize={14}
-                            alignItems={"center"}
-                          >
-                            -<BiRupee />{" "}
-                            {allTotals?.discount?.toLocaleString("en-IN")}
-                          </Flex>
-                        </div>
-
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                           <h5
                             style={{
@@ -1042,6 +1027,27 @@ export const Sale = () => {
                           </Flex>
                         </div>
 
+                        <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                          <h5
+                            style={{
+                              fontSize: 14,
+                              margin: 0,
+                              fontWeight: "600",
+                              color: "black",
+                            }}
+                          >
+                            Discount
+                          </h5>
+                          <Flex
+                            fontWeight={"600"}
+                            fontSize={14}
+                            alignItems={"center"}
+                          >
+                            -<BiRupee />{" "}
+                            {allTotals?.discount?.toLocaleString("en-IN")}
+                          </Flex>
+                        </div>
+
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                           <h5
                             style={{
@@ -1058,7 +1064,7 @@ export const Sale = () => {
                             fontSize={14}
                             alignItems={"center"}
                           >
-                            +<BiRupee />{" "}
+                            <BiRupee />{" "}
                             {allTotals?.sGstTotal?.toLocaleString("en-IN")}
                           </Flex>
                         </div>
@@ -1078,7 +1084,7 @@ export const Sale = () => {
                             fontSize={14}
                             alignItems={"center"}
                           >
-                            +<BiRupee />{" "}
+                            <BiRupee />{" "}
                             {allTotals?.cGstTotal?.toLocaleString("en-IN")}
                           </Flex>
                         </div>
@@ -1317,7 +1323,15 @@ export const Sale = () => {
 
             <tr>
               <td colspan="5" class="sum-up line">
-                Pre Discount
+                Sub Total
+              </td>
+              <td class="line price">
+                {allTotals?.subTotal.toLocaleString("en-IN")}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5" class="sum-up line">
+                Discount
               </td>
               <td class="line price">
                 - {(allTotals?.discount).toLocaleString("en-IN")}

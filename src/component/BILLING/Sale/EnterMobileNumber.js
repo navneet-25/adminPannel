@@ -15,32 +15,50 @@ export const EnterMobileNumber = ({
   setcustomerShoppingDetails,
 }) => {
   const { store_login_user } = useContext(ContextData);
+  const DEFAULT_PHONE = "9999999999";
+  const [phone, setPhone] = useState(DEFAULT_PHONE);
 
   const getCustomerDetails = (mobile) => {
     setSelectCustomer({ mobile });
-    fetch(URLDomain + "/APP-API/Billing/getCustomerBuyingDetails", {
-      method: "POST",
-      header: {
-        Accept: "application/json",
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        mobile: mobile,
-        store_id: store_login_user.store_id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setcustomerShoppingDetails({
-          customer_type: responseJson.customer_type,
-          no_of_shopping_time: responseJson.no_of_shopping_time,
-          shopping_value: responseJson.shopping_value,
-        });
+    if (store_login_user)
+      fetch(URLDomain + "/APP-API/Billing/getCustomerBuyingDetails", {
+        method: "POST",
+        header: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          mobile: mobile,
+          store_id: store_login_user.store_id,
+        }),
       })
-      .catch((error) => {
-        //  console.error(error);
-      });
+        .then((response) => response.json())
+        .then((responseJson) => {
+          setcustomerShoppingDetails({
+            customer_type: responseJson.customer_type,
+            no_of_shopping_time: responseJson.no_of_shopping_time,
+            shopping_value: responseJson.shopping_value,
+          });
+        })
+        .catch((error) => {
+          //  console.error(error);
+        });
   };
+
+  // EFFECT: Debounce Input Value
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (phone.length == 10) {
+        getCustomerDetails(phone);
+      } else {
+        getCustomerDetails(DEFAULT_PHONE);
+      }
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [phone]);
 
   return (
     <>
@@ -63,10 +81,10 @@ export const EnterMobileNumber = ({
                     max="10"
                     list="suggestions"
                     class="form-control"
-                    onChange={(e) =>
-                      e.target.value.length == 10 &&
-                      getCustomerDetails(e.target.value)
-                    }
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                    }}
+                    value={phone}
                     placeholder="Mobile..."
                     autocomplete="on"
                     id="search-options"
@@ -84,14 +102,19 @@ export const EnterMobileNumber = ({
                       Times:{" "}
                       <strong>
                         {" "}
-                        {customerShoppingDetails?.no_of_shopping_time}
+                        {customerShoppingDetails?.no_of_shopping_time.toLocaleString(
+                          "en-IN"
+                        )}
                       </strong>
                     </h5>
                     <h5 className="">
                       Total:{" "}
                       <strong>
                         {" "}
-                        ₹ {customerShoppingDetails?.shopping_value}
+                        ₹{" "}
+                        {customerShoppingDetails?.shopping_value.toLocaleString(
+                          "en-IN"
+                        )}
                       </strong>
                     </h5>
                     <h5 className="">
