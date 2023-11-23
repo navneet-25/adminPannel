@@ -612,7 +612,8 @@ export const Purchased = () => {
                                           type="number"
                                           name="discount"
                                           onChange={updateFieldChanged(index)}
-                                          defaultValue={"0"}
+                                          value={items.discount_in_percent}
+                                          // defaultValue={"0"}
                                           className="invoice_input"
                                           style={{ width: "100%" }}
                                           placeholder="0"
