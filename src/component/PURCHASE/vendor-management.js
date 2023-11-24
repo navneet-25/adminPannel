@@ -70,17 +70,7 @@ const VendorManagement = () => {
                 );
             }
         },
-        {
-            prop: "phone",
-            title: "Firm Phone",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark">{row.phone}</p>
-                );
-            }
-        },
+       
         {
             prop: "name",
             title: "Contact Name",
@@ -103,17 +93,7 @@ const VendorManagement = () => {
                 );
             }
         },
-        {
-            prop: "contact_roal",
-            title: "Contact Roal",
-            isFilterable: true,
-            isSortable: true,
-            cell: (row) => {
-                return (
-                    <p className="text-dark">{row.contact_roal}</p>
-                );
-            }
-        },
+       
         {
             prop: "address",
             title: "Address",
@@ -121,7 +101,19 @@ const VendorManagement = () => {
             isSortable: true,
             cell: (row) => {
                 return (
-                    <p className="text-dark">{row.address} {row.city} {row.pin_code}</p>
+                    <p className="text-dark">{row.address} {row.city} </p>
+                );
+            }
+        },
+
+        {
+            prop: "deal_items",
+            title: "Items",
+            isFilterable: true,
+            isSortable: true,
+            cell: (row) => {
+                return (
+                    <p className="text-dark">{row.deal_items}</p>
                 );
             }
         },

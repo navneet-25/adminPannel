@@ -32,6 +32,7 @@ export const UpdateVendor = (EditVendorData) => {
         firm_email:'',
         gst_no:'',
         fssai_no:'',
+        deal_items:"",
 
 
     });
@@ -55,21 +56,14 @@ export const UpdateVendor = (EditVendorData) => {
         else if (vendorDetails.mobile == '') {
             getToast({ title: "Vendor Contact Mobile Requird", dec: "Requird", status: "error" });
         }
-        else if (vendorDetails.contact_roal == '') {
-            getToast({ title: "Vendor Contact Roal Requird", dec: "Requird", status: "error" });
-        }
+     
         else if (vendorDetails.firm_name == '') {
             getToast({ title: "Firm Name  Requird", dec: "Requird", status: "error" });
         }
         else if (vendorDetails.address == '') {
             getToast({ title: "Vendor Address Requird", dec: "Requird", status: "error" });
         }
-        else if (vendorDetails.city == '') {
-            getToast({ title: "Vendor City Requird", dec: "Requird", status: "error" });
-        }
-        else if (vendorDetails.pin_code == '') {
-            getToast({ title: "Vendor Pincode Requird", dec: "Requird", status: "error" });
-        }
+        
       
         else {  
 
@@ -172,9 +166,9 @@ export const UpdateVendor = (EditVendorData) => {
 
     return (
         <>
-            <div className="row">
+            <div className="row"> 
 
-            <div className="col-md-6">
+            <div className="col-md-6"> 
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Contact Name</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, name: e.target.value })}
@@ -208,21 +202,21 @@ export const UpdateVendor = (EditVendorData) => {
                     </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Firm Phone</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, phone: e.target.value })}
                             value={vendorDetails.phone} className="form-control" placeholder="Firm Phone" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label ">Firm Email</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, firm_email: e.target.value })}
                             value={vendorDetails.firm_email} className="form-control" placeholder="Firm Email" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="col-md-6">
                     <div className="mb-3">
@@ -242,29 +236,35 @@ export const UpdateVendor = (EditVendorData) => {
 
 
 
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger ">Address</label>
-                        <textarea onChange={e => setvendorDetails({ ...vendorDetails, address: e.target.value })} value={vendorDetails.address} class="form-control" id="exampleFormControlTextarea5" rows="1"></textarea>
+                        <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, address: e.target.value })} value={vendorDetails.address}className="form-control" placeholder="Address" id="compnayNameinput" />
                     </div>
                 </div>
 
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label  text-danger ">City</label>
+                        <label htmlFor="compnayNameinput" className="form-label  text-dark ">City</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, city: e.target.value })}
                             value={vendorDetails.city} className="form-control" placeholder="City" id="compnayNameinput" />
                     </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
-                        <label htmlFor="compnayNameinput" className="form-label  text-danger">Pincode</label>
+                        <label htmlFor="compnayNameinput" className="form-label  text-dark">Pincode</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, pin_code: e.target.value })}
                             value={vendorDetails.pin_code} className="form-control" placeholder="Pincode" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
+                <div className="col-md-12">
+                    <div className="mb-3">
+                        <label htmlFor="compnayNameinput" className="form-label text-dark ">Deal Items</label>
+                        <textarea onChange={e => setvendorDetails({ ...vendorDetails, deal_items: e.target.value })} value={vendorDetails.deal_items} class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
+                    </div>
+                </div>
 
 
                 <div className="col-lg-12">

@@ -15,12 +15,12 @@ export const AddVendorForm = (props) => {
 
     const [vendorDetails, setvendorDetails] = useState({
         'store_id': adminStoreId,
-        name:'',
+        name:'NA',
         mobile:'',
         firm_name:'',
         address:'',
         phone:'',
-        contact_roal:'',
+        contact_roal:'Sales',
         city:'',
         pin_code:'',
         firm_email:'',
@@ -51,12 +51,10 @@ export const AddVendorForm = (props) => {
         else if (vendorDetails.mobile == '') {
             getToast({ title: "Vendor Contact Mobile Requird", dec: "Requird", status: "error" });
         }
-        else if (vendorDetails.contact_roal == '') {
-            getToast({ title: "Vendor Contact Roal Requird", dec: "Requird", status: "error" });
-        }
         else if (vendorDetails.firm_name == '') {
-            getToast({ title: "Firm Name  Requird", dec: "Requird", status: "error" });
+            getToast({ title: "Firm Name Requird", dec: "Requird", status: "error" });
         }
+
         else if (vendorDetails.address == '') {
             getToast({ title: "Vendor Address Requird", dec: "Requird", status: "error" });
         }
@@ -124,6 +122,7 @@ export const AddVendorForm = (props) => {
                         firm_email:'',
                         gst_no:'',
                         fssai_no:'',
+                        deal_items:'',
                     })
                 
 
@@ -143,7 +142,7 @@ export const AddVendorForm = (props) => {
         <>
             <div className="row">
 
-                <div className="col-md-6">
+                <div className="col-md-6"> 
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Contact Name</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, name: e.target.value })}
@@ -177,21 +176,21 @@ export const AddVendorForm = (props) => {
                     </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger">Firm Phone</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, phone: e.target.value })}
                             value={vendorDetails.phone} className="form-control" placeholder="Firm Phone" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label ">Firm Email</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, firm_email: e.target.value })}
                             value={vendorDetails.firm_email} className="form-control" placeholder="Firm Email" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="col-md-6">
                     <div className="mb-3">
@@ -211,10 +210,10 @@ export const AddVendorForm = (props) => {
 
 
 
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label text-danger ">Address</label>
-                        <textarea onChange={e => setvendorDetails({ ...vendorDetails, address: e.target.value })} value={vendorDetails.address} class="form-control" id="exampleFormControlTextarea5" rows="1"></textarea>
+                        <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, address: e.target.value })} value={vendorDetails.address}className="form-control" placeholder="Address" id="compnayNameinput" />
                     </div>
                 </div>
 
@@ -226,13 +225,13 @@ export const AddVendorForm = (props) => {
                     </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="compnayNameinput" className="form-label  text-dark">Pincode</label>
                         <input type="text" onChange={e => setvendorDetails({ ...vendorDetails, pin_code: e.target.value })}
                             value={vendorDetails.pin_code} className="form-control" placeholder="Pincode" id="compnayNameinput" />
                     </div>
-                </div>
+                </div> */}
 
                 <div className="col-md-12">
                     <div className="mb-3">
