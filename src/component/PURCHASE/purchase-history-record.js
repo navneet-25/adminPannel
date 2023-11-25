@@ -6,9 +6,25 @@ import ContextData from "../../context/MainContext";
 import "react-datepicker/dist/react-datepicker.css";
 import { Flex } from "@chakra-ui/react";
 
+import {
+  Stack,
+  Skeleton,
+} from "@chakra-ui/react";
+
+import URLDomain from "../../URL";
+
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
+
 const PurchaseHistoryRecord = () => {
   const { orderID } = useParams();
   const { vendorID } = useParams();
+
+  const adminStoreId = cookies.get("adminStoreId");
+  const adminId = cookies.get("adminId");
+  const [isDataLoding, setisDataLoding] = useState(true);
+
 
   const {
     store_vendor_list,
@@ -24,19 +40,42 @@ const PurchaseHistoryRecord = () => {
   const [addedItems, setAddedItems] = useState([]);
 
   useEffect(() => {
-    const newstore_vendor_purchase_record = store_vendor_purchase_record.filter(
-      (obj) => obj.order_id == orderID
-    );
-    const newstore_vendor_list = store_vendor_list.filter(
-      (obj) => obj.id == vendorID
-    );
-    const items_purchase_record = store_vendor_purchase_record_products.filter(
-      (obj) => obj.order_id == orderID
-    );
-    setstore_vendor_purchase_record_data(newstore_vendor_purchase_record[0]);
-    setSelectedVendor(newstore_vendor_list[0]);
-    setAddedItems(items_purchase_record);
-  }, [store_vendor_purchase_record]);
+
+    async function fetchData(){
+
+      await  fetch(URLDomain + "/APP-API/Billing/purchase_history_record", {
+            method: 'post',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+
+              store_id:adminStoreId,
+              vender_id:vendorID,
+              order_id:orderID,
+
+            })
+
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+
+
+              setstore_vendor_purchase_record_data(responseJson.store_vendor_purchase_record[0]);
+              setSelectedVendor(responseJson.vendordata[0]);
+              setAddedItems(responseJson.store_vendor_purchase_record_products);
+
+
+               setisDataLoding(false)
+
+
+            })
+
+    }
+    fetchData();
+
+  }, []);
 
   return (
     <>
@@ -51,6 +90,15 @@ const PurchaseHistoryRecord = () => {
         <div className="col-lg-12">
           <div className="card" id="demo">
             <div className="card-body">
+            {isDataLoding?(
+              <Stack>
+              <Skeleton height='100px' />
+              <Skeleton height='50px' />
+              <Skeleton height='100px' />
+              <Skeleton height='50px' />
+              <Skeleton height='100px' />
+             </Stack>
+            ):(
               <div className="live-preview">
                 <div className="row">
                   <div className="col-md-12">
@@ -122,20 +170,29 @@ const PurchaseHistoryRecord = () => {
                             <th scope="col">ITEMS</th>
                             <th scope="col">QTY</th>
                             <th scope="col">
-                              <Flex
-                                // fontWeight={"600"}
-                                // fontSize={14}
-                                alignItems={"center"}
-                              >
+                              <Flex alignItems={"center"}  >
                                 <BiRupee />
-                                PRICE/ITEM
+                               MRP
                               </Flex>
                             </th>
-                            <th scope="col">DISCOUNT %</th>
-                            <th scope="col">HSN</th>
+                            <th scope="col">
+                              <Flex alignItems={"center"}  >
+                                <BiRupee />
+                               Rate
+                              </Flex>
+                            </th>
+                            <th scope="col">
+                              <Flex alignItems={"center"}  >
+                                <BiRupee />
+                                PRICE
+                              </Flex>
+                            </th>
+                            <th scope="col">DIS %</th>
+  
                             <th scope="col">SGST</th>
                             <th scope="col">CGST</th>
-                            <th scope="col">AMOUNT</th>
+                            <th scope="col">AMT</th>
+                            <th scope="col">NET AMT</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -166,7 +223,25 @@ const PurchaseHistoryRecord = () => {
                                           fontSize={14}
                                           alignItems={"center"}
                                         >
-                                          <BiRupee /> {items.price}
+                                          ₹ {items.mrp}
+                                        </Flex>
+                                      </td>
+                                      <td>
+                                        <Flex
+                                          fontWeight={"600"}
+                                          fontSize={14}
+                                          alignItems={"center"}
+                                        >
+                                        <BiRupee /> {parseFloat(items.rate).toFixed(2)}
+                                        </Flex>
+                                      </td>
+                                      <td>
+                                        <Flex
+                                          fontWeight={"600"}
+                                          fontSize={14}
+                                          alignItems={"center"}
+                                        >
+                                          <BiRupee /> {parseFloat(items.price).toFixed(2)}
                                         </Flex>
                                       </td>
                                       <td>
@@ -178,15 +253,7 @@ const PurchaseHistoryRecord = () => {
                                           {items.discount} %
                                         </Flex>
                                       </td>
-                                      <td>
-                                        <Flex
-                                          fontWeight={"600"}
-                                          fontSize={14}
-                                          alignItems={"center"}
-                                        >
-                                          {items.hsn_code}
-                                        </Flex>
-                                      </td>
+                                   
                                       <td>
                                         <Flex
                                           fontWeight={"600"}
@@ -203,6 +270,15 @@ const PurchaseHistoryRecord = () => {
                                           alignItems={"center"}
                                         >
                                           <BiRupee /> {items.c_gst}
+                                        </Flex>
+                                      </td>
+                                      <td>
+                                        <Flex
+                                          fontWeight={"600"}
+                                          fontSize={14}
+                                          alignItems={"center"}
+                                        >
+                                          <BiRupee /> {items.total_amount}
                                         </Flex>
                                       </td>
                                       <td>
@@ -586,6 +662,8 @@ const PurchaseHistoryRecord = () => {
                 </div>
                 {/*end row*/}
               </div>
+            )}
+
             </div>
             {/* end card-body */}
           </div>

@@ -26,9 +26,24 @@ import {
   PaginationOptions,
   TableBody,
   TableHeader,
+  
 } from "react-bs-datatable";
 
+import {
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Text,
+  useBoolean,
+  useToast,
+  Stack,
+  Skeleton,
+} from "@chakra-ui/react";
+
 // Create table headers consisting of 4 columns.
+import URLDomain from "../../URL";
+
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
@@ -43,6 +58,8 @@ const PurchaseHistory = () => {
   const [delID, setProductDelID] = useState(0);
   const [isDeletAction, setDeletAction] = useState(false);
   const [vendorData, getVendorData] = useState({});
+  const [isDataLoding, setisDataLoding] = useState(true);
+
   // const [downloadBarcode, setdownloadBarcode] = useState({});
   const [showData, setShowData] = useState(store_vendor_purchase_record);
   const navigate = useNavigate();
@@ -50,13 +67,37 @@ const PurchaseHistory = () => {
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
 
-  useEffect(() => {
-    setShowData(store_vendor_purchase_record);
-  }, [store_vendor_purchase_record]);
 
   useEffect(() => {
-    console.log("con simitoi ---->", showData);
-  }, [showData]);
+   
+    async function fetchData(){
+
+      await  fetch(URLDomain + "/APP-API/Billing/store_vendor_purchase_record", {
+            method: 'post',
+            header: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+
+              store_id:adminStoreId,
+
+            })
+
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+
+              setShowData(responseJson.store_vendor_purchase_record);
+               setisDataLoding(false)
+
+
+            })
+
+    }
+    fetchData();
+
+  }, []);
 
   const ChangeStatus = () => {
     setProductDelID(true);
@@ -81,22 +122,14 @@ const PurchaseHistory = () => {
         return <p className="text-success">{row.vendor_firm_name}</p>;
       },
     },
-    {
-      prop: "sale_man_name",
-      title: "Sales Man",
-      isFilterable: true,
-      isSortable: true,
-      cell: (row) => {
-        return <p className="text-dark">{row.sale_man_name}</p>;
-      },
-    },
+   
     {
       prop: "sub_total",
       title: "Sub Total",
       isFilterable: true,
       isSortable: true,
       cell: (row) => {
-        return <p className="text-primary"> ₹ {row.sub_total}</p>;
+        return <p className="text-primary"> ₹ {parseFloat(row.sub_total).toFixed(2)}</p>;
       },
     },
     {
@@ -105,7 +138,7 @@ const PurchaseHistory = () => {
       isFilterable: true,
       isSortable: true,
       cell: (row) => {
-        return <p className="text-dark"> ₹ {row.i_gst}</p>;
+        return <p className="text-dark"> ₹ {parseFloat(row.i_gst).toFixed(2)}</p>;
       },
     },
     {
@@ -114,36 +147,20 @@ const PurchaseHistory = () => {
       isFilterable: true,
       isSortable: true,
       cell: (row) => {
-        return <p className="text-dark"> ₹ {row.discount}</p>;
+        return <p className="text-dark"> ₹ {parseFloat(row.discount).toFixed(2)}</p>;
       },
     },
-    {
-      prop: "extra_charge",
-      title: "Extra",
-      isFilterable: true,
-      isSortable: true,
-      cell: (row) => {
-        return <p className="text-dark"> ₹ {row.extra_charge}</p>;
-      },
-    },
+  
     {
       prop: "total_payment",
       title: "Total Payment",
       isFilterable: true,
       isSortable: true,
       cell: (row) => {
-        return <p className="text-danger"> ₹ {row.total_payment}</p>;
+        return <p className="text-danger"> ₹ {parseFloat(row.total_payment).toFixed(2)}</p>;
       },
     },
-    {
-      prop: "outstanding",
-      title: "Outstanding",
-      isFilterable: true,
-      isSortable: true,
-      cell: (row) => {
-        return <p className="text-dark"> ₹ {row.outstanding}</p>;
-      },
-    },
+ 
     {
       prop: "payment_mode",
       title: "Pay Mode",
@@ -163,19 +180,6 @@ const PurchaseHistory = () => {
       },
     },
 
-    {
-      prop: "date",
-      title: "Bill Date",
-      isFilterable: true,
-      isSortable: true,
-      cell: (row) => {
-        return (
-          <p className="text-dark">
-            {row.date} {row.time}
-          </p>
-        );
-      },
-    },
 
     {
       prop: "Stock",
@@ -346,50 +350,58 @@ const PurchaseHistory = () => {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body">
-                <div id="customerList">
-                  <div className="table-responsive table-card mb-1">
-                    <DatatableWrapper
-                      body={showData}
-                      headers={STORY_HEADERS}
-                      paginationOptionsProps={{
-                        initialState: {
-                          rowsPerPage: 10,
-                          options: [10, 15, 20],
-                        },
-                      }}
-                    >
-                      <Row className="mb-4 p-2">
-                        <Col
-                          xs={12}
-                          lg={4}
-                          className="d-flex flex-col justify-content-end align-items-end"
-                        >
-                          <Filter />
-                        </Col>
-                        <Col
-                          xs={12}
-                          sm={6}
-                          lg={4}
-                          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
-                        >
-                          <PaginationOptions />
-                        </Col>
-                        <Col
-                          xs={12}
-                          sm={6}
-                          lg={4}
-                          className="d-flex flex-col justify-content-end align-items-end"
-                        >
-                          <Pagination />
-                        </Col>
-                      </Row>
-                      <Table className="table  table-hover">
-                        <TableHeader />
-                        <TableBody />
-                      </Table>
-                    </DatatableWrapper>
-                  </div>
-                </div>
+              {isDataLoding?(
+              <Stack>
+              <Skeleton height='100px' />
+              <Skeleton height='100px' />
+              <Skeleton height='100px' />
+             </Stack>
+            ):( <div id="customerList">
+            <div className="table-responsive table-card mb-1">
+              <DatatableWrapper
+                body={showData}
+                headers={STORY_HEADERS}
+                paginationOptionsProps={{
+                  initialState: {
+                    rowsPerPage: 10,
+                    options: [10, 15, 20],
+                  },
+                }}
+              >
+                <Row className="mb-4 p-2">
+                  <Col
+                    xs={12}
+                    lg={4}
+                    className="d-flex flex-col justify-content-end align-items-end"
+                  >
+                    <Filter />
+                  </Col>
+                  <Col
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+                  >
+                    <PaginationOptions />
+                  </Col>
+                  <Col
+                    xs={12}
+                    sm={6}
+                    lg={4}
+                    className="d-flex flex-col justify-content-end align-items-end"
+                  >
+                    <Pagination />
+                  </Col>
+                </Row>
+                <Table className="table  table-hover">
+                  <TableHeader />
+                  <TableBody />
+                </Table>
+              </DatatableWrapper>
+            </div>
+          </div>)}
+
+               
               </div>
             </div>
           </div>
