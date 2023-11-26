@@ -278,7 +278,7 @@ const PurchaseHistoryRecord = () => {
                                           fontSize={14}
                                           alignItems={"center"}
                                         >
-                                          <BiRupee /> {items.total_amount}
+                                          <BiRupee /> {parseFloat(items.total_amount).toFixed(2)}
                                         </Flex>
                                       </td>
                                       <td>
@@ -287,7 +287,7 @@ const PurchaseHistoryRecord = () => {
                                           fontSize={14}
                                           alignItems={"center"}
                                         >
-                                          <BiRupee /> {items.total_amount}
+                                          <BiRupee /> {parseFloat(items.net_amount).toFixed(2)}
                                         </Flex>
                                       </td>
                                     </tr>

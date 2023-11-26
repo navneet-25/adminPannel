@@ -61,10 +61,10 @@ export const Purchased = () => {
   
 
   const [restInfo, setRestInfo] = useState({
-    sales_man: "",
+    sales_man: "NA",
     payment_mode: "Cash",
     notes: "",
-    stock_location: "Warehouse",
+    stock_location: "Store",
   });
   const toast = useToast();
 
