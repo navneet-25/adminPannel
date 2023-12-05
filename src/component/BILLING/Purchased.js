@@ -20,10 +20,12 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 
+import { useQuery } from "react-query";
+
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
 
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const Purchased = () => {
@@ -58,7 +60,6 @@ export const Purchased = () => {
 
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
-  
 
   const [restInfo, setRestInfo] = useState({
     sales_man: "NA",
@@ -68,39 +69,44 @@ export const Purchased = () => {
   });
   const toast = useToast();
 
+  async function fetchData() {
+    const data = await fetch(
+      URLDomain + "/APP-API/Billing/InsertPurchaseData",
+      {
+        method: "post",
+        header: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          store_id: adminStoreId,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => responseJson);
+
+    return data;
+  }
+
+  const {
+    data: PURCHASEDATA,
+    isError,
+    isLoading: isLoadingAPI,
+  } = useQuery({
+    queryKey: ["PURCHASEDATA"],
+    queryFn: (e) => fetchData(),
+  });
+
   useEffect(() => {
     setsearchProduct(storeProductsData);
-    // console.log("store prod", store_login_user);
-
-    async function fetchData(){
-
-      await  fetch(URLDomain + "/APP-API/Billing/InsertPurchaseData", {
-            method: 'post',
-            header: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-
-              store_id:adminStoreId,
-
-            })
-
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-
-               console.log("search product",responseJson)
-               setsearchProduct(responseJson.searchProduct);
-               setVendorLists(responseJson.vendorLists);
-               setisDataLoding(false)
-
-            })
-
+    console.log("search product", PURCHASEDATA, isLoadingAPI);
+    if (PURCHASEDATA) {
+      setsearchProduct(PURCHASEDATA.searchProduct);
+      setVendorLists(PURCHASEDATA.vendorLists);
+      setisDataLoding(false);
     }
-    fetchData();
-
-  }, [storeProductsData]);
+  }, [PURCHASEDATA, isLoadingAPI]);
 
   useScanDetection({
     onComplete: (code) => {
@@ -123,7 +129,6 @@ export const Purchased = () => {
   }, [store_vendor_list]);
 
   useEffect(() => {
-
     const subTotalGet = addedItems.reduce((acc, obj) => {
       return acc + Number(Number(obj?.amount_total || 0));
     }, 0);
@@ -423,772 +428,768 @@ export const Purchased = () => {
         <div className="col-lg-12">
           <div className="card">
             <div className="card-body">
-            {isDataLoding?(
-              <Stack>
-              <Skeleton height='150px' />
-              <Skeleton height='150px' />
-              <Skeleton height='150px' />
-             </Stack>
-            ):(
-               <div className="live-preview">
-               <div className="row">
-                 <div className="col-md-12">
-                   <div className="row py-4 mb-4 border-bottom align-items-center">
-                     <div
-                       className="col-lg-8 px-4"
-                       style={{ borderRight: "1px solid #c1c1c1" }}
-                     >
-                       <div className="row">
-                         <div
-                           className="col-md-7 px-5"
-                           style={{
-                             borderRight: "1px solid #c1c1c1",
-                             zIndex: 999999,
-                           }}
-                         >
-                           <h4 className="mb-0 text-center mb-4">
-                             Choose vendor
-                           </h4>
-                           <Multiselect
-                             // singleSelect={true}
-                             selectionLimit={1}
-                             displayValue="firm_name"
-                             onKeyPressFn={function noRefCheck() {}}
-                             onSearch={function noRefCheck() {}}
-                             onRemove={(e) => {
-                               setSelectedVendor(e[0]);
-                             }}
-                             onSelect={(e) => {
-                               setSelectedVendor(e[0]);
-                             }}
-                             options={vendorLists}
-                             ref={getAllVendorsRef}
-                           />
-                         </div>
-                         {selectedVendor?.name ? (
-                           <div className="col-md-5">
-                             <div className="px-5 border-left">
-                               <h6 className="">
-                                 Contact Name:{" "}
-                                 <strong>{selectedVendor?.name}</strong>
-                               </h6>
-                               <h6 className="">
-                                 Mobile:{" "}
-                                 <strong>{selectedVendor?.mobile}</strong>
-                               </h6>
-                               <h6 className="">
-                                 Address:{" "}
-                                 <strong>{selectedVendor?.address}</strong>
-                               </h6>
-                               <h6 className="mb-0">
-                                 Firm Name:{" "}
-                                 <strong>{selectedVendor?.firm_name}</strong>
-                               </h6>
-                             </div>
-                           </div>
-                         ) : null}
-                       </div>
-                     </div>
-                     <div className="col-lg-4 px-4">
-                       {/* <h4 className="mb-0 text-center mb-4"> */}
-                       <Flex
-                         justifyContent={"center"}
-                         alignItems={"center"}
-                         mb={3}
-                         gap={3}
-                         fontSize={16}
-                       >
-                         Purchased Date <FcCalendar />
-                       </Flex>
-                       {/* </h4> */}
-                       <DatePicker
-                         selected={PurchaseDate}
-                         dateFormat="dd/MM/yyyy"
-                         onChange={(date) => setPurchaseDate(Date.parse(date))}
-                         className="form-control bg-light border-light custom_date_input"
-                       />
-                     </div>
-                   </div>
-                 </div>
-                 <div className="col-lg-12 pb-4 border-bottom">
-                   <div className="row g-3">
-                     <div className="col-md-12 col-sm-12">
-                       <div className="d-flex align-items-center">
-                         {/* <input id="search-dropdown" type="text" className="form-control search bg-light border-light" placeholder="Add product..." /> */}
-                         <div style={{ width: "68%" }}>
-                           <ReactSearchAutocomplete
-                             items={searchProduct}
-                             className="form-control search bg-light border-light"
-                             onSelect={handleOnSelect}
-                             autoFocus
-                             styling={{
-                               zIndex: "9999",
-                             }}
-                             fuseOptions={{
-                               keys: [
-                                 "product_name",
-                                 "product_bar_code",
-                                 "product_full_name",
-                                 "hsn_code",
-                               ],
-                             }}
-                             resultStringKeyName="product_name_search"
-                             // formatResult={formatResult}
-                           />
-                         </div>
-                         {/* <i className="ri-search-line search-icon" /> */}
-                         {/* <h2 className="mb-0" style={{ marginLeft: "1rem" }}> */}
-                         <Box ml={4}>
-                           <BiBarcodeReader size={26} />
-                         </Box>
-                         {/* </h2> */}
-                       </div>
+              {isDataLoding ? (
+                <Stack>
+                  <Skeleton height="150px" />
+                  <Skeleton height="150px" />
+                  <Skeleton height="150px" />
+                </Stack>
+              ) : (
+                <div className="live-preview">
+                  <div className="row">
+                    <div className="col-md-12">
+                      <div className="row py-4 mb-4 border-bottom align-items-center">
+                        <div
+                          className="col-lg-8 px-4"
+                          style={{ borderRight: "1px solid #c1c1c1" }}
+                        >
+                          <div className="row">
+                            <div
+                              className="col-md-7 px-5"
+                              style={{
+                                borderRight: "1px solid #c1c1c1",
+                                zIndex: 999999,
+                              }}
+                            >
+                              <h4 className="mb-0 text-center mb-4">
+                                Choose vendor
+                              </h4>
+                              <Multiselect
+                                // singleSelect={true}
+                                selectionLimit={1}
+                                displayValue="firm_name"
+                                onKeyPressFn={function noRefCheck() {}}
+                                onSearch={function noRefCheck() {}}
+                                onRemove={(e) => {
+                                  setSelectedVendor(e[0]);
+                                }}
+                                onSelect={(e) => {
+                                  setSelectedVendor(e[0]);
+                                }}
+                                options={vendorLists}
+                                ref={getAllVendorsRef}
+                              />
+                            </div>
+                            {selectedVendor?.name ? (
+                              <div className="col-md-5">
+                                <div className="px-5 border-left">
+                                  <h6 className="">
+                                    Contact Name:{" "}
+                                    <strong>{selectedVendor?.name}</strong>
+                                  </h6>
+                                  <h6 className="">
+                                    Mobile:{" "}
+                                    <strong>{selectedVendor?.mobile}</strong>
+                                  </h6>
+                                  <h6 className="">
+                                    Address:{" "}
+                                    <strong>{selectedVendor?.address}</strong>
+                                  </h6>
+                                  <h6 className="mb-0">
+                                    Firm Name:{" "}
+                                    <strong>{selectedVendor?.firm_name}</strong>
+                                  </h6>
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="col-lg-4 px-4">
+                          {/* <h4 className="mb-0 text-center mb-4"> */}
+                          <Flex
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                            mb={3}
+                            gap={3}
+                            fontSize={16}
+                          >
+                            Purchased Date <FcCalendar />
+                          </Flex>
+                          {/* </h4> */}
+                          <DatePicker
+                            selected={PurchaseDate}
+                            dateFormat="dd/MM/yyyy"
+                            onChange={(date) =>
+                              setPurchaseDate(Date.parse(date))
+                            }
+                            className="form-control bg-light border-light custom_date_input"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-12 pb-4 border-bottom">
+                      <div className="row g-3">
+                        <div className="col-md-12 col-sm-12">
+                          <div className="d-flex align-items-center">
+                            {/* <input id="search-dropdown" type="text" className="form-control search bg-light border-light" placeholder="Add product..." /> */}
+                            <div style={{ width: "68%" }}>
+                              <ReactSearchAutocomplete
+                                items={searchProduct}
+                                className="form-control search bg-light border-light"
+                                onSelect={handleOnSelect}
+                                autoFocus
+                                styling={{
+                                  zIndex: "9999",
+                                }}
+                                fuseOptions={{
+                                  keys: [
+                                    "product_name",
+                                    "product_bar_code",
+                                    "product_full_name",
+                                    "hsn_code",
+                                  ],
+                                }}
+                                resultStringKeyName="product_name_search"
+                                // formatResult={formatResult}
+                              />
+                            </div>
+                            {/* <i className="ri-search-line search-icon" /> */}
+                            {/* <h2 className="mb-0" style={{ marginLeft: "1rem" }}> */}
+                            <Box ml={4}>
+                              <BiBarcodeReader size={26} />
+                            </Box>
+                            {/* </h2> */}
+                          </div>
 
-                       <div
-                         className="dropdown-menu dropdown-menu-lg"
-                         id="search-dropdown"
-                       ></div>
-                     </div>
-                     {/*end col*/}
-                     <div className="offset-md-4 col-md-3 col-sm-4 d-flex justify-content-end"></div>
-                     {/*end col*/}
-                   </div>
-                 </div>
-                 <div className="col-xl-12">
-                   <div className="table-responsive mt-4 mt-xl-0">
-                     <table className="table table-active table-hover table-striped align-middle table-nowrap mb-0">
-                       <thead>
-                         <tr>
-                           <th scope="col">NO</th>
-                           <th scope="col">ITEMS</th>
-                           <th scope="col">HSN</th>
-                           <th scope="col">MRP</th>
-                           <th scope="col">QTY</th>
-                           <Box
-                             as="th"
-                             display={"flex"}
-                             alignItems={"center"}
-                             scope="col"
-                           >
-                             {/* <BiRupee /> */}
-                             RATE
-                           </Box>
-                           <th scope="col">SGST%</th>
-                           <th scope="col">CGST%</th>
-                           <th scope="col">DISC%</th>
-                           <th scope="col">PRICE</th>
-                           <th scope="col">AMOUNT</th>
-                           <th scope="col">NET AMT</th>
-                           <th scope="col"></th>
-                         </tr>
-                       </thead>
-                       <tbody>
-                         {addedItems.length && addedItems ? (
-                           addedItems.map((items, index) => {
-                             return (
-                               <>
-                                 {items && (
-                                   <tr key={`purchaseList-${index}`}>
-                                     <td width={"4%"} className="fw-medium">
-                                       {index + 1}
-                                     </td>
-                                     <td
-                                       style={{
-                                         maxWidth: "16rem",
-                                         overflow: "hidden",
-                                       }}
-                                     >
-                                       <Text>{items.product_full_name}</Text>
-                                     </td>
-                                     <td width={"8%"}>
-                                       <input
-                                         type="text"
-                                         onChange={changeGst(index)}
-                                         name="hsnCode"
-                                         value={items.hsn_code}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"7%"}>
-                                       <input
-                                         type="text"
-                                         onChange={changeGst(index)}
-                                         name="mrp"
-                                         value={items.mrp}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"7%"}>
-                                       <input
-                                         type="number"
-                                         name="quantity"
-                                         onChange={updateFieldChanged(index)}
-                                         value={
-                                           items.billing_quantity
-                                             ? items.billing_quantity
-                                             : ""
-                                         }
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"7%"}>
-                                       <input
-                                         type="number"
-                                         name="rate"
-                                         value={items.rate ? items.rate : ""}
-                                         onChange={updateFieldChanged(index)}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
+                          <div
+                            className="dropdown-menu dropdown-menu-lg"
+                            id="search-dropdown"
+                          ></div>
+                        </div>
+                        {/*end col*/}
+                        <div className="offset-md-4 col-md-3 col-sm-4 d-flex justify-content-end"></div>
+                        {/*end col*/}
+                      </div>
+                    </div>
+                    <div className="col-xl-12">
+                      <div className="table-responsive mt-4 mt-xl-0">
+                        <table className="table table-active table-hover table-striped align-middle table-nowrap mb-0">
+                          <thead>
+                            <tr>
+                              <th scope="col">NO</th>
+                              <th scope="col">ITEMS</th>
+                              <th scope="col">HSN</th>
+                              <th scope="col">MRP</th>
+                              <th scope="col">QTY</th>
+                              <Box
+                                as="th"
+                                display={"flex"}
+                                alignItems={"center"}
+                                scope="col"
+                              >
+                                {/* <BiRupee /> */}
+                                RATE
+                              </Box>
+                              <th scope="col">SGST%</th>
+                              <th scope="col">CGST%</th>
+                              <th scope="col">DISC%</th>
+                              <th scope="col">PRICE</th>
+                              <th scope="col">AMOUNT</th>
+                              <th scope="col">NET AMT</th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {addedItems.length && addedItems ? (
+                              addedItems.map((items, index) => {
+                                return (
+                                  <>
+                                    {items && (
+                                      <tr key={`purchaseList-${index}`}>
+                                        <td width={"4%"} className="fw-medium">
+                                          {index + 1}
+                                        </td>
+                                        <td
+                                          style={{
+                                            maxWidth: "16rem",
+                                            overflow: "hidden",
+                                          }}
+                                        >
+                                          <Text>{items.product_full_name}</Text>
+                                        </td>
+                                        <td width={"8%"}>
+                                          <input
+                                            type="text"
+                                            onChange={changeGst(index)}
+                                            name="hsnCode"
+                                            value={items.hsn_code}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"7%"}>
+                                          <input
+                                            type="text"
+                                            onChange={changeGst(index)}
+                                            name="mrp"
+                                            value={items.mrp}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"7%"}>
+                                          <input
+                                            type="number"
+                                            name="quantity"
+                                            onChange={updateFieldChanged(index)}
+                                            value={
+                                              items.billing_quantity
+                                                ? items.billing_quantity
+                                                : ""
+                                            }
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"7%"}>
+                                          <input
+                                            type="number"
+                                            name="rate"
+                                            value={items.rate ? items.rate : ""}
+                                            onChange={updateFieldChanged(index)}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
 
-                                     <td width={"5%"}>
-                                       <input
-                                         type="number"
-                                         onChange={changeGst(index)}
-                                         name="s_gst"
-                                         value={items.s_gst}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"5%"}>
-                                       <input
-                                         type="number"
-                                         onChange={changeGst(index)}
-                                         name="s_gst"
-                                         readOnly
-                                         value={items.s_gst}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"6%"}>
-                                       <input
-                                         type="number"
-                                         name="discount"
-                                         onChange={updateFieldChanged(index)}
-                                         value={items.discount_in_percent}
-                                         // defaultValue={"0"}
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td width={"7%"}>
-                                       <input
-                                         type="number"
-                                         onChange={changeGst(index)}
-                                         name="purchase_price"
-                                         value={items.purchase_price}
-                                         disabled
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td>
-                                       <input
-                                         type="text"
-                                         value={
-                                           items.amount_total
-                                             ? items.amount_total.toLocaleString(
-                                                 "en-IN"
-                                               )
-                                             : ""
-                                         }
-                                         readOnly
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td>
-                                       <input
-                                         type="text"
-                                         value={
-                                           items.net_amount
-                                             ? items.net_amount.toLocaleString(
-                                                 "en-IN"
-                                               )
-                                             : ""
-                                         }
-                                         readOnly
-                                         className="invoice_input"
-                                         style={{ width: "100%" }}
-                                         placeholder="0"
-                                       />
-                                     </td>
-                                     <td>
-                                       <AiOutlineDelete
-                                         style={{
-                                           cursor: "pointer",
-                                           color: "red",
-                                         }}
-                                         onClick={() => deleteFeild(index)}
-                                         size={24}
-                                       />
-                                     </td>
-                                   </tr>
-                                 )}
-                               </>
-                             );
-                           })
-                         ) : (
-                           <></>
-                         )}
-                       </tbody>
-                     </table>
-                     {!addedItems.length ? (
-                       <>
-                         <div className="col-md-12 px-0">
-                           <div className="d-flex align-items-center justify-content-center p-3 add_product_dashedBorder mt-4">
-                             <div className="w-100">
-                               <Flex
-                                 justifyContent={"center"}
-                                 alignItems={"center"}
-                                 gap={3}
-                                 color={"#001794"}
-                                 fontWeight={"600"}
-                                 fontSize={16}
-                               >
-                                 <BiBarcodeReader size={30} /> Scan Barcode /
-                                 Add you product
-                               </Flex>
-                             </div>
-                           </div>
-                         </div>
-                       </>
-                     ) : null}
-                   </div>
-                 </div>
-                 <div className="col-md-12 border-top border-bottom mt-5">
-                   <div className="row">
-                     <div className="col-md-6">
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Payment Mode
-                         </h5>
-                         <select
-                           class="form-select mb-0 w-50"
-                           onChange={(e) =>
-                             setRestInfo({
-                               ...restInfo,
-                               payment_mode: e.target.value,
-                             })
-                           }
-                           aria-label="Default select example"
-                         >
-                           <option value="Cash">Cash</option>
-                           <option value="UPI">UPI</option>
-                           <option value="Bank Transfer">Bank Transfer</option>
-                           <option value="Cheque">Cheque</option>
-                         </select>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Sales Man
-                         </h5>
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           <input
-                             type="text"
-                             onChange={(e) =>
-                               setRestInfo({
-                                 ...restInfo,
-                                 sales_man: e.target.value,
-                               })
-                             }
-                             className="invoice_input p-2 px-3"
-                             style={{ width: "14rem" }}
-                             placeholder="Enter name here"
-                           />
-                         </h5>
-                       </div>
-                       <div className="py-3 px-5">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             marginBottom: 8,
-                             fontWeight: "500",
-                             color: "black",
-                           }}
-                         >
-                           Notes
-                         </h5>
-                         <textarea
-                           onChange={(e) =>
-                             setRestInfo({
-                               ...restInfo,
-                               notes: e.target.value,
-                             })
-                           }
-                           className="invoice_input"
-                           style={{ width: "100%" }}
-                           rows={2}
-                           placeholder="Enter your notes..!!"
-                         />
-                       </div>
+                                        <td width={"5%"}>
+                                          <input
+                                            type="number"
+                                            onChange={changeGst(index)}
+                                            name="s_gst"
+                                            value={items.s_gst}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"5%"}>
+                                          <input
+                                            type="number"
+                                            onChange={changeGst(index)}
+                                            name="s_gst"
+                                            readOnly
+                                            value={items.s_gst}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"6%"}>
+                                          <input
+                                            type="number"
+                                            name="discount"
+                                            onChange={updateFieldChanged(index)}
+                                            value={items.discount_in_percent}
+                                            // defaultValue={"0"}
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td width={"7%"}>
+                                          <input
+                                            type="number"
+                                            onChange={changeGst(index)}
+                                            name="purchase_price"
+                                            value={items.purchase_price}
+                                            disabled
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td>
+                                          <input
+                                            type="text"
+                                            value={
+                                              items.amount_total
+                                                ? items.amount_total.toLocaleString(
+                                                    "en-IN"
+                                                  )
+                                                : ""
+                                            }
+                                            readOnly
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td>
+                                          <input
+                                            type="text"
+                                            value={
+                                              items.net_amount
+                                                ? items.net_amount.toLocaleString(
+                                                    "en-IN"
+                                                  )
+                                                : ""
+                                            }
+                                            readOnly
+                                            className="invoice_input"
+                                            style={{ width: "100%" }}
+                                            placeholder="0"
+                                          />
+                                        </td>
+                                        <td>
+                                          <AiOutlineDelete
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "red",
+                                            }}
+                                            onClick={() => deleteFeild(index)}
+                                            size={24}
+                                          />
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </>
+                                );
+                              })
+                            ) : (
+                              <></>
+                            )}
+                          </tbody>
+                        </table>
+                        {!addedItems.length ? (
+                          <>
+                            <div className="col-md-12 px-0">
+                              <div className="d-flex align-items-center justify-content-center p-3 add_product_dashedBorder mt-4">
+                                <div className="w-100">
+                                  <Flex
+                                    justifyContent={"center"}
+                                    alignItems={"center"}
+                                    gap={3}
+                                    color={"#001794"}
+                                    fontWeight={"600"}
+                                    fontSize={16}
+                                  >
+                                    <BiBarcodeReader size={30} /> Scan Barcode /
+                                    Add you product
+                                  </Flex>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className="col-md-12 border-top border-bottom mt-5">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Payment Mode
+                            </h5>
+                            <select
+                              class="form-select mb-0 w-50"
+                              onChange={(e) =>
+                                setRestInfo({
+                                  ...restInfo,
+                                  payment_mode: e.target.value,
+                                })
+                              }
+                              aria-label="Default select example"
+                            >
+                              <option value="Cash">Cash</option>
+                              <option value="UPI">UPI</option>
+                              <option value="Bank Transfer">
+                                Bank Transfer
+                              </option>
+                              <option value="Cheque">Cheque</option>
+                            </select>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Sales Man
+                            </h5>
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              <input
+                                type="text"
+                                onChange={(e) =>
+                                  setRestInfo({
+                                    ...restInfo,
+                                    sales_man: e.target.value,
+                                  })
+                                }
+                                className="invoice_input p-2 px-3"
+                                style={{ width: "14rem" }}
+                                placeholder="Enter name here"
+                              />
+                            </h5>
+                          </div>
+                          <div className="py-3 px-5">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                marginBottom: 8,
+                                fontWeight: "500",
+                                color: "black",
+                              }}
+                            >
+                              Notes
+                            </h5>
+                            <textarea
+                              onChange={(e) =>
+                                setRestInfo({
+                                  ...restInfo,
+                                  notes: e.target.value,
+                                })
+                              }
+                              className="invoice_input"
+                              style={{ width: "100%" }}
+                              rows={2}
+                              placeholder="Enter your notes..!!"
+                            />
+                          </div>
 
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Send Stocks Location
-                         </h5>
-                         <select
-                           class="form-select mb-0 w-50"
-                           onChange={(e) =>
-                             setRestInfo({
-                               ...restInfo,
-                               stock_location: e.target.value,
-                             })
-                           }
-                           aria-label="Default select example"
-                         >
-                           <option value="Store">Store</option>
-                           <option value="Warehouse">Warehouse</option>
-                          
-                         </select>
-                       </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Send Stocks Location
+                            </h5>
+                            <select
+                              class="form-select mb-0 w-50"
+                              onChange={(e) =>
+                                setRestInfo({
+                                  ...restInfo,
+                                  stock_location: e.target.value,
+                                })
+                              }
+                              aria-label="Default select example"
+                            >
+                              <option value="Store">Store</option>
+                              <option value="Warehouse">Warehouse</option>
+                            </select>
+                          </div>
 
-                       <div className="py-3 px-5 mt-5">
-                         <Button
-                           // type="button"
-                           isLoading={isLoading}
-                           onClick={submitPurchase}
-                           fontSize={14}
-                           colorScheme="teal"
-                           width={"100%"}
-                           // class="btn btn-success waves-effect waves-light w-100 "
-                         >
-                           Submit
-                         </Button>
-                       </div>
-                     </div>
-                     <div
-                       className="col-md-6 px-0 py-3"
-                       style={{ borderLeft: "1px solid #d9d9d9" }}
-                     >
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Sub Total
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           <BiRupee />{" "}
-                           {allTotals.subTotal.toLocaleString("en-IN")}
-                         </Flex>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Discount
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           -<BiRupee />
-                           <input
-                             type="number"
-                             onChange={(e) =>
-                               setAllTotals({
-                                 ...allTotals,
-                                 discount: e.target.value,
-                               })
-                             }
-                             className="invoice_input"
-                             style={{ width: "5rem" }}
-                             placeholder="0"
-                           />
-                         </Flex>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center  border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Additional Charges
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           +<BiRupee />
-                           <input
-                             type="number"
-                             onChange={(e) =>
-                               setAllTotals({
-                                 ...allTotals,
-                                 additional_charges: e.target.value,
-                               })
-                             }
-                             className="invoice_input"
-                             style={{ width: "5rem" }}
-                             placeholder="0"
-                           />
-                         </Flex>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           SGST
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           +<BiRupee />{" "}
-                           {allTotals.sGstTotal.toLocaleString("en-IN")}
-                         </Flex>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           CGST
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           +<BiRupee />{" "}
-                           {allTotals.cGstTotal.toLocaleString("en-IN")}
-                         </Flex>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Discount
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           -<BiRupee />{" "}
-                           {allTotals.discount.toLocaleString("en-IN")}
-                         </Flex>
-                       </div>
+                          <div className="py-3 px-5 mt-5">
+                            <Button
+                              // type="button"
+                              isLoading={isLoading}
+                              onClick={submitPurchase}
+                              fontSize={14}
+                              colorScheme="teal"
+                              width={"100%"}
+                              // class="btn btn-success waves-effect waves-light w-100 "
+                            >
+                              Submit
+                            </Button>
+                          </div>
+                        </div>
+                        <div
+                          className="col-md-6 px-0 py-3"
+                          style={{ borderLeft: "1px solid #d9d9d9" }}
+                        >
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Sub Total
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              <BiRupee />{" "}
+                              {allTotals.subTotal.toLocaleString("en-IN")}
+                            </Flex>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Discount
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              -<BiRupee />
+                              <input
+                                type="number"
+                                onChange={(e) =>
+                                  setAllTotals({
+                                    ...allTotals,
+                                    discount: e.target.value,
+                                  })
+                                }
+                                className="invoice_input"
+                                style={{ width: "5rem" }}
+                                placeholder="0"
+                              />
+                            </Flex>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center  border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Additional Charges
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              +<BiRupee />
+                              <input
+                                type="number"
+                                onChange={(e) =>
+                                  setAllTotals({
+                                    ...allTotals,
+                                    additional_charges: e.target.value,
+                                  })
+                                }
+                                className="invoice_input"
+                                style={{ width: "5rem" }}
+                                placeholder="0"
+                              />
+                            </Flex>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              SGST
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              +<BiRupee />{" "}
+                              {allTotals.sGstTotal.toLocaleString("en-IN")}
+                            </Flex>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              CGST
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              +<BiRupee />{" "}
+                              {allTotals.cGstTotal.toLocaleString("en-IN")}
+                            </Flex>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Discount
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              -<BiRupee />{" "}
+                              {allTotals.discount.toLocaleString("en-IN")}
+                            </Flex>
+                          </div>
 
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "700",
-                             color: "black",
-                           }}
-                         >
-                           Total Amount
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           <BiRupee />{" "}
-                           {allTotals.grandTotal.toLocaleString("en-IN")}
-                         </Flex>
-                       </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "700",
+                                color: "black",
+                              }}
+                            >
+                              Total Amount
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              <BiRupee />{" "}
+                              {allTotals.grandTotal.toLocaleString("en-IN")}
+                            </Flex>
+                          </div>
 
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center">
-                         <Checkbox
-                           onChange={(e) =>
-                             setAllTotals({
-                               ...allTotals,
-                               round_off: e.target.checked,
-                             })
-                           }
-                         >
-                           <h5
-                             style={{
-                               fontSize: 14,
-                               margin: 0,
-                               fontWeight: "700",
-                               color: "black",
-                             }}
-                           >
-                             Round Off
-                           </h5>
-                         </Checkbox>
-                       </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center">
+                            <Checkbox
+                              onChange={(e) =>
+                                setAllTotals({
+                                  ...allTotals,
+                                  round_off: e.target.checked,
+                                })
+                              }
+                            >
+                              <h5
+                                style={{
+                                  fontSize: 14,
+                                  margin: 0,
+                                  fontWeight: "700",
+                                  color: "black",
+                                }}
+                              >
+                                Round Off
+                              </h5>
+                            </Checkbox>
+                          </div>
 
-                       <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "700",
-                             color: "black",
-                           }}
-                         ></h5>
-                         {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
-                         <Checkbox
-                           onChange={(e) =>
-                             setAllTotals({
-                               ...allTotals,
-                               fully_paid: e.target.checked,
-                             })
-                           }
-                         >
-                           <h5
-                             style={{
-                               fontSize: 14,
-                               margin: 0,
-                               fontWeight: "700",
-                               color: "black",
-                             }}
-                           >
-                             Mark as fully paid
-                           </h5>
-                         </Checkbox>
-                       </div>
-                       <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "black",
-                           }}
-                         >
-                           Amount Paid
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           <BiRupee />
-                           <input
-                             type="number"
-                             disabled={allTotals.fully_paid}
-                             onChange={(e) =>
-                               setAllTotals({
-                                 ...allTotals,
-                                 amount_paid: e.target.value,
-                               })
-                             }
-                             className="invoice_input"
-                             style={{ width: "5rem" }}
-                             placeholder="0"
-                           />
-                         </Flex>
-                       </div>
-                       <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
-                         <h5
-                           style={{
-                             fontSize: 14,
-                             margin: 0,
-                             fontWeight: "600",
-                             color: "green",
-                           }}
-                         >
-                           Outstanding
-                         </h5>
-                         <Flex
-                           fontWeight={"600"}
-                           fontSize={14}
-                           alignItems={"center"}
-                         >
-                           <BiRupee />{" "}
-                           {allTotals.outstanding
-                             ? allTotals.outstanding.toLocaleString("en-IN")
-                             : 0}
-                         </Flex>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-                 {/*end col*/}
-               </div>
-               {/*end row*/}
-        
-        
-        
-        
-             </div>
-            )}
-
-             
-
+                          <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "700",
+                                color: "black",
+                              }}
+                            ></h5>
+                            {/* <h5 style={{ fontSize: 14, margin: 0, fontWeight: "600", color: "black" }}>{allTotals.grandTotal.toLocaleString('en-IN')}</h5> */}
+                            <Checkbox
+                              onChange={(e) =>
+                                setAllTotals({
+                                  ...allTotals,
+                                  fully_paid: e.target.checked,
+                                })
+                              }
+                            >
+                              <h5
+                                style={{
+                                  fontSize: 14,
+                                  margin: 0,
+                                  fontWeight: "700",
+                                  color: "black",
+                                }}
+                              >
+                                Mark as fully paid
+                              </h5>
+                            </Checkbox>
+                          </div>
+                          <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "black",
+                              }}
+                            >
+                              Amount Paid
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              <BiRupee />
+                              <input
+                                type="number"
+                                disabled={allTotals.fully_paid}
+                                onChange={(e) =>
+                                  setAllTotals({
+                                    ...allTotals,
+                                    amount_paid: e.target.value,
+                                  })
+                                }
+                                className="invoice_input"
+                                style={{ width: "5rem" }}
+                                placeholder="0"
+                              />
+                            </Flex>
+                          </div>
+                          <div className="d-flex pt-3 px-5 justify-content-between align-items-center">
+                            <h5
+                              style={{
+                                fontSize: 14,
+                                margin: 0,
+                                fontWeight: "600",
+                                color: "green",
+                              }}
+                            >
+                              Outstanding
+                            </h5>
+                            <Flex
+                              fontWeight={"600"}
+                              fontSize={14}
+                              alignItems={"center"}
+                            >
+                              <BiRupee />{" "}
+                              {allTotals.outstanding
+                                ? allTotals.outstanding.toLocaleString("en-IN")
+                                : 0}
+                            </Flex>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/*end col*/}
+                  </div>
+                  {/*end row*/}
+                </div>
+              )}
             </div>
             {/* end card-body */}
           </div>

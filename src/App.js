@@ -1,5 +1,14 @@
 import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
+
 import HomePage from "./page/HomePage";
 import StockDashPage from "./page/StockDashPage";
 
@@ -58,6 +67,7 @@ import ContextData from "./context/MainContext";
 import Loading from "./component/Shared/Loading";
 import Cookies from "universal-cookie";
 
+const queryClient = new QueryClient();
 const cookies = new Cookies();
 
 const App = () => {
@@ -70,87 +80,92 @@ const App = () => {
   }
 
   return (
-    <ChakraProvider resetCSS={true}>
-      <BrowserRouter>
-        {/* <ContextProvider> */}
-        <MainContainer>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/stock-dashboard" element={<StockDashPage />} />
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider resetCSS={true}>
+        <BrowserRouter>
+          {/* <ContextProvider> */}
+          <MainContainer>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/stock-dashboard" element={<StockDashPage />} />
 
-            <Route path="/purchaseManagement">
-              <Route index element={<PurchaseIndex />} />
-              <Route path="purchase" element={<VendorManagement />} />
-              <Route path="vendor" element={<VendorManagement />} />
-              <Route path="purchase-history" element={<PurchaseHistory />} />
-              <Route
-                path="/purchaseManagement/purchase-history-record/:orderID/:vendorID"
-                element={<PurchaseHistoryRecord />}
-              />
-            </Route>
+              <Route path="/purchaseManagement">
+                <Route index element={<PurchaseIndex />} />
+                <Route path="purchase" element={<VendorManagement />} />
+                <Route path="vendor" element={<VendorManagement />} />
+                <Route path="purchase-history" element={<PurchaseHistory />} />
+                <Route
+                  path="/purchaseManagement/purchase-history-record/:orderID/:vendorID"
+                  element={<PurchaseHistoryRecord />}
+                />
+              </Route>
 
-            <Route path="/salesManagement">
-              <Route index element={<SaleIndex />} />
-              <Route path="sales-history" element={<SalesHistory />} />
-              <Route path="customers" element={<CustomerManagement />} />
-              <Route
-                path="/salesManagement/sales-history-record/:orderID/:customer_mobile"
-                element={<SalesHistoryRecord />}
-              />
-            </Route>
+              <Route path="/salesManagement">
+                <Route index element={<SaleIndex />} />
+                <Route path="sales-history" element={<SalesHistory />} />
+                <Route path="customers" element={<CustomerManagement />} />
+                <Route
+                  path="/salesManagement/sales-history-record/:orderID/:customer_mobile"
+                  element={<SalesHistoryRecord />}
+                />
+              </Route>
 
-            <Route path="/billing">
-              <Route index element={<h4>BILLING</h4>} />
-              <Route path="purchased" element={<Purchased />} />
-              <Route path="sale" element={<Sale />} />
-            </Route>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/product-stocks" element={<Stocks />} />
-            <Route path="/low-stocks" element={<LowStock />} />
-            <Route path="/product-stocks-history" element={<StocksHistory />} />
+              <Route path="/billing">
+                <Route index element={<h4>BILLING</h4>} />
+                <Route path="purchased" element={<Purchased />} />
+                <Route path="sale" element={<Sale />} />
+              </Route>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/product-stocks" element={<Stocks />} />
+              <Route path="/low-stocks" element={<LowStock />} />
+              <Route
+                path="/product-stocks-history"
+                element={<StocksHistory />}
+              />
 
-            <Route path="/productManagement">
-              <Route index element={<ProductIndex />} />
-              <Route path="product" element={<ProductManagement />} />
-              <Route
-                path="/productManagement/product-by-brand/:brandID/:brandName"
-                element={<ProductByBrand />}
-              />
-              <Route
-                path="/productManagement/product-by-category/:subcatID/:subcatName"
-                element={<ProductByCategory />}
-              />
-              <Route
-                path="/productManagement/product-by-parent-category/:subcatID/:subcatName"
-                element={<ProductByParentCategory />}
-              />
-              <Route path="category" element={<CategoryManagement />} />
-              <Route path="brand" element={<BrandManagement />} />
-            </Route>
+              <Route path="/productManagement">
+                <Route index element={<ProductIndex />} />
+                <Route path="product" element={<ProductManagement />} />
+                <Route
+                  path="/productManagement/product-by-brand/:brandID/:brandName"
+                  element={<ProductByBrand />}
+                />
+                <Route
+                  path="/productManagement/product-by-category/:subcatID/:subcatName"
+                  element={<ProductByCategory />}
+                />
+                <Route
+                  path="/productManagement/product-by-parent-category/:subcatID/:subcatName"
+                  element={<ProductByParentCategory />}
+                />
+                <Route path="category" element={<CategoryManagement />} />
+                <Route path="brand" element={<BrandManagement />} />
+              </Route>
 
-            <Route path="/online">
-              <Route index element={<h4>Online 11</h4>} />
-              <Route path="/online/order" element={<OnlineSale />} />
-              <Route
-                path="/online/online-sales-history-record/:orderID/:customer_address/:order_status"
-                element={<OnlineSalesHistoryRecord />}
-              />
-              <Route
-                path="/online/delivery-boy"
-                element={<DeliveryBoyManagment />}
-              />
-              <Route path="/online/coupon" element={<CouponManagment />} />
-            </Route>
+              <Route path="/online">
+                <Route index element={<h4>Online 11</h4>} />
+                <Route path="/online/order" element={<OnlineSale />} />
+                <Route
+                  path="/online/online-sales-history-record/:orderID/:customer_address/:order_status"
+                  element={<OnlineSalesHistoryRecord />}
+                />
+                <Route
+                  path="/online/delivery-boy"
+                  element={<DeliveryBoyManagment />}
+                />
+                <Route path="/online/coupon" element={<CouponManagment />} />
+              </Route>
 
-            <Route path="/settings/banners" element={<BannerSettings />} />
+              <Route path="/settings/banners" element={<BannerSettings />} />
 
-            <Route path="/company" element={<Partner />} />
-            <Route path="/company/edit" element={<PartnerEdit />} />
-          </Routes>
-        </MainContainer>
-        {/* </ContextProvider> */}
-      </BrowserRouter>
-    </ChakraProvider>
+              <Route path="/company" element={<Partner />} />
+              <Route path="/company/edit" element={<PartnerEdit />} />
+            </Routes>
+          </MainContainer>
+          {/* </ContextProvider> */}
+        </BrowserRouter>
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 };
 

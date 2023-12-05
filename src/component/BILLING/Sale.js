@@ -14,6 +14,10 @@ import { useReactToPrint } from "react-to-print";
 import { useToast } from "@chakra-ui/react";
 import { EnterMobileNumber } from "./Sale/EnterMobileNumber";
 
+import { useQuery } from "react-query";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
 export const Sale = () => {
   const {
     Store_bussiness_info,
@@ -27,8 +31,52 @@ export const Sale = () => {
   const [addedItems, setAddedItems] = useState([]);
   const [couponData, setCouponData] = useState([]);
   const [isLoading, setIL] = useState(false);
+  const [isDataLoding, setisDataLoding] = useState(true);
+
   const toast = useToast();
   const inputSearchRef = useRef(null);
+
+  const adminStoreId = cookies.get("adminStoreId");
+  const adminId = cookies.get("adminId");
+
+  async function fetchData() {
+    const data = await fetch(
+      URLDomain + "/APP-API/Billing/InsertPurchaseData",
+      {
+        method: "post",
+        header: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          store_id: adminStoreId,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => responseJson);
+
+    return data;
+  }
+
+  const {
+    data: PURCHASEDATA,
+    isError,
+    isLoading: isLoadingAPI,
+  } = useQuery({
+    queryKey: ["PURCHASEDATA"],
+    queryFn: (e) => fetchData(),
+  });
+
+  useEffect(() => {
+    setAllProducts(allProducts);
+    // console.log("search product", PURCHASEDATA, isLoadingAPI);
+    if (PURCHASEDATA) {
+      setAllProducts(PURCHASEDATA.searchProduct);
+      // setVendorLists(PURCHASEDATA.vendorLists);
+      setisDataLoding(false);
+    }
+  }, [PURCHASEDATA, isLoadingAPI]);
 
   var DateOptions = {
     weekday: "long",
@@ -130,17 +178,17 @@ export const Sale = () => {
     });
   };
 
-  useEffect(
-    () => {
-      setAllProducts(storeProductsData);
-      const CouponData = store_coupon_list?.filter((obj) => obj.status == 1);
-      setCouponData(CouponData);
+  // useEffect(
+  //   () => {
+  //     setAllProducts(storeProductsData);
+  //     const CouponData = store_coupon_list?.filter((obj) => obj.status == 1);
+  //     setCouponData(CouponData);
 
-      console.log("store prod", store_login_user);
-    },
-    [storeProductsData],
-    allTotals
-  );
+  //     console.log("store prod", store_login_user);
+  //   },
+  //   [storeProductsData],
+  //   allTotals
+  // );
 
   useScanDetection({
     onComplete: (code) => {
@@ -392,7 +440,7 @@ export const Sale = () => {
         .then((responseJson) => {
           // functionality.fetchAllData(responseJson);
           console.log(" Sale server res ---->", responseJson);
-          setAddedItems([]);
+          // setAddedItems([]);
           setIL(false);
           handlePrint();
         })
@@ -633,8 +681,7 @@ export const Sale = () => {
                                   "product_full_name",
                                 ],
                               }}
-                              resultStringKeyName="product_full_name"
-                              // formatResult={formatResult}
+                              resultStringKeyName="product_name_search" // formatResult={formatResult}
                             />
                           </div>
                           {/* <i className="ri-search-line search-icon" /> */}
@@ -851,7 +898,7 @@ export const Sale = () => {
                             {allTotals?.grandTotal.toLocaleString("en-IN")}
                           </Flex>
                         </div>
-                        <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
+                        {/* <div className="d-flex py-3 px-5 justify-content-between align-items-center border-bottom">
                           <h5
                             style={{
                               fontSize: 14,
@@ -915,7 +962,7 @@ export const Sale = () => {
                               })}
                             </select>
                           </h5>
-                        </div>
+                        </div> */}
                         <div className="d-flex py-3 px-5 justify-content-between align-items-center">
                           <Checkbox
                             onChange={(e) =>
