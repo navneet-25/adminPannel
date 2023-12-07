@@ -63,7 +63,7 @@ export const EnterMobileNumber = ({
   return (
     <>
       <div className="col-md-12">
-        <div className="row py-4 mb-4 border-bottom align-items-center">
+        <div className="row pb-4 align-items-center">
           <div
             className="col-lg-8 px-4"
             style={{ borderRight: "1px solid #c1c1c1" }}
@@ -92,7 +92,13 @@ export const EnterMobileNumber = ({
                 </div>
               </div>
               {selectedCustomer?.mobile ? (
-                <div className="col-md-5">
+                <div
+                  className="col-md-5"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <div className="px-5 border-left">
                     <h5 className="">
                       Type:{" "}

@@ -7,7 +7,8 @@ import DatePicker from "react-datepicker";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
 import { Box, Button, Checkbox, Flex, Text } from "@chakra-ui/react";
-import ReactToPrint from "react-to-print";
+import { TiPrinter } from "react-icons/ti";
+import { IoIosSave } from "react-icons/io";
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
 import { useReactToPrint } from "react-to-print";
@@ -29,7 +30,9 @@ export const Sale = () => {
   const [selectedCustomer, setSelectCustomer] = useState({});
   const [allProducts, setAllProducts] = useState([]);
   const [addedItems, setAddedItems] = useState([]);
-  const [couponData, setCouponData] = useState([]);
+  const [previousAddedItems, setPreviousAddedItems] = useState([]);
+  const [onlyPrint, setOnlyPrint] = useState(false);
+  const [lastInsertedRow, setLastInsertedRow] = useState({});
   const [isLoading, setIL] = useState(false);
   const [isDataLoding, setisDataLoding] = useState(true);
 
@@ -66,6 +69,8 @@ export const Sale = () => {
   } = useQuery({
     queryKey: ["PURCHASEDATA"],
     queryFn: (e) => fetchData(),
+    refetchOnWindowFocus: false,
+    // refetchInterval: 100,
   });
 
   useEffect(() => {
@@ -139,14 +144,39 @@ export const Sale = () => {
     };
 
     const keyDownHandler = (event) => {
+      // if (event.keyCode === 220) {
+      //   event.preventDefault();
+      //   func();
+      //   document.querySelectorAll("#search-options")[0].scrollIntoView();
+      // }
       if (event.keyCode === 220) {
         event.preventDefault();
         func();
-        document.querySelectorAll("#search-options")[0].scrollIntoView();
-        console.log("User pressed: ");
+        document
+          .querySelectorAll("#search-options")[0]
+          .scrollIntoView({ block: "center" });
+      }
 
-        // 👇️ your logic here
-        // myFunction();
+      if ((event.ctrlKey || event.metaKey) && event.keyCode == 83) {
+        // submitSale();
+        event.preventDefault();
+        console.log(
+          "key stroke =======>",
+          allTotals,
+          " =============== ",
+          addedItems
+        );
+        // onlyPrint ? handlePrint() : submitSale();
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.keyCode == 68) {
+        event.preventDefault();
+        setAddedItems([]);
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.keyCode == 80) {
+        event.preventDefault();
+        handlePrint();
       }
     };
 
@@ -158,6 +188,22 @@ export const Sale = () => {
       document.removeEventListener("click", keyDownHandler);
     };
   }, []);
+
+  useEffect(() => {
+    if (addedItems === previousAddedItems) {
+      // console.log("match");
+      setOnlyPrint(true);
+    } else {
+      setOnlyPrint(false);
+      // console.log("no match");
+    }
+    console.log(
+      "padh likh leye hote ==============>",
+      addedItems,
+      "=============",
+      allTotals
+    );
+  }, [addedItems, previousAddedItems]);
 
   const deleteAll = () => {
     setAddedItems([]);
@@ -191,6 +237,8 @@ export const Sale = () => {
   // );
 
   useScanDetection({
+    // preventDefault: true,
+    ignoreIfFocusOn: true,
     onComplete: (code) => {
       const prod = allProducts?.find((o) => o.product_bar_code == code);
       const allReadyExist = addedItems.find(
@@ -210,8 +258,8 @@ export const Sale = () => {
       }
       !allReadyExist
         ? setAddedItems([
-            ...addedItems,
             { ...prod, billing_quantity: 1, amount_total: prod?.sale_price },
+            ...addedItems,
           ])
         : setAddedItems([...updatedProduct]);
       /* previousState => {
@@ -276,16 +324,8 @@ export const Sale = () => {
   }, [addedItems]);
 
   useEffect(() => {
-    const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } =
-      allTotals;
-    const Total =
-      subTotal + sGstTotal + cGstTotal + Number(additional_charges || 0);
-    // const discountedPrice = Number(Total || 0) - Number(discount || 0);
-    setAllTotals({
-      ...allTotals,
-      // grandTotal: discountedPrice
-    });
-  }, [allTotals?.discount]);
+    console.log("all totoals ==========>", allTotals);
+  }, [allTotals]);
 
   useEffect(() => {
     const { subTotal, sGstTotal, cGstTotal, discount, additional_charges } =
@@ -328,8 +368,8 @@ export const Sale = () => {
     );
     !allReadyExist
       ? setAddedItems([
-          ...addedItems,
           { ...item, billing_quantity: 1, amount_total: item.sale_price },
+          ...addedItems,
         ])
       : setAddedItems((previousState) => {
           let obj = previousState[index];
@@ -386,6 +426,12 @@ export const Sale = () => {
   };
 
   const submitSale = () => {
+    console.log(
+      "final order =======================>",
+      allTotals,
+      " ========== ",
+      addedItems
+    );
     setIL(true);
     // if (
     //   selectedCustomer.mobile == undefined ||
@@ -440,12 +486,17 @@ export const Sale = () => {
         .then((responseJson) => {
           // functionality.fetchAllData(responseJson);
           console.log(" Sale server res ---->", responseJson);
+          setLastInsertedRow(responseJson.inserted_row);
           // setAddedItems([]);
           setIL(false);
           handlePrint();
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          setIL(false);
+          setPreviousAddedItems(addedItems);
         });
     }
   };
@@ -461,104 +512,32 @@ export const Sale = () => {
     return strTime;
   };
 
-  const getCustomerDetails = (mobile) => {
-    setSelectCustomer({ mobile });
-    fetch(URLDomain + "/APP-API/Billing/getCustomerBuyingDetails", {
+  const deleteLastOrder = ({ id }) => {
+    const data = JSON.stringify({ id });
+
+    fetch(URLDomain + "/APP-API/Billing/deleteLastSaleRow", {
       method: "POST",
       header: {
         Accept: "application/json",
         "Content-type": "application/json",
       },
-      body: JSON.stringify({
-        mobile: mobile,
-        store_id: store_login_user.store_id,
-      }),
+      body: data,
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        setcustomerShoppingDetails({
-          customer_type: responseJson.customer_type,
-          no_of_shopping_time: responseJson.no_of_shopping_time,
-          shopping_value: responseJson.shopping_value,
-        });
+        // functionality.fetchAllData(responseJson);
+        console.log(" Sale server res ---->", responseJson);
+        setLastInsertedRow({});
       })
       .catch((error) => {
-        //  console.error(error);
+        console.error(error);
       });
+    // .finally(() => {
+    //   setIL(false);
+    //   setPreviousAddedItems(addedItems);
+    // });
   };
 
-  const getCouponUseDetails = (coupon_id) => {
-    setuseCouponData({ is_coupon_applied: 0, coupon_code: 0, coupon_id: null });
-    setAllTotals({
-      grandTotal:
-        Number(allTotals?.grandTotal) +
-        Number(allTotals?.coupon_discount_value),
-      coupon_discount_value: 0,
-
-      ...allTotals,
-    });
-
-    if (!isNaN(parseFloat(coupon_id))) {
-      fetch(URLDomain + "/APP-API/Billing/cheakUserUsedCoupon", {
-        method: "POST",
-        header: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          coupon_id: coupon_id,
-          mobile: selectedCustomer.mobile,
-          store_id: store_login_user.store_id,
-        }),
-      })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          if (responseJson.coupon_used == 0) {
-            if (responseJson.coupon_data.coupon_type == "amount") {
-              setAllTotals({
-                coupon_discount_value: Math.round(
-                  responseJson.coupon_data.coupon_discount
-                ),
-                grandTotal:
-                  Number(allTotals?.grandTotal) -
-                  Number(responseJson.coupon_data.coupon_discount),
-                ...allTotals,
-              });
-            } else {
-              setAllTotals({
-                coupon_discount_value: Math.round(
-                  responseJson.coupon_data.coupon_discount
-                ),
-                grandTotal:
-                  allTotals?.grandTotal -
-                  responseJson.coupon_data.coupon_discount,
-                ...allTotals,
-              });
-            }
-
-            setuseCouponData({
-              is_coupon_applied: 1,
-              coupon_code: responseJson.coupon_data.coupon_code,
-              coupon_id: responseJson.coupon_data.coupon_id,
-            });
-            getToast({
-              title: "Coupon Applied ",
-              dec: "Successful",
-              status: "success",
-            });
-          } else {
-            getToast({
-              title: "Coupon used already for this customer",
-              dec: "ERROR",
-              status: "error",
-            });
-          }
-        })
-        .catch((error) => {
-          //  console.error(error);
-        });
-    }
-  };
   return (
     <>
       <div className="row">
@@ -574,85 +553,6 @@ export const Sale = () => {
             <div className="card-body">
               <div className="live-preview">
                 <div className="row">
-                  {/* <div className="col-md-12">
-                    <div className="row py-4 mb-4 border-bottom align-items-center">
-                      <div
-                        className="col-lg-8 px-4"
-                        style={{ borderRight: "1px solid #c1c1c1" }}
-                      >
-                        <div className="row">
-                          <div
-                            className="col-md-7 px-5"
-                            style={{ borderRight: "1px solid #c1c1c1" }}
-                          >
-                            <h4 className="mb-0 text-center mb-4">
-                              Enter Mobile Number
-                            </h4>
-                            <div>
-                              <input
-                                type="number"
-                                min="1"
-                                max="10"
-                                list="suggestions"
-                                class="form-control"
-                                onChange={(e) =>
-                                  e.target.value.length == 10 &&
-                                  getCustomerDetails(e.target.value)
-                                }
-                                placeholder="Mobile..."
-                                autocomplete="on"
-                                id="search-options"
-                              />
-                            </div>
-                          </div>
-                          {selectedCustomer?.mobile ? (
-                            <div className="col-md-5">
-                              <div className="px-5 border-left">
-                                <h5 className="">
-                                  Type:{" "}
-                                  <strong>
-                                    {" "}
-                                    {customerShoppingDetails?.customer_type}
-                                  </strong>
-                                </h5>
-                                <h5 className="">
-                                  Times:{" "}
-                                  <strong>
-                                    {" "}
-                                    {
-                                      customerShoppingDetails?.no_of_shopping_time
-                                    }
-                                  </strong>
-                                </h5>
-                                <h5 className="">
-                                  Total:{" "}
-                                  <strong>
-                                    {" "}
-                                    ₹ {customerShoppingDetails?.shopping_value}
-                                  </strong>
-                                </h5>
-                                <h5 className="">
-                                  Mobile:{" "}
-                                  <strong> {selectedCustomer?.mobile}</strong>
-                                </h5>
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="col-lg-4 px-4">
-                        <h4 className="mb-0 text-center mb-4">
-                          Sale Date <FcCalendar />
-                        </h4>
-                        <DatePicker
-                          selected={Saledate}
-                          dateFormat="dd-MM-yyyy"
-                          onChange={(date) => setSaledate(Date.parse(date))}
-                          className="form-control bg-light border-light custom_date_input"
-                        />
-                      </div>
-                    </div>
-                  </div> */}
                   <EnterMobileNumber
                     Saledate={Saledate}
                     customerShoppingDetails={customerShoppingDetails}
@@ -661,7 +561,7 @@ export const Sale = () => {
                     setSelectCustomer={setSelectCustomer}
                     setcustomerShoppingDetails={setcustomerShoppingDetails}
                   />
-                  <div className="col-lg-12 pb-4 border-bottom">
+                  <div className="col-lg-12 border-bottom">
                     <div className="row g-3">
                       <div className="col-md-12 col-sm-12">
                         <div className="d-flex align-items-center">
@@ -704,16 +604,141 @@ export const Sale = () => {
                               <FcDeleteRow size={32} />
                             </Flex>
                           ) : null}
+                          {addedItems.length ? (
+                            !onlyPrint ? (
+                              <Button
+                                isLoading={isLoading}
+                                onClick={submitSale}
+                                ml={6}
+                                backgroundColor={"#000"}
+                                borderRadius={6}
+                                color={"#fff"}
+                              >
+                                <Flex
+                                  alignItems={"center"}
+                                  justifyContent={"center"}
+                                  cursor={"pointer"}
+                                  // onClick={deleteAll}
+                                  px={3}
+                                  py={1}
+                                  gap={1}
+                                >
+                                  <Text
+                                    fontWeight={"700"}
+                                    fontSize={14}
+                                    className="mb-0"
+                                  >
+                                    Save
+                                  </Text>
+                                  <IoIosSave size={28} />
+                                </Flex>
+                              </Button>
+                            ) : (
+                              <Button
+                                isLoading={isLoading}
+                                onClick={handlePrint}
+                                ml={6}
+                                borderRadius={6}
+                                colorScheme="orange"
+                              >
+                                <Flex
+                                  alignItems={"center"}
+                                  justifyContent={"center"}
+                                  cursor={"pointer"}
+                                  // onClick={deleteAll}
+                                  px={3}
+                                  py={1}
+                                  gap={1}
+                                >
+                                  <Text
+                                    fontWeight={"700"}
+                                    fontSize={14}
+                                    className="mb-0"
+                                  >
+                                    Print
+                                  </Text>
+                                  <TiPrinter size={28} />
+                                </Flex>
+                              </Button>
+                            )
+                          ) : null}
                         </div>
+
+                        <Box
+                          py={4}
+                          // my={3}
+                          // borderTop={"1px solid"}
+                          // borderBottom={"1px solid"}
+                          borderColor={"#efefef"}
+                        >
+                          <Flex
+                            justifyContent={"space-between"}
+                            alignItems={"center"}
+                          >
+                            <Flex>
+                              {Object.keys(lastInsertedRow).length ? (
+                                <>
+                                  <Text fontWeight={"600"}>
+                                    Last inserted row:{" "}
+                                  </Text>
+                                  <Flex alignItems={"center"}>
+                                    <Flex
+                                      fontWeight={"700"}
+                                      mx={2}
+                                      alignItems={"center"}
+                                    >
+                                      <BiRupee />
+                                      <Text>
+                                        {lastInsertedRow?.total_payment}
+                                      </Text>
+                                    </Flex>
+                                    <Text> No. Product: </Text>
+                                    <Text fontWeight={"600"}>
+                                      {lastInsertedRow?.no_of_items}
+                                    </Text>
+                                    <AiOutlineDelete
+                                      style={{
+                                        cursor: "pointer",
+                                        color: "red",
+                                        marginLeft: 6,
+                                      }}
+                                      onClick={() =>
+                                        deleteLastOrder({
+                                          id: lastInsertedRow?.id,
+                                        })
+                                      }
+                                      size={24}
+                                    />
+                                  </Flex>
+                                </>
+                              ) : null}
+                            </Flex>
+                            <Flex
+                              justifyContent={"end"}
+                              fontSize={16}
+                              fontWeight={"600"}
+                              mr={8}
+                              alignItems={"center"}
+                            >
+                              <Text>Total amount to pay:</Text>
+                              <Flex
+                                fontWeight={"700"}
+                                ml={1}
+                                alignItems={"center"}
+                                fontSize={20}
+                              >
+                                <BiRupee />
+                                <Text>{allTotals?.grandTotal}</Text>
+                              </Flex>
+                            </Flex>
+                          </Flex>
+                        </Box>
 
                         <div
                           className="dropdown-menu dropdown-menu-lg"
                           id="search-dropdown"
                         ></div>
                       </div>
-                      {/*end col*/}
-                      <div className="offset-md-4 col-md-3 col-sm-4 d-flex justify-content-end"></div>
-                      {/*end col*/}
                     </div>
                   </div>
                   <div className="col-xl-12">
