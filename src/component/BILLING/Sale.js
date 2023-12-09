@@ -20,14 +20,12 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const Sale = () => {
-  const {
-    Store_bussiness_info,
-    store_coupon_list,
-    storeProductsData,
-    store_login_user,
-  } = useContext(ContextData);
   const [Saledate, setSaledate] = useState(new Date());
-  const [selectedCustomer, setSelectCustomer] = useState({});
+  const [selectedCustomer, setSelectCustomer] = useState({
+    mobile: 9999999999,
+  });
+
+  const [Store_bussiness_info, setStore_bussiness_info] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [addedItems, setAddedItems] = useState([]);
   const [previousAddedItems, setPreviousAddedItems] = useState([]);
@@ -75,10 +73,11 @@ export const Sale = () => {
 
   useEffect(() => {
     setAllProducts(allProducts);
+    setStore_bussiness_info(Store_bussiness_info);
     // console.log("search product", PURCHASEDATA, isLoadingAPI);
     if (PURCHASEDATA) {
       setAllProducts(PURCHASEDATA.searchProduct);
-      // setVendorLists(PURCHASEDATA.vendorLists);
+      setStore_bussiness_info(PURCHASEDATA.partner_bussiness_info);
       setisDataLoding(false);
     }
   }, [PURCHASEDATA, isLoadingAPI]);
@@ -133,7 +132,7 @@ export const Sale = () => {
       "" +
       new Date().getSeconds() +
       "" +
-      store_login_user?.id,
+      adminId,
   });
   const componentRef = useRef();
 
@@ -392,18 +391,33 @@ export const Sale = () => {
     // console.log('property name: ' + e.target.name);
     let newArr = [...addedItems];
 
-    e.target.name === "price" && (newArr[index].price = e.target.value);
+    e.target.name === "price" &&
+      (newArr[index].price = e.target.value) &&
+      (newArr[index].sale_price = e.target.value) &&
+      (newArr[index].discount_in_rs = 0);
+
     e.target.name === "quantity" &&
       (newArr[index].billing_quantity = e.target.value);
-    e.target.name === "product_full_name" &&
-      (newArr[index].product_full_name = e.target.value);
+
+    e.target.name === "product_name" &&
+      (newArr[index].product_name = e.target.value);
+    e.target.name === "product_size" &&
+      (newArr[index].product_size = e.target.value);
+    e.target.name === "product_unit" &&
+      (newArr[index].product_unit = e.target.value);
+
     e.target.name === "sale_price" &&
-      (newArr[index].sale_price = e.target.value);
+      (newArr[index].sale_price = e.target.value) &&
+      (newArr[index].discount_in_rs =
+        newArr[index].price - newArr[index].sale_price);
     e.target.name === "discount" &&
-      (newArr[index].discount_in_rs = e.target.value);
+      (newArr[index].discount_in_rs = e.target.value) &&
+      (newArr[index].sale_price =
+        newArr[index].price - newArr[index].discount_in_rs);
     newArr[index].amount_total =
       Number(newArr[index].billing_quantity) * Number(newArr[index].sale_price);
     // console.log("new arrya --->", newArr);
+
     newArr = newArr.filter((item) => item);
     setAddedItems(newArr);
   };
@@ -450,9 +464,9 @@ export const Sale = () => {
     } else {
       const data = JSON.stringify({
         customer_type: customerShoppingDetails?.customer_type,
-        store_id: store_login_user.store_id,
+        store_id: adminStoreId,
         customer_mobile: selectedCustomer.mobile,
-        user_id: store_login_user?.id,
+        user_id: adminId,
         sub_total: allTotals?.subTotal,
         i_gst: Number(allTotals?.sGstTotal) + Number(allTotals?.cGstTotal),
         s_gst: Number(allTotals?.sGstTotal),
@@ -747,8 +761,11 @@ export const Sale = () => {
                         <thead>
                           <tr>
                             <th scope="col">NO</th>
-                            <th scope="col">ITEMS</th>
                             <th scope="col">QTY</th>
+                            <th scope="col">ITEMS</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Unit</th>
+
                             <th scope="col">MRP</th>
                             <Box
                               as="th"
@@ -777,18 +794,6 @@ export const Sale = () => {
                                       <td width={"10%"} className="fw-medium">
                                         {index + 1}
                                       </td>
-                                      <td width={"40%"}>
-                                        <input
-                                          type="text"
-                                          name="product_full_name"
-                                          onChange={updateFieldChanged(index)}
-                                          value={items.product_full_name}
-                                          className="invoice_input"
-                                          style={{ width: "10rem" }}
-                                          placeholder=""
-                                        />
-                                      </td>
-                                      {/* <td width={"40%"} >{items.product_full_name}</td> */}
                                       <td width={"10%"}>
                                         <input
                                           type="number"
@@ -797,6 +802,49 @@ export const Sale = () => {
                                           value={
                                             items.billing_quantity
                                               ? items.billing_quantity
+                                              : ""
+                                          }
+                                          className="invoice_input"
+                                          style={{ width: "3rem" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+                                      <td width={"40%"}>
+                                        <input
+                                          type="text"
+                                          name="product_name"
+                                          onChange={updateFieldChanged(index)}
+                                          value={items.product_name}
+                                          className="invoice_input"
+                                          style={{ width: "15rem" }}
+                                          placeholder=""
+                                        />
+                                      </td>
+                                      {/* <td width={"40%"} >{items.product_full_name}</td> */}
+
+                                      <td width={"5%"}>
+                                        <input
+                                          type="number"
+                                          name="product_size"
+                                          onChange={updateFieldChanged(index)}
+                                          value={
+                                            items.product_size
+                                              ? items.product_size
+                                              : ""
+                                          }
+                                          className="invoice_input"
+                                          style={{ width: "3rem" }}
+                                          placeholder="0"
+                                        />
+                                      </td>
+                                      <td width={"5%"}>
+                                        <input
+                                          type="text"
+                                          name="product_unit"
+                                          onChange={updateFieldChanged(index)}
+                                          value={
+                                            items.product_unit
+                                              ? items.product_unit
                                               : ""
                                           }
                                           className="invoice_input"
@@ -1371,7 +1419,8 @@ export const Sale = () => {
               <th colSpan={2} class="">
                 Item
               </th>
-              <th class="">QTY</th>
+              <th class="">Size</th>
+              <th class="">Q</th>
               <th class="">MRP</th>
               <th class="">RATE</th>
               <th class="">AMT</th>
@@ -1381,9 +1430,10 @@ export const Sale = () => {
           <tbody>
             {addedItems?.map((items, index) => {
               return (
-                <tr>
-                  <td colSpan={2}>
-                    {items?.product_full_name?.substring(0, 14)}
+                <tr class="sum-up line">
+                  <td colSpan={2}>{items?.product_name?.substring(0, 21)}</td>
+                  <td>
+                    {items.product_size} {items.product_unit}
                   </td>
                   <td>{items.billing_quantity}</td>
                   <td>{items.price}</td>
@@ -1394,7 +1444,7 @@ export const Sale = () => {
             })}
 
             <tr>
-              <td colspan="5" class="sum-up line">
+              <td colspan="6" class="sum-up line">
                 Sub Total
               </td>
               <td class="line price">
@@ -1402,7 +1452,7 @@ export const Sale = () => {
               </td>
             </tr>
             <tr>
-              <td colspan="5" class="sum-up line">
+              <td colspan="6" class="sum-up line">
                 Discount
               </td>
               <td class="line price">
@@ -1421,7 +1471,7 @@ export const Sale = () => {
 
             {useCouponData.is_coupon_applied == 1 ? (
               <tr>
-                <td colspan="5" class="sum-up">
+                <td colspan="6" class="sum-up">
                   Extra Discount
                 </td>
                 <td class="price">
@@ -1431,7 +1481,7 @@ export const Sale = () => {
             ) : null}
 
             <tr>
-              <th colspan="5" class="total text">
+              <th colspan="6" class="total text">
                 Total
               </th>
               <th class="total price">
