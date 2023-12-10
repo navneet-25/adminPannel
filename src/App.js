@@ -67,7 +67,14 @@ import ContextData from "./context/MainContext";
 import Loading from "./component/Shared/Loading";
 import Cookies from "universal-cookie";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      // refetchInterval: 1000,
+    },
+  },
+});
 const cookies = new Cookies();
 
 const App = () => {
