@@ -35,8 +35,9 @@ import {
 
 // Create table headers consisting of 4 columns.
 import URLDomain from "../../URL";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import Cookies from "universal-cookie";
+import { queryClient } from "../../App";
 const cookies = new Cookies();
 
 const ProductManagement = () => {
@@ -88,19 +89,31 @@ const ProductManagement = () => {
     data: PRODUCTDATA,
     isError,
     isLoading: isLoadingAPI,
+    isFetching,
   } = useQuery({
     queryKey: ["PRODUCTDATA"],
     queryFn: (e) => fetchData(),
   });
 
+  // const updateStatus = useMutation({
+  //   mutationFn: ({id, product_name, status}) => axios.post(`/posts/${id}/comments`, newComment),
+  //   onSuccess: () => {
+  //     // ✅ refetch the comments list for our blog post
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["PRODUCTDATA"],
+  //     });
+  //   },
+  // });
+
   useEffect(() => {
     console.log("search product", PRODUCTDATA, isLoadingAPI);
+
     if (PRODUCTDATA) {
       setShowData(PRODUCTDATA.stores_products);
       setisDataLoding(false);
     }
 
-    console.log("product", showData);
+    // console.log("product", showData);
   }, [PRODUCTDATA, isLoadingAPI]);
 
   const getToast = (e) => {
@@ -287,6 +300,8 @@ const ProductManagement = () => {
   ];
 
   const UpdateStatusAction = (product_id, product_name, status) => {
+    let flag = false;
+
     var statusAction = "";
     var statusModified = null;
     if (Number(status) == 1) {
@@ -321,7 +336,11 @@ const ProductManagement = () => {
           .then((responseJson) => {
             if (responseJson.success) {
               // storeProductRelode();
-              fetchData();
+              // fetchData();
+
+              queryClient.invalidateQueries({
+                queryKey: ["PRODUCTDATA"],
+              });
 
               getToast({
                 title: "Status Change ",
@@ -501,6 +520,8 @@ const ProductManagement = () => {
                     <i className="ri-add-fill me-1 align-bottom" /> Import
                     product{" "}
                   </button> */}
+
+                  {isFetching && "fetching..."}
                   <button
                     className="btn btn-primary"
                     data-bs-toggle="modal"
