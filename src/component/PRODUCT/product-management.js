@@ -86,12 +86,12 @@ const ProductManagement = () => {
   }
 
   const {
-    data: PRODUCTDATA,
+    data: product_management,
     isError,
     isLoading: isLoadingAPI,
     isFetching,
   } = useQuery({
-    queryKey: ["PRODUCTDATA"],
+    queryKey: ["product_management"],
     queryFn: (e) => fetchData(),
   });
 
@@ -100,21 +100,21 @@ const ProductManagement = () => {
   //   onSuccess: () => {
   //     // ✅ refetch the comments list for our blog post
   //     queryClient.invalidateQueries({
-  //       queryKey: ["PRODUCTDATA"],
+  //       queryKey: ["product_management"],
   //     });
   //   },
   // });
 
   useEffect(() => {
-    console.log("search product", PRODUCTDATA, isLoadingAPI);
+    // console.log("search product", product_management, isLoadingAPI);
 
-    if (PRODUCTDATA) {
-      setShowData(PRODUCTDATA.stores_products);
+    if (product_management) {
+      setShowData(product_management.stores_products);
       setisDataLoding(false);
     }
 
     // console.log("product", showData);
-  }, [PRODUCTDATA, isLoadingAPI]);
+  }, [product_management, isLoadingAPI]);
 
   const getToast = (e) => {
     toast({
@@ -339,7 +339,7 @@ const ProductManagement = () => {
               // fetchData();
 
               queryClient.invalidateQueries({
-                queryKey: ["PRODUCTDATA"],
+                queryKey: ["product_management"],
               });
 
               getToast({
