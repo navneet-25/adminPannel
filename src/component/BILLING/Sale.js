@@ -1,23 +1,84 @@
 import { BiRupee, BiBarcodeReader } from "react-icons/bi";
-import { FcCalendar, FcDeleteRow } from "react-icons/fc";
 import { AiOutlineDelete } from "react-icons/ai";
-import { useContext, useEffect, useState, useRef } from "react";
-import ContextData from "../../context/MainContext";
-import DatePicker from "react-datepicker";
+import { useEffect, useState, useRef } from "react";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import useScanDetection from "use-scan-detection";
-import { Box, Button, Checkbox, Flex, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { TiPrinter } from "react-icons/ti";
-import { IoIosSave } from "react-icons/io";
+import { IoIosSave, IoMdAdd } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 import "react-datepicker/dist/react-datepicker.css";
 import URLDomain from "../../URL";
 import { useReactToPrint } from "react-to-print";
 import { useToast } from "@chakra-ui/react";
 import { EnterMobileNumber } from "./Sale/EnterMobileNumber";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  Form,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 import { useQuery } from "react-query";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
+
+function isValidBarcode(barcode) {
+  // check length
+  if (
+    barcode.length < 8 ||
+    barcode.length > 18 ||
+    (barcode.length != 8 &&
+      barcode.length != 12 &&
+      barcode.length != 13 &&
+      barcode.length != 14 &&
+      barcode.length != 18)
+  ) {
+    return false;
+  }
+
+  var lastDigit = Number(barcode.substring(barcode.length - 1));
+  var checkSum = 0;
+  if (isNaN(lastDigit)) {
+    return false;
+  } // not a valid upc/ean
+
+  var arr = barcode
+    .substring(0, barcode.length - 1)
+    .split("")
+    .reverse();
+  var oddTotal = 0,
+    evenTotal = 0;
+
+  for (var i = 0; i < arr.length; i++) {
+    if (isNaN(arr[i])) {
+      return false;
+    } // can't be a valid upc/ean we're checking for
+
+    if (i % 2 == 0) {
+      oddTotal += Number(arr[i]) * 3;
+    } else {
+      evenTotal += Number(arr[i]);
+    }
+  }
+  checkSum = (10 - ((evenTotal + oddTotal) % 10)) % 10;
+
+  // true if they are equal
+  return checkSum == lastDigit;
+}
 
 export const Sale = () => {
   const [Saledate, setSaledate] = useState(new Date());
@@ -33,9 +94,10 @@ export const Sale = () => {
   const [lastInsertedRow, setLastInsertedRow] = useState({});
   const [isLoading, setIL] = useState(false);
   const [isDataLoding, setisDataLoding] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = useRef(null);
 
   const toast = useToast();
-  const inputSearchRef = useRef(null);
 
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
@@ -148,6 +210,7 @@ export const Sale = () => {
       //   func();
       //   document.querySelectorAll("#search-options")[0].scrollIntoView();
       // }
+      console.log("key stroke ---->", event);
       if (event.keyCode === 220) {
         event.preventDefault();
         func();
@@ -176,6 +239,11 @@ export const Sale = () => {
       if ((event.ctrlKey || event.metaKey) && event.keyCode == 80) {
         event.preventDefault();
         handlePrint();
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.keyCode == 66) {
+        event.preventDefault();
+        onOpen();
       }
     };
 
@@ -237,31 +305,40 @@ export const Sale = () => {
 
   useScanDetection({
     // preventDefault: true,
-    ignoreIfFocusOn: true,
+
     onComplete: (code) => {
-      const prod = allProducts?.find((o) => o.product_bar_code == code);
-      const allReadyExist = addedItems.find(
-        (elem) => elem.product_bar_code === code
-      );
-      const index = addedItems.findIndex(
-        (elem) => elem.product_bar_code === code
-      );
-      const updatedProduct = [...addedItems];
-      if (allReadyExist) {
-        let obj = updatedProduct[index];
-        if (obj !== undefined) {
-          obj.billing_quantity++; // <-- state mutation
-          obj.amount_total =
-            Number(obj.billing_quantity) * Number(obj?.sale_price);
-        }
-      }
-      !allReadyExist
-        ? setAddedItems([
-            { ...prod, billing_quantity: 1, amount_total: prod?.sale_price },
-            ...addedItems,
-          ])
-        : setAddedItems([...updatedProduct]);
-      /* previousState => {
+      const isValid = isValidBarcode(code);
+      console.log("vaild hai kya barcode ======?", isValid);
+      if (isValid) {
+        const prod = allProducts?.find((o) => o.product_bar_code == code);
+        if (prod) {
+          const allReadyExist = addedItems.find(
+            (elem) => elem.product_bar_code === code
+          );
+          const index = addedItems.findIndex(
+            (elem) => elem.product_bar_code === code
+          );
+          const updatedProduct = [...addedItems];
+          if (allReadyExist) {
+            let obj = updatedProduct[index];
+            if (obj !== undefined) {
+              obj.billing_quantity++; // <-- state mutation
+              obj.amount_total =
+                Number(obj.billing_quantity) * Number(obj?.sale_price);
+            }
+          }
+          console.log("hey 1", code);
+          !allReadyExist
+            ? setAddedItems([
+                {
+                  ...prod,
+                  billing_quantity: 1,
+                  amount_total: prod?.sale_price,
+                },
+                ...addedItems,
+              ])
+            : setAddedItems([...updatedProduct]);
+          /* previousState => {
                 let obj = previousState[index];
                 if (obj !== undefined) {
                     obj.billing_quantity++; // <-- state mutation
@@ -270,6 +347,22 @@ export const Sale = () => {
                 }
                 return [...previousState];
             } */
+        } else {
+          toast({
+            title: "Invalid Product",
+            duration: 3000,
+            status: "error",
+            isClosable: true,
+          });
+        }
+      } else {
+        toast({
+          title: "Barcode Invalid",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+        });
+      }
     },
   });
 
@@ -365,6 +458,7 @@ export const Sale = () => {
     const index = addedItems.findIndex(
       (elem) => elem.product_full_name === item.product_full_name
     );
+    console.log("hey 2");
     !allReadyExist
       ? setAddedItems([
           { ...item, billing_quantity: 1, amount_total: item.sale_price },
@@ -611,11 +705,15 @@ export const Sale = () => {
                               justifyContent={"center"}
                               cursor={"pointer"}
                               onClick={deleteAll}
+                              borderRadius={6}
+                              border={"2px solid #d4d4d4"}
+                              px={2}
+                              py={1}
                             >
                               <Text fontWeight={"700"} className="mb-0">
                                 Delete All
                               </Text>
-                              <FcDeleteRow size={32} />
+                              <MdDelete size={24} color="red" />
                             </Flex>
                           ) : null}
                           {addedItems.length ? (
@@ -744,6 +842,16 @@ export const Sale = () => {
                                 <BiRupee />
                                 <Text>{allTotals?.grandTotal}</Text>
                               </Flex>
+                              <Box
+                                ml={4}
+                                p={1}
+                                borderRadius={6}
+                                border={"1px solid #d4d4d4"}
+                                cursor={"pointer"}
+                                onClick={onOpen}
+                              >
+                                <IoMdAdd />
+                              </Box>
                             </Flex>
                           </Flex>
                         </Box>
@@ -1354,6 +1462,48 @@ export const Sale = () => {
         {/* end col */}
       </div>
       {/* section-to-print */}
+
+      <Modal
+        initialFocusRef={initialRef}
+        size="xs"
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign={"center"}>Add Extra</ModalHeader>
+          {/* <ModalCloseButton /> */}
+          <ModalBody pb={5}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setAddedItems([
+                  {
+                    billing_quantity: 1,
+                    amount_total: initialRef.current.value,
+                    product_name: "Extra",
+                    product_size: "1",
+                    product_unit: "n",
+                    price: initialRef.current.value,
+                    sale_price: initialRef.current.value,
+                    discount_in_rs: 0,
+                  },
+                  ...addedItems,
+                ]);
+                onClose();
+              }}
+            >
+              <FormControl>
+                <Input py={5} ref={initialRef} placeholder="Enter Price" />
+                <FormLabel fontSize={12} mt={1} textAlign={"center"}>
+                  Price
+                </FormLabel>
+              </FormControl>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <div id="section-to-print" ref={componentRef}>
         <div className="POS_header px-1">
