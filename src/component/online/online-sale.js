@@ -14,6 +14,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
+import { queryClient } from "../../App";
+
 import swal from "sweetalert";
 
 import {
@@ -46,7 +48,8 @@ const OnlineSale = () => {
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
 
-  const [radioValue, setRadioValue] = useState("1");
+  const [radioValue, setRadioValue] = useState("Placed");
+  console.log("radio ======>", radioValue);
 
   const radios = [
     { name: "Placed", value: "Placed", variant: "dark" },
@@ -80,12 +83,14 @@ const OnlineSale = () => {
 
   const {
     data: ONLINE_ORDERS,
-    isError,
+    isFetching,
     isLoading: ONLINE_ORDERS_LOADING,
   } = useQuery({
-    queryKey: ["ONLINE_ORDERS"],
-    queryFn: (e) => fetchData({ order_status: "Placed" }),
+    queryKey: ["ONLINE_ORDERS", radioValue],
+    queryFn: (e) => fetchData({ order_status: e.queryKey[1] }),
   });
+
+  // console.log("isisFetching", isFetching);
 
   const ChangeStatus = () => {
     setProductDelID(true);
@@ -108,6 +113,15 @@ const OnlineSale = () => {
       isSortable: true,
       cell: (row) => {
         return <p className="text-dark">{row.customer_address}</p>;
+      },
+    },
+    {
+      prop: "delivery_slots",
+      title: "Slots.",
+      isFilterable: true,
+      isSortable: true,
+      cell: (row) => {
+        return <p className="text-dark">{row.delivery_slots}</p>;
       },
     },
     {
@@ -179,6 +193,37 @@ const OnlineSale = () => {
               >
                 View Record
               </Dropdown.Item>
+
+              {radios.map((radio, idx) => (
+                // <ToggleButton
+                //   key={idx}
+                //   id={`radio-${idx}`}
+                //   type="radio"
+                //   variant={"outline-" + radio.variant}
+                //   name="radio"
+                //   value={radio.value}
+                //   checked={radioValue === radio.value}
+                //   onChange={(e) => changeOrderStatus(e.currentTarget.value)}
+                // >
+                //   {radio.name}
+                // </ToggleButton>
+
+                <>
+                  {radio.value != row.order_status ? (
+                    <Dropdown.Item
+                      onClick={() =>
+                        UpdateStatusAction(
+                          row.id,
+                          row.order_status,
+                          radio.value
+                        )
+                      }
+                    >
+                      {radio.value}
+                    </Dropdown.Item>
+                  ) : null}
+                </>
+              ))}
             </Dropdown.Menu>
           </Dropdown>
         );
@@ -186,15 +231,72 @@ const OnlineSale = () => {
     },
   ];
 
-  const deleteAction = (delete_id, product_name) => {
+  const UpdateStatusAction = (order_id, old_order_status, order_status) => {
+    swal({
+      title: "Action | " + old_order_status + " | to " + order_status,
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((changeOrderStatus) => {
+      if (changeOrderStatus) {
+        console.log("status", order_status);
+
+        fetch(URL + "/APP-API/Billing/changeStoreOrderStatus", {
+          method: "POST",
+          header: {
+            Accept: "application/json",
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            order_id: order_id,
+            order_status: order_status,
+          }),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if (responseJson.success) {
+              // storeProductRelode();
+              // fetchData();
+
+              queryClient.invalidateQueries({
+                queryKey: ["ONLINE_ORDERS"],
+              });
+
+              getToast({
+                title: "Status Change ",
+                dec: "Successful",
+                status: "success",
+              });
+            } else {
+              getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+            }
+
+            for (let i = 0; i < 10; i++) {
+              document.getElementsByClassName("btn-close")[i].click();
+            }
+          })
+          .catch((error) => {
+            //  console.error(error);
+          });
+
+        swal("Status Change!", {
+          icon: "success",
+        });
+      } else {
+        swal("Nothing Change!");
+      }
+    });
+  };
+
+  const deleteAction = (delete_id, order_status) => {
     swal({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this Product !",
       icon: "warning",
       buttons: true,
       dangerMode: true,
-    }).then((deleteProductFromStore) => {
-      if (deleteProductFromStore) {
+    }).then((changeOrderStatus) => {
+      if (changeOrderStatus) {
         fetch(URL + "/APP-API/Billing/deleteStoreProduct", {
           method: "POST",
           header: {
@@ -203,7 +305,7 @@ const OnlineSale = () => {
           },
           body: JSON.stringify({
             delete_id: delete_id,
-            product_name: product_name,
+            order_status: order_status,
             store_id: adminStoreId,
             adminId: adminId,
           }),
@@ -238,10 +340,6 @@ const OnlineSale = () => {
         swal("Product is safe!");
       }
     });
-  };
-  const deleteProductFromStore = () => {
-    // console.log('delete_id',delID)
-    alert("done");
   };
 
   const deletePlot = () => {
@@ -294,7 +392,7 @@ const OnlineSale = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 className="mb-sm-0">Vendor List</h4>
+              <h4 className="mb-sm-0">Vendor List </h4>
             </div>
           </div>
         </div>
