@@ -33,20 +33,14 @@ const OnlineSalesHistoryRecord = () => {
   const { orderID } = useParams();
   const { customer_address } = useParams();
 
-  const center = {
-    lat: 7.2905715, // default latitude
-    lng: 80.6337262, // default longitude
-  };
-
   const toast = useToast();
   const componentRef = useRef();
 
-  console.log("orderID", orderID);
-  console.log("customer_address", customer_address);
+  // console.log("orderID", orderID);
+  // console.log("customer_address", customer_address);
 
   const cookies = new Cookies();
   const adminStoreId = cookies.get("adminStoreId");
-  const adminId = cookies.get("adminId");
   const [isDataLoding, setisDataLoding] = useState(true);
 
   const getToast = (e) => {
@@ -60,11 +54,6 @@ const OnlineSalesHistoryRecord = () => {
     });
   };
 
-  const {
-    store_customer_list,
-    store_customer_purchase_record,
-    store_customer_purchase_record_products,
-  } = useContext(ContextData);
   const [orderDetails, setorderDetails] = useState([]);
 
   const [customerAddress, setcustomerAddress] = useState({});
@@ -279,7 +268,28 @@ const OnlineSalesHistoryRecord = () => {
 
                           <h6 className="">
                             Total Paymnet :{" "}
-                            <strong>{orderDetails?.total_payment}</strong>
+                            <strong>
+                              {Number(orderDetails?.total_payment)}
+                            </strong>
+                          </h6>
+
+                          {ONLINESALEHISTORYRECORD?.sumOfNotAvilable ? (
+                            <h6 className="">
+                              Not avilable Settlement :{" "}
+                              <strong>
+                                {ONLINESALEHISTORYRECORD?.sumOfNotAvilable}
+                              </strong>
+                            </h6>
+                          ) : null}
+
+                          <h6 className="">
+                            Payment after Settlement :{" "}
+                            <strong>
+                              {Number(orderDetails?.total_payment) -
+                                Number(
+                                  ONLINESALEHISTORYRECORD?.sumOfNotAvilable
+                                )}
+                            </strong>
                           </h6>
                         </div>
                       </div>
@@ -610,11 +620,57 @@ const OnlineSalesHistoryRecord = () => {
                     {orderDetails?.payment_status == 0 ? "Unpaid" : "Paid"}
                   </strong>
                 </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order Date:{" "}
+                  <strong>
+                    {orderDetails?.date} || {orderDetails?.time}
+                  </strong>
+                </h6>
               </div>
             </div>
           </Box>
           <Box>
             <div>
+              <div className="">
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Slots: <strong>{delivery_slots}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order status: <strong>{orderDetails?.order_status}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  No of Item: <strong>{orderDetails?.no_of_items}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order ID: <strong>{orderDetails?.order_id}</strong>
+                </h6>
+              </div>
               <div className="">
                 <h6
                   className=""
@@ -670,51 +726,28 @@ const OnlineSalesHistoryRecord = () => {
                 >
                   Total Paymnet : <strong>{orderDetails?.total_payment}</strong>
                 </h6>
-              </div>
+                {ONLINESALEHISTORYRECORD?.sumOfNotAvilable ? (
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    Not avilable Settlement :{" "}
+                    <strong>{ONLINESALEHISTORYRECORD?.sumOfNotAvilable}</strong>
+                  </h6>
+                ) : null}
 
-              <div className="">
                 <h6
                   className=""
                   style={{
                     color: "#000",
                   }}
                 >
-                  Slots: <strong>{delivery_slots}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Order status: <strong>{orderDetails?.order_status}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  No of Item: <strong>{orderDetails?.no_of_items}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Order ID: <strong>{orderDetails?.order_id}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Order Date:{" "}
+                  Payment after Settlement :{" "}
                   <strong>
-                    {orderDetails?.date} || {orderDetails?.time}
+                    {Number(orderDetails?.total_payment) -
+                      Number(ONLINESALEHISTORYRECORD?.sumOfNotAvilable)}
                   </strong>
                 </h6>
               </div>
@@ -745,7 +778,7 @@ const OnlineSalesHistoryRecord = () => {
                   <td>
                     {items.product_size} {items.product_unit}
                   </td>
-                  <td>{items.billing_quantity}</td>
+                  <td>{items.quantity}</td>
                   <td>{items.price}</td>
                   <td class="price">{items.sale_price}</td>
                   <td class="price">{items.total_amount}</td>
