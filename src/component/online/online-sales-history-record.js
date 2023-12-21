@@ -6,6 +6,10 @@ import ContextData from "../../context/MainContext";
 import { useQuery } from "react-query";
 import Cookies from "universal-cookie";
 import { useReactToPrint } from "react-to-print";
+import { useToast } from "@chakra-ui/react";
+import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+
+import { queryClient } from "../../App";
 
 import {
   Box,
@@ -18,6 +22,9 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+
+import swal from "sweetalert";
+
 import URL from "../../URL";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,6 +33,12 @@ const OnlineSalesHistoryRecord = () => {
   const { orderID } = useParams();
   const { customer_address } = useParams();
 
+  const center = {
+    lat: 7.2905715, // default latitude
+    lng: 80.6337262, // default longitude
+  };
+
+  const toast = useToast();
   const componentRef = useRef();
 
   console.log("orderID", orderID);
@@ -35,6 +48,17 @@ const OnlineSalesHistoryRecord = () => {
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
   const [isDataLoding, setisDataLoding] = useState(true);
+
+  const getToast = (e) => {
+    toast({
+      title: e.title,
+      description: e.desc,
+      status: e.status,
+      duration: 3000,
+      isClosable: true,
+      position: "bottom-right",
+    });
+  };
 
   const {
     store_customer_list,
@@ -46,6 +70,7 @@ const OnlineSalesHistoryRecord = () => {
   const [customerAddress, setcustomerAddress] = useState({});
   const [productData, setproductData] = useState([]);
   const [Store_bussiness_info, setStore_bussiness_info] = useState([]);
+  const [delivery_slots, setdelivery_slots] = useState([]);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -87,9 +112,78 @@ const OnlineSalesHistoryRecord = () => {
       setproductData(ONLINESALEHISTORYRECORD.order_products_details);
       setorderDetails(ONLINESALEHISTORYRECORD.order_details);
       setStore_bussiness_info(ONLINESALEHISTORYRECORD.Store_bussiness_info);
+      setdelivery_slots(ONLINESALEHISTORYRECORD.delivery_slots);
+
       setisDataLoding(false);
     }
   }, [ONLINESALEHISTORYRECORD, isLoading]);
+
+  const UpdateStatusAction = (product_id, product_name, avlstatus) => {
+    let flag = false;
+
+    var statusAction = "";
+    var statusModified = 0;
+    if (Number(avlstatus) == 1) {
+      statusAction = "Out Of Stock";
+      statusModified = 0;
+    } else {
+      statusAction = "In The Stock";
+      statusModified = 1;
+    }
+
+    swal({
+      title: "Action | " + statusAction + " | to " + product_name,
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((changeOrderStatus) => {
+      if (changeOrderStatus) {
+        fetch(URL + "/APP-API/Billing/changeStoreOrderAvlStatus", {
+          method: "POST",
+          header: {
+            Accept: "application/json",
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            product_id: product_id,
+            avl_status: statusModified,
+          }),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if (responseJson.success) {
+              // storeProductRelode();
+              // fetchData();
+
+              queryClient.invalidateQueries({
+                queryKey: ["ONLINESALEHISTORYRECORD"],
+              });
+
+              getToast({
+                title: "Status Change ",
+                dec: "Successful",
+                status: "success",
+              });
+            } else {
+              getToast({ title: "ERROR", dec: "ERROR", status: "error" });
+            }
+
+            for (let i = 0; i < 10; i++) {
+              document.getElementsByClassName("btn-close")[i].click();
+            }
+          })
+          .catch((error) => {
+            //  console.error(error);
+          });
+
+        swal("Status Change!", {
+          icon: "success",
+        });
+      } else {
+        swal("Nothing Change!");
+      }
+    });
+  };
 
   return (
     <>
@@ -158,10 +252,51 @@ const OnlineSalesHistoryRecord = () => {
                       >
                         <div className="px-5 border-left">
                           <h6 className="">
+                            Sub Total :{" "}
+                            <strong>{orderDetails?.sub_total}</strong>
+                          </h6>
+                          <h6 className="">
+                            Discount : -{" "}
+                            <strong>{orderDetails?.discount}</strong>
+                          </h6>
+
+                          <h6 className="">
+                            Grand Total :{" "}
+                            <strong>{orderDetails?.grand_total}</strong>
+                          </h6>
+
+                          <h6 className="">
+                            Delivery Charge : +{" "}
+                            <strong>{orderDetails?.delivery_charge}</strong>
+                          </h6>
+
+                          <h6 className="">
+                            Coupon Discount : -{" "}
+                            <strong>
+                              {orderDetails?.coupon_discount_value}
+                            </strong>
+                          </h6>
+
+                          <h6 className="">
+                            Total Paymnet :{" "}
+                            <strong>{orderDetails?.total_payment}</strong>
+                          </h6>
+                        </div>
+                      </div>
+
+                      <div
+                        className="col-lg-4 col-print-4 "
+                        style={{ borderRight: "1px solid #c1c1c1" }}
+                      >
+                        <div className="px-5 border-left">
+                          <h6 className="">
+                            Slots: <strong>{delivery_slots}</strong>
+                          </h6>
+
+                          <h6 className="">
                             Order status:{" "}
                             <strong>{orderDetails?.order_status}</strong>
                           </h6>
-
                           <h6 className="">
                             No of Item:{" "}
                             <strong>{orderDetails?.no_of_items}</strong>
@@ -169,7 +304,6 @@ const OnlineSalesHistoryRecord = () => {
                           <h6 className="">
                             Order ID: <strong>{orderDetails?.order_id}</strong>
                           </h6>
-
                           <h6 className="">
                             Order Date:{" "}
                             <strong>
@@ -190,27 +324,12 @@ const OnlineSalesHistoryRecord = () => {
                           </h6>
                         </div>
                       </div>
-
-                      <div className="col-lg-4 col-print-4">
-                        <div className="px-5 border-left">
-                          <h6 className="">
-                            Email:{" "}
-                            <strong>{customerAddress?.firm_email}</strong>
-                          </h6>
-                          <h6 className="">
-                            GST: <strong>{customerAddress?.gst_no}</strong>
-                          </h6>
-                          <h6 className="">
-                            FSSAI: <strong>{customerAddress?.fssai_no}</strong>
-                          </h6>
-                        </div>
-                      </div>
                     </div>
                   </div>
 
                   <div className="col-xl-12">
                     <div className="table-responsive mt-4 mt-xl-0">
-                      <table className="table table-active table-hover table-striped align-middle table-nowrap mb-0">
+                      <table className="table   align-middle table-nowrap mb-0">
                         <thead>
                           <tr>
                             <th scope="col">IMG</th>
@@ -232,7 +351,13 @@ const OnlineSalesHistoryRecord = () => {
                               return (
                                 <>
                                   {items && (
-                                    <tr>
+                                    <tr
+                                      class={
+                                        items.avl_status == "1"
+                                          ? "table-active"
+                                          : "table-danger"
+                                      }
+                                    >
                                       <td scope="col">
                                         <img
                                           style={{ height: 35 }}
@@ -255,7 +380,26 @@ const OnlineSalesHistoryRecord = () => {
                                       <td scope="col">{items.discount}</td>
 
                                       <td scope="col">{items.total_amount}</td>
-                                      <td scope="col">OOS</td>
+                                      <td scope="col">
+                                        <a
+                                          onClick={() =>
+                                            UpdateStatusAction(
+                                              items.id,
+                                              items.product_full_name,
+                                              items.avl_status
+                                            )
+                                          }
+                                          class={
+                                            items.avl_status == 1
+                                              ? "btn btn-sm btn-success"
+                                              : "btn btn-sm btn-danger"
+                                          }
+                                        >
+                                          {items.avl_status == 1
+                                            ? "Avl"
+                                            : "Not Avl"}{" "}
+                                        </a>
+                                      </td>
                                     </tr>
                                   )}
                                 </>
@@ -270,11 +414,7 @@ const OnlineSalesHistoryRecord = () => {
                   </div>
 
                   <div class="hstack gap-2 justify-content-center mb-2 d-print-none mt-4">
-                    <a
-                      onClick={handlePrint}
-                      href="javascript:window.print()"
-                      class="btn btn-success"
-                    >
+                    <a onClick={handlePrint} class="btn btn-success">
                       <i class="ri-printer-line align-bottom me-1"></i> Print
                       Bill
                     </a>
@@ -289,6 +429,58 @@ const OnlineSalesHistoryRecord = () => {
           {/* end card */}
         </div>
         {/* end col */}
+      </div>
+
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="card">
+            <div className="card-body" class="map-responsive">
+              <Map
+                class="h-500 w-100"
+                google={window.google}
+                center={{
+                  lat: customerAddress?.latitude,
+                  lng: customerAddress?.longitude,
+                }}
+                bootstrapURLKeys={{
+                  key: "AIzaSyDDirDSiLgvG8Gl8crjbvrGRXlCPOTYRzE",
+                }}
+                zoom={15}
+                defaultZoom="Zoom"
+                initialCenter={{
+                  lat: customerAddress?.latitude,
+                  lng: customerAddress?.longitude,
+                }}
+                // onIdle={this.handleMapIdle}
+              >
+                {orderDetails && (
+                  <Marker
+                    map={window.google}
+                    position={{
+                      lat: customerAddress?.latitude,
+                      lng: customerAddress?.longitude,
+                    }}
+                    // onDragend={(t, map, coord) => this.onMarkerDragEnd(coord)}
+                    show={true}
+                    name="Delivery Location"
+                  />
+
+                  // animation={window.google.maps.Animation.DROP} />
+                )}
+                <InfoWindow
+                  position={{
+                    lat: customerAddress?.latitude,
+                    lng: customerAddress?.longitude,
+                  }}
+                >
+                  <div>
+                    <p style={{ padding: 0, margin: 0 }}>hello</p>
+                  </div>
+                </InfoWindow>
+              </Map>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="section-to-print" ref={componentRef}>
@@ -361,7 +553,9 @@ const OnlineSalesHistoryRecord = () => {
             {productData?.map((items, index) => {
               return (
                 <tr class="sum-up line">
-                  <td colSpan={2}>{items?.product_name?.substring(0, 21)}</td>
+                  <td colSpan={2}>
+                    {items?.product_full_name?.substring(0, 21)}
+                  </td>
                   <td>
                     {items.product_size} {items.product_unit}
                   </td>

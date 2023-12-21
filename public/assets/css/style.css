@@ -276,6 +276,12 @@ button:focus {
         width: 8.33333333%;
     } */
 }
+.map-responsive {
+  overflow: hidden;
+  padding-bottom: 30%;
+  position: relative;
+  height: 0;
+}
 
 @page {
   size: 3in 11in;
