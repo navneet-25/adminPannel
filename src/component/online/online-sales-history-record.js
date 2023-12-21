@@ -6,7 +6,7 @@ import ContextData from "../../context/MainContext";
 import { useQuery } from "react-query";
 import Cookies from "universal-cookie";
 import { useReactToPrint } from "react-to-print";
-import { useToast } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
 
 import { queryClient } from "../../App";
@@ -490,11 +490,10 @@ const OnlineSalesHistoryRecord = () => {
                     </div> */}
 
           <div className="col-auto ">
-            <Text fontWeight={"700"} fontSize={24} mb={0}></Text>
-
             <h6
               style={{
                 fontSize: 10,
+                color: "#000",
                 fontWeight: "800",
                 textAlign: "center",
                 marginBottom: 1,
@@ -503,38 +502,225 @@ const OnlineSalesHistoryRecord = () => {
               {Store_bussiness_info?.strteet_linn2} {Store_bussiness_info?.area}
             </h6>
             <h6
-              style={{ fontSize: 10, fontWeight: "800", textAlign: "center" }}
+              style={{
+                fontSize: 10,
+                fontWeight: "800",
+                textAlign: "center",
+                color: "#000",
+              }}
             >
               {Store_bussiness_info?.mobile1} {Store_bussiness_info?.mobile2}{" "}
             </h6>
           </div>
         </div>
         <div class="bill-details">
-          {/* {Store_bussiness_info?.gst_no != null ? (
-                            <tr><td className='text-center'>
-                                GST No : <span > {Store_bussiness_info?.gst_no}</span>
-                            </td></tr>
-                        ) : null}
-                        {Store_bussiness_info?.fassai_no != null ? (
-                            <tr><td className='text-center'>
-                                Fassai No : <span> {Store_bussiness_info?.fassai_no}</span>
-                            </td></tr>
-                        ) : null} */}
-          <Box textAlign={"center"} fontSize={12}>
+          <Box textAlign={"center"} fontSize={10}>
             <Text mb={0}>
               {orderDetails?.date} || {orderDetails?.time}
             </Text>
 
             <Text>
               Mo{" "}
-              {customerAddress?.mobile ? customerAddress?.mobile : "----------"}
+              {customerAddress?.phone ? customerAddress?.phone : "----------"}
             </Text>
           </Box>
-          {/* <tr>
-                            <td className='text-center'>Bill No : <span>{restInfo.order_no}</span></td>
-                        </tr> */}
         </div>
+        <SimpleGrid
+          fontSize={8}
+          columns={2}
+          pl={2}
+          py={2}
+          borderTop={"1px solid #000"}
+          borderBottom={"1px solid #000"}
+          color={"#000"}
+        >
+          <Box>
+            <div>
+              <div className="">
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Customer Name: <strong>{customerAddress?.name}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Phone: <strong>{customerAddress?.phone}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Alt Phone:{" "}
+                  <strong>{customerAddress?.alternative_phone}</strong>
+                </h6>
 
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Landmark: <strong>{customerAddress?.landmark}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Distance: <strong>{customerAddress?.distance_km} KM</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Address:{" "}
+                  <strong>
+                    {customerAddress?.user_house_no}{" "}
+                    {customerAddress?.base_address} {customerAddress?.address}
+                  </strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Payment Mode : <strong>{orderDetails?.payment_mode}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Payment Status :{" "}
+                  <strong>
+                    {orderDetails?.payment_status == 0 ? "Unpaid" : "Paid"}
+                  </strong>
+                </h6>
+              </div>
+            </div>
+          </Box>
+          <Box>
+            <div>
+              <div className="">
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Sub Total : <strong>{orderDetails?.sub_total}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Discount : - <strong>{orderDetails?.discount}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Grand Total : <strong>{orderDetails?.grand_total}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Delivery Charge : +{" "}
+                  <strong>{orderDetails?.delivery_charge}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Coupon Discount : -{" "}
+                  <strong>{orderDetails?.coupon_discount_value}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Total Paymnet : <strong>{orderDetails?.total_payment}</strong>
+                </h6>
+              </div>
+
+              <div className="">
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Slots: <strong>{delivery_slots}</strong>
+                </h6>
+
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order status: <strong>{orderDetails?.order_status}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  No of Item: <strong>{orderDetails?.no_of_items}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order ID: <strong>{orderDetails?.order_id}</strong>
+                </h6>
+                <h6
+                  className=""
+                  style={{
+                    color: "#000",
+                  }}
+                >
+                  Order Date:{" "}
+                  <strong>
+                    {orderDetails?.date} || {orderDetails?.time}
+                  </strong>
+                </h6>
+              </div>
+            </div>
+          </Box>
+        </SimpleGrid>
         <table class="items ml-1">
           <thead>
             <tr>
@@ -562,7 +748,7 @@ const OnlineSalesHistoryRecord = () => {
                   <td>{items.billing_quantity}</td>
                   <td>{items.price}</td>
                   <td class="price">{items.sale_price}</td>
-                  <td class="price">{items.amount_total}</td>
+                  <td class="price">{items.total_amount}</td>
                 </tr>
               );
             })}
@@ -572,7 +758,7 @@ const OnlineSalesHistoryRecord = () => {
                 Sub Total
               </td>
               <td class="line price">
-                {orderDetails?.subTotal?.toLocaleString("en-IN")}
+                {orderDetails?.sub_total?.toLocaleString("en-IN")}
               </td>
             </tr>
             <tr>
@@ -598,7 +784,7 @@ const OnlineSalesHistoryRecord = () => {
                 Total
               </th>
               <th class="total price">
-                {orderDetails?.grandTotal?.toLocaleString("en-IN")}
+                {orderDetails?.grand_total?.toLocaleString("en-IN")}
               </th>
             </tr>
           </tbody>
