@@ -174,6 +174,46 @@ const OnlineSalesHistoryRecord = () => {
     });
   };
 
+  const notAvilable1 = ({ itemID, notAvilableQTY = "0" }) => {
+    fetch(URL + "/APP-API/Billing/notAvilable", {
+      method: "POST",
+      header: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        orderID,
+        itemID,
+        notAvilableQTY,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson) {
+          queryClient.invalidateQueries({
+            queryKey: ["ONLINESALEHISTORYRECORD"],
+          });
+        }
+      })
+      .catch((error) => {
+        //  console.error(error);
+      });
+  };
+
+  const debounce = (func, time) => {
+    let timer;
+    return function (...args) {
+      const context = this;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = null;
+        func.apply(context, args);
+      }, time);
+    };
+  };
+
+  const notAvilable = debounce(notAvilable1, 1000);
+
   return (
     <>
       <div className="row">
@@ -282,12 +322,26 @@ const OnlineSalesHistoryRecord = () => {
                             </h6>
                           ) : null}
 
+                          {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable ? (
+                            <h6 className="">
+                              Product Not avilable Settlement :{" "}
+                              <strong>
+                                {
+                                  ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable
+                                }
+                              </strong>
+                            </h6>
+                          ) : null}
+
                           <h6 className="">
-                            Payment after Settlement :{" "}
+                            Payment after All Settlement :{" "}
                             <strong>
                               {Number(orderDetails?.total_payment) -
                                 Number(
                                   ONLINESALEHISTORYRECORD?.sumOfNotAvilable
+                                ) -
+                                Number(
+                                  ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable
                                 )}
                             </strong>
                           </h6>
@@ -352,6 +406,7 @@ const OnlineSalesHistoryRecord = () => {
                             <th scope="col">DIS</th>
 
                             <th scope="col">AMOUNT</th>
+                            <th scope="col">NOT AVIL</th>
                             <th scope="col">Action</th>
                           </tr>
                         </thead>
@@ -390,6 +445,27 @@ const OnlineSalesHistoryRecord = () => {
                                       <td scope="col">{items.discount}</td>
 
                                       <td scope="col">{items.total_amount}</td>
+                                      <td scope="col">
+                                        <Input
+                                          type="number"
+                                          defaultValue={items.not_avl_qty}
+                                          // value={items.not_avl_qty}
+                                          w={20}
+                                          h={6}
+                                          bg={"#c7c7c7"}
+                                          fontSize={12}
+                                          min={1}
+                                          max={items.not_avl_qty}
+                                          onChange={(e) => {
+                                            notAvilable({
+                                              itemID: items.id,
+                                              notAvilableQTY: e.target.value
+                                                ? e.target.value
+                                                : "0",
+                                            });
+                                          }}
+                                        />
+                                      </td>
                                       <td scope="col">
                                         <a
                                           onClick={() =>
@@ -738,16 +814,33 @@ const OnlineSalesHistoryRecord = () => {
                   </h6>
                 ) : null}
 
+                {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable ? (
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    Product Not avilable Settlement :{" "}
+                    <strong>
+                      {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable}
+                    </strong>
+                  </h6>
+                ) : null}
+
                 <h6
                   className=""
                   style={{
                     color: "#000",
                   }}
                 >
-                  Payment after Settlement :{" "}
+                  Payment after All Settlement :{" "}
                   <strong>
                     {Number(orderDetails?.total_payment) -
-                      Number(ONLINESALEHISTORYRECORD?.sumOfNotAvilable)}
+                      Number(ONLINESALEHISTORYRECORD?.sumOfNotAvilable) -
+                      Number(
+                        ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable
+                      )}
                   </strong>
                 </h6>
               </div>
