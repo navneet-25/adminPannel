@@ -707,6 +707,41 @@ const OnlineSalesHistoryRecord = () => {
                     {orderDetails?.date} || {orderDetails?.time}
                   </strong>
                 </h6>
+                <div className="">
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    Slots: <strong>{delivery_slots}</strong>
+                  </h6>
+
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    Order status: <strong>{orderDetails?.order_status}</strong>
+                  </h6>
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    No of Item: <strong>{orderDetails?.no_of_items}</strong>
+                  </h6>
+                  <h6
+                    className=""
+                    style={{
+                      color: "#000",
+                    }}
+                  >
+                    Order ID: <strong>{orderDetails?.order_id}</strong>
+                  </h6>
+                </div>
               </div>
             </div>
           </Box>
@@ -742,41 +777,6 @@ const OnlineSalesHistoryRecord = () => {
                 </tr>
               );
             })}
-
-            <tr>
-              <td colspan="6" class="sum-up line">
-                Sub Total
-              </td>
-              <td class="line price">
-                {orderDetails?.sub_total?.toLocaleString("en-IN")}
-              </td>
-            </tr>
-            <tr>
-              <td colspan="6" class="sum-up line">
-                Discount
-              </td>
-              <td class="line price">
-                - {orderDetails?.discount?.toLocaleString("en-IN")}
-              </td>
-            </tr>
-
-            {/* <tr>
-                            <td colspan="3" class="sum-up ">Subtotal</td>
-                            <td class=" price">{orderDetails?.subTotal?.toLocaleString('en-IN')}</td>
-                        </tr> */}
-            {/* <tr>
-                            <td colspan="3" class="sum-up">GST</td>
-                            <td class="price">{(orderDetails?.sGstTotal + orderDetails?.cGstTotal).toLocaleString('en-IN')}</td>
-                        </tr> */}
-
-            <tr>
-              <th colspan="6" class="total text">
-                Total
-              </th>
-              <th class="total price">
-                {orderDetails?.grand_total?.toLocaleString("en-IN")}
-              </th>
-            </tr>
           </tbody>
         </table>
         <Box
@@ -788,41 +788,6 @@ const OnlineSalesHistoryRecord = () => {
           borderBottom={"1px solid #000"}
           color={"#000"}
         >
-          <div className="">
-            <h6
-              className=""
-              style={{
-                color: "#000",
-              }}
-            >
-              Slots: <strong>{delivery_slots}</strong>
-            </h6>
-
-            <h6
-              className=""
-              style={{
-                color: "#000",
-              }}
-            >
-              Order status: <strong>{orderDetails?.order_status}</strong>
-            </h6>
-            <h6
-              className=""
-              style={{
-                color: "#000",
-              }}
-            >
-              No of Item: <strong>{orderDetails?.no_of_items}</strong>
-            </h6>
-            <h6
-              className=""
-              style={{
-                color: "#000",
-              }}
-            >
-              Order ID: <strong>{orderDetails?.order_id}</strong>
-            </h6>
-          </div>
           <div className="">
             <h6
               className=""
