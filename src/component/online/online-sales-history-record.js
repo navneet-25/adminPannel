@@ -755,12 +755,16 @@ const OnlineSalesHistoryRecord = () => {
         </SimpleGrid>
         <table class="items ml-1">
           <thead>
-            <tr>
+            <tr
+              style={{
+                fontSize: "10px",
+              }}
+            >
               <th colSpan={2} class="">
                 Item
               </th>
               <th class="">Size</th>
-              <th class="">Q</th>
+              <th class="">Quant</th>
               <th class="">MRP</th>
               <th class="">RATE</th>
               <th class="">AMT</th>
@@ -769,18 +773,36 @@ const OnlineSalesHistoryRecord = () => {
 
           <tbody>
             {productData?.map((items, index) => {
+              console.log("product ========>", productData);
               return (
-                <tr class="sum-up line">
+                <tr
+                  class="sum-up line"
+                  style={
+                    !Number(items.avl_status)
+                      ? {
+                          textDecoration: "line-through",
+                        }
+                      : {}
+                  }
+                >
                   <td colSpan={2} rowSpan={1}>
                     {items?.product_name?.substring(0, 21)}
                   </td>
                   <td rowSpan={1}>
                     {items.product_size} {items.product_unit}
                   </td>
-                  <td>{items.quantity}</td>
+                  <td>
+                    {items.quantity}{" "}
+                    {Number(items.not_avl_qty)
+                      ? `-(${items.not_avl_qty}*)`
+                      : ""}
+                  </td>
                   <td>{items.price}</td>
                   <td class="price">{items.sale_price}</td>
-                  <td class="price">{items.total_amount}</td>
+                  <td class="price">
+                    {(Number(items.quantity) - Number(items.not_avl_qty)) *
+                      Number(items.sale_price)}
+                  </td>
                 </tr>
               );
             })}
