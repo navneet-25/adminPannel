@@ -612,8 +612,8 @@ const OnlineSalesHistoryRecord = () => {
           </Box>
         </div>
         <SimpleGrid
-          fontSize={8}
-          columns={2}
+          fontSize={10}
+          // columns={2}
           pl={2}
           py={2}
           borderTop={"1px solid #000"}
@@ -710,142 +710,6 @@ const OnlineSalesHistoryRecord = () => {
               </div>
             </div>
           </Box>
-          <Box>
-            <div>
-              <div className="">
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Slots: <strong>{delivery_slots}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Order status: <strong>{orderDetails?.order_status}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  No of Item: <strong>{orderDetails?.no_of_items}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Order ID: <strong>{orderDetails?.order_id}</strong>
-                </h6>
-              </div>
-              <div className="">
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Sub Total : <strong>{orderDetails?.sub_total}</strong>
-                </h6>
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Discount : - <strong>{orderDetails?.discount}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Grand Total : <strong>{orderDetails?.grand_total}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Delivery Charge : +{" "}
-                  <strong>{orderDetails?.delivery_charge}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Coupon Discount : -{" "}
-                  <strong>{orderDetails?.coupon_discount_value}</strong>
-                </h6>
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Total Paymnet : <strong>{orderDetails?.total_payment}</strong>
-                </h6>
-                {ONLINESALEHISTORYRECORD?.sumOfNotAvilable ? (
-                  <h6
-                    className=""
-                    style={{
-                      color: "#000",
-                    }}
-                  >
-                    Not avilable Settlement :{" "}
-                    <strong>{ONLINESALEHISTORYRECORD?.sumOfNotAvilable}</strong>
-                  </h6>
-                ) : null}
-
-                {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable ? (
-                  <h6
-                    className=""
-                    style={{
-                      color: "#000",
-                    }}
-                  >
-                    Product Not avilable Settlement :{" "}
-                    <strong>
-                      {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable}
-                    </strong>
-                  </h6>
-                ) : null}
-
-                <h6
-                  className=""
-                  style={{
-                    color: "#000",
-                  }}
-                >
-                  Payment after All Settlement :{" "}
-                  <strong>
-                    {Number(orderDetails?.total_payment) -
-                      Number(ONLINESALEHISTORYRECORD?.sumOfNotAvilable) -
-                      Number(
-                        ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable
-                      )}
-                  </strong>
-                </h6>
-              </div>
-            </div>
-          </Box>
         </SimpleGrid>
         <table class="items ml-1">
           <thead>
@@ -915,25 +779,146 @@ const OnlineSalesHistoryRecord = () => {
             </tr>
           </tbody>
         </table>
-        <section>
-          <p>
-            Paid by : <span> aa </span>
-          </p>
-          <p style={{ textAlign: "center" }}>
-            Thank you for shopping with {Store_bussiness_info?.buss_name}
-          </p>
-        </section>
-        {/* <div style={{ height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" }}>
-                    <QRCode
-                        size={256}
-                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                        value={URLDomain + '/online-bill/' + restInfo?.order_no}
-                        viewBox={`0 0 256 256`}
-                    />
-                </div>
-                <div className='POS_footer' style={{ textAlign: "center" }}>
-                    <p>Scan QR Code </p>
-                </div> */}
+        <Box
+          fontSize={10}
+          // columns={2}
+          pl={2}
+          py={2}
+          borderTop={"1px solid #000"}
+          borderBottom={"1px solid #000"}
+          color={"#000"}
+        >
+          <div className="">
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Slots: <strong>{delivery_slots}</strong>
+            </h6>
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Order status: <strong>{orderDetails?.order_status}</strong>
+            </h6>
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              No of Item: <strong>{orderDetails?.no_of_items}</strong>
+            </h6>
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Order ID: <strong>{orderDetails?.order_id}</strong>
+            </h6>
+          </div>
+          <div className="">
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Sub Total : <strong>{orderDetails?.sub_total}</strong>
+            </h6>
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Discount : - <strong>{orderDetails?.discount}</strong>
+            </h6>
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Grand Total : <strong>{orderDetails?.grand_total}</strong>
+            </h6>
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Delivery Charge : +{" "}
+              <strong>{orderDetails?.delivery_charge}</strong>
+            </h6>
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Coupon Discount : -{" "}
+              <strong>{orderDetails?.coupon_discount_value}</strong>
+            </h6>
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Total Paymnet : <strong>{orderDetails?.total_payment}</strong>
+            </h6>
+            {ONLINESALEHISTORYRECORD?.sumOfNotAvilable ? (
+              <h6
+                className=""
+                style={{
+                  color: "#000",
+                }}
+              >
+                Not avilable Settlement :{" "}
+                <strong>{ONLINESALEHISTORYRECORD?.sumOfNotAvilable}</strong>
+              </h6>
+            ) : null}
+
+            {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable ? (
+              <h6
+                className=""
+                style={{
+                  color: "#000",
+                }}
+              >
+                Product Not avilable Settlement :{" "}
+                <strong>
+                  {ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable}
+                </strong>
+              </h6>
+            ) : null}
+
+            <h6
+              className=""
+              style={{
+                color: "#000",
+              }}
+            >
+              Payment after All Settlement :{" "}
+              <strong>
+                {Number(orderDetails?.total_payment) -
+                  Number(ONLINESALEHISTORYRECORD?.sumOfNotAvilable) -
+                  Number(ONLINESALEHISTORYRECORD?.getSumOfProductNotAvilable)}
+              </strong>
+            </h6>
+          </div>
+        </Box>
       </div>
     </>
   );
