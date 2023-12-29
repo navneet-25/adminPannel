@@ -173,6 +173,7 @@ const OnlineSale = () => {
       title: "Action",
 
       cell: (row) => {
+        console.log("roww ---->", row);
         return (
           <Dropdown>
             <Dropdown.Toggle variant="dark" id="dropdown-basic">
@@ -215,7 +216,8 @@ const OnlineSale = () => {
                         UpdateStatusAction(
                           row.id,
                           row.order_status,
-                          radio.value
+                          radio.value,
+                          row.user_id
                         )
                       }
                     >
@@ -231,7 +233,12 @@ const OnlineSale = () => {
     },
   ];
 
-  const UpdateStatusAction = (order_id, old_order_status, order_status) => {
+  const UpdateStatusAction = (
+    order_id,
+    old_order_status,
+    order_status,
+    user_id
+  ) => {
     swal({
       title: "Action | " + old_order_status + " | to " + order_status,
       icon: "warning",
@@ -250,6 +257,7 @@ const OnlineSale = () => {
           body: JSON.stringify({
             order_id: order_id,
             order_status: order_status,
+            user_id,
           }),
         })
           .then((response) => response.json())
