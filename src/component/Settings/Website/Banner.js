@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import ContextData from "../../../context/MainContext";
-import URLDomain from "../../../URL";
 import { useNavigate } from "react-router";
 
 import { AddBannerForm } from "./AddBannerForm";
@@ -13,6 +12,7 @@ import swal from "sweetalert";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import { useToast } from "@chakra-ui/react";
+import { Stack, Skeleton } from "@chakra-ui/react";
 
 import {
   DatatableWrapper,
@@ -25,16 +25,18 @@ import {
 
 // Create table headers consisting of 4 columns.
 
+import URLDomain from "../../../URL";
+import { useMutation, useQuery } from "react-query";
 import Cookies from "universal-cookie";
-
+import { queryClient } from "../../../App";
 const cookies = new Cookies();
 
 const Banner = () => {
-  const { store_banner_list, removeDataToCurrentGlobal, storeBussinessRelode } =
-    useContext(ContextData);
   const [delID, setDelID] = useState();
   const [editablePlot, setEditablePlot] = useState({});
-  const [showData, setShowData] = useState(store_banner_list);
+  const [showData, setShowData] = useState();
+  const [isDataLoding, setisDataLoding] = useState(true);
+
   const navigate = useNavigate();
   const adminStoreId = cookies.get("adminStoreId");
   const adminId = cookies.get("adminId");
@@ -58,9 +60,41 @@ const Banner = () => {
     });
   };
 
+  async function fetchData() {
+    const data = await fetch(URLDomain + "/APP-API/Billing/store_banner_list", {
+      method: "post",
+      header: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        store_id: adminStoreId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((responseJson) => responseJson);
+
+    return data;
+  }
+
+  const {
+    data: store_banner_list,
+    isError,
+    isLoading: isLoadingAPI,
+    isFetching,
+  } = useQuery({
+    queryKey: ["store_banner_list"],
+    queryFn: (e) => fetchData(),
+  });
+
   useEffect(() => {
-    setShowData(store_banner_list);
-  }, [store_banner_list]);
+    console.log("search banner", store_banner_list, isLoadingAPI);
+
+    if (store_banner_list) {
+      setShowData(store_banner_list.store_banner_list);
+      setisDataLoding(false);
+    } // console.log("product", showData);
+  }, [store_banner_list, isLoadingAPI]);
 
   const STORY_HEADERS = [
     {
@@ -164,15 +198,12 @@ const Banner = () => {
           .then((response) => response.json())
           .then((responseJson) => {
             if (responseJson.delete) {
-              storeBussinessRelode();
-
               getToast({
                 title: "Deleted ",
                 dec: "Successful",
                 status: "success",
               });
             } else {
-              storeBussinessRelode();
               getToast({ title: "ERROR", dec: "ERROR", status: "error" });
             }
 
@@ -227,8 +258,6 @@ const Banner = () => {
           .then((response) => response.json())
           .then((responseJson) => {
             if (responseJson.success) {
-              storeBussinessRelode();
-
               getToast({
                 title: "Status Change ",
                 dec: "Successful",
@@ -327,52 +356,60 @@ const Banner = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="card">
-              <div className="card-body">
-                <div id="customerList">
-                  <div className="table-responsive table-card mb-1 px-4">
-                    <DatatableWrapper
-                      body={showData}
-                      headers={STORY_HEADERS}
-                      paginationOptionsProps={{
-                        initialState: {
-                          rowsPerPage: 5,
-                          options: [5, 10, 15, 20],
-                        },
-                      }}
-                    >
-                      <Row className="mb-4 p-2">
-                        <Col
-                          xs={12}
-                          lg={4}
-                          className="d-flex flex-col justify-content-end align-items-end"
-                        >
-                          <Filter />
-                        </Col>
-                        <Col
-                          xs={12}
-                          sm={6}
-                          lg={4}
-                          className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
-                        >
-                          <PaginationOptions />
-                        </Col>
-                        <Col
-                          xs={12}
-                          sm={6}
-                          lg={4}
-                          className="d-flex flex-col justify-content-end align-items-end"
-                        >
-                          <Pagination />
-                        </Col>
-                      </Row>
-                      <Table className="table  table-hover">
-                        <TableHeader />
-                        <TableBody />
-                      </Table>
-                    </DatatableWrapper>
+              {isDataLoding ? (
+                <Stack>
+                  <Skeleton height="100px" />
+                  <Skeleton height="100px" />
+                  <Skeleton height="100px" />
+                </Stack>
+              ) : (
+                <div className="card-body">
+                  <div id="customerList">
+                    <div className="table-responsive table-card mb-1 px-4">
+                      <DatatableWrapper
+                        body={showData}
+                        headers={STORY_HEADERS}
+                        paginationOptionsProps={{
+                          initialState: {
+                            rowsPerPage: 5,
+                            options: [5, 10, 15, 20],
+                          },
+                        }}
+                      >
+                        <Row className="mb-4 p-2">
+                          <Col
+                            xs={12}
+                            lg={4}
+                            className="d-flex flex-col justify-content-end align-items-end"
+                          >
+                            <Filter />
+                          </Col>
+                          <Col
+                            xs={12}
+                            sm={6}
+                            lg={4}
+                            className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
+                          >
+                            <PaginationOptions />
+                          </Col>
+                          <Col
+                            xs={12}
+                            sm={6}
+                            lg={4}
+                            className="d-flex flex-col justify-content-end align-items-end"
+                          >
+                            <Pagination />
+                          </Col>
+                        </Row>
+                        <Table className="table  table-hover">
+                          <TableHeader />
+                          <TableBody />
+                        </Table>
+                      </DatatableWrapper>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
