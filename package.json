@@ -18,7 +18,9 @@
     "bootstrap": "^5.2.0",
     "framer-motion": "^4.1.17",
     "google-maps-react": "^2.0.6",
+    "jspdf": "^2.5.1",
     "multiselect-react-dropdown": "^2.0.25",
+    "primereact": "^10.5.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.5.0",
     "react-bootstrap-sweetalert": "^5.2.0",
@@ -46,7 +48,8 @@
     "universal-cookie": "^4.0.4",
     "use-places-autocomplete": "^4.0.1",
     "use-scan-detection": "^0.2.3",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",

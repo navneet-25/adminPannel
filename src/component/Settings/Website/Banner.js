@@ -197,6 +197,10 @@ const Banner = () => {
         })
           .then((response) => response.json())
           .then((responseJson) => {
+            queryClient.invalidateQueries({
+              queryKey: ["store_banner_list"],
+            });
+
             if (responseJson.delete) {
               getToast({
                 title: "Deleted ",
@@ -257,6 +261,10 @@ const Banner = () => {
         })
           .then((response) => response.json())
           .then((responseJson) => {
+            queryClient.invalidateQueries({
+              queryKey: ["store_banner_list"],
+            });
+
             if (responseJson.success) {
               getToast({
                 title: "Status Change ",
@@ -335,6 +343,7 @@ const Banner = () => {
 
               <div className="col-sm-auto ms-auto">
                 <div className="list-grid-nav hstack gap-1">
+                  {isFetching && "fetching..."}
                   <button
                     className="btn btn-dark"
                     data-bs-toggle="modal"

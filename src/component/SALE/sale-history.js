@@ -17,6 +17,8 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { Col, Row, Table } from "react-bootstrap";
 import Dropdown from "react-bootstrap/Dropdown";
 
+import { SaleDataTable } from "./component/SaleDataTable";
+
 import swal from "sweetalert";
 import { useQuery } from "react-query";
 
@@ -76,24 +78,33 @@ const SalesHistory = () => {
   }
 
   const {
-    data: PURCHASEDATA,
+    data: offline_sale_history,
     isError,
     isLoading: isLoadingAPI,
   } = useQuery({
-    queryKey: ["PURCHASEDATA"],
+    queryKey: ["offline_sale_history"],
     queryFn: (e) => fetchData(),
   });
 
   useEffect(() => {
     setShowData([]);
-    // console.log("search product", PURCHASEDATA, isLoadingAPI);
-    if (PURCHASEDATA) {
-      setShowData(PURCHASEDATA.store_customer_purchase_record);
+    console.log("search product", offline_sale_history, isLoadingAPI);
+    if (offline_sale_history) {
+      setShowData(offline_sale_history.store_customer_purchase_record);
       setisDataLoding(false);
     }
-  }, [PURCHASEDATA, isLoadingAPI]);
+  }, [offline_sale_history, isLoadingAPI]);
 
   const STORY_HEADERS = [
+    {
+      prop: "date",
+      title: "Bill Date",
+      isFilterable: true,
+      isSortable: true,
+      cell: (row) => {
+        return <p className="text-dark">{row.date}</p>;
+      },
+    },
     {
       prop: "customer_mobile",
       title: "Mobile",
@@ -139,20 +150,6 @@ const SalesHistory = () => {
       isSortable: true,
       cell: (row) => {
         return <p className="text-dark">{row.payment_mode}</p>;
-      },
-    },
-
-    {
-      prop: "date",
-      title: "Bill Date",
-      isFilterable: true,
-      isSortable: true,
-      cell: (row) => {
-        return (
-          <p className="text-dark">
-            {row.date} {row.time}
-          </p>
-        );
       },
     },
 
@@ -295,7 +292,7 @@ const SalesHistory = () => {
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-              <h4 className="mb-sm-0">Vendor List</h4>
+              <h4 className="mb-sm-0">Counter Sale List</h4>
             </div>
           </div>
         </div>
@@ -334,7 +331,7 @@ const SalesHistory = () => {
                 <div className="card-body">
                   <div id="customerList">
                     <div className="table-responsive table-card mb-1">
-                      <DatatableWrapper
+                      {/* <DatatableWrapper
                         body={showData}
                         headers={STORY_HEADERS}
                         paginationOptionsProps={{
@@ -374,6 +371,8 @@ const SalesHistory = () => {
                           <TableBody />
                         </Table>
                       </DatatableWrapper>
+                    */}
+                      <SaleDataTable saleData={showData} />
                     </div>
                   </div>
                 </div>
