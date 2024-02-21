@@ -20,7 +20,7 @@ import Cookies from "universal-cookie";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 const cookies = new Cookies();
 
-export const SaleDataTable = () => {
+export const CustomerDataTable = () => {
   const navigate = useNavigate();
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -37,16 +37,19 @@ export const SaleDataTable = () => {
   const adminId = cookies.get("adminId");
 
   async function fetchData() {
-    const data = await fetch(URLDomain + "/APP-API/Billing/sale_history", {
-      method: "post",
-      header: {
-        Accept: "application/json",
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        store_id: adminStoreId,
-      }),
-    })
+    const data = await fetch(
+      URLDomain + "/APP-API/Billing/customer_list_load",
+      {
+        method: "post",
+        header: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          store_id: adminStoreId,
+        }),
+      }
+    )
       .then((response) => response.json())
       .then((responseJson) => responseJson);
 
@@ -54,28 +57,29 @@ export const SaleDataTable = () => {
   }
 
   const {
-    data: offline_sale_history,
+    data: customer_list_load,
     isError,
     isLoading: isLoadingAPI,
+    isFetching,
   } = useQuery({
-    queryKey: ["offline_sale_history"],
+    queryKey: ["customer_list_load"],
     queryFn: (e) => fetchData(),
   });
 
   useEffect(() => {
     setSale([]);
-    console.log("search product", offline_sale_history, isLoadingAPI);
-    if (offline_sale_history) {
-      setSale(offline_sale_history.store_customer_purchase_record);
+    console.log("search product", customer_list_load, isLoadingAPI);
+    if (customer_list_load) {
+      setSale(customer_list_load.store_customer_list);
       setisDataLoding(false);
     }
-  }, [offline_sale_history, isLoadingAPI]);
+  }, [customer_list_load, isLoadingAPI]);
 
   //   const cols = [
-  //     { field: "customer_mobile", header: "Mobile" },
-  //     { field: "order_id", header: "ORDER NO" },
+  //     { field: "login_source", header: "Mobile" },
+  //     { field: "name", header: "ORDER NO" },
   //     { field: "total_payment", header: "Cost" },
-  //     { field: "plateform", header: "Plateform" },
+  //     { field: "mobile", header: "mobile" },
   //     { field: "order_status", header: "Status" },
   //     { field: "date", header: "Date" },
   //   ];
@@ -95,7 +99,7 @@ export const SaleDataTable = () => {
         onClick={() =>
           navigate(
             "/online/online-sales-history-record/" +
-              rowData.order_id +
+              rowData.name +
               "/" +
               rowData.customer_address_id
           )
@@ -241,63 +245,56 @@ export const SaleDataTable = () => {
         removableSort
         stateStorage="session"
         stateKey="dt-state-demo-local"
-        emptyMessage="No Sale found."
+        emptyMessage="No Customer found."
         tableStyle={{ minWidth: "50rem" }}
         filters={filters}
         filterDisplay="row"
-        // loading={isFetching}
+        loading={isFetching}
         // header={header}
       >
         <Column
-          field="customer_mobile"
+          field="login_source"
+          header="Login"
+          sortable
+          style={{ width: "10%" }}
+        ></Column>
+        <Column
+          field="customer_name"
+          header="Name"
+          sortable
+          style={{ width: "15%" }}
+        ></Column>
+        <Column
+          field="mobile"
           header="Mobile"
           sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="order_id"
-          header="Order No"
-          sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="plateform"
-          header="Plateform"
-          sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="total_payment"
-          header="Payment"
-          sortable
-          style={{ width: "25%" }}
+          style={{ width: "10%" }}
         ></Column>
 
         <Column
-          field="date"
+          field="full_address"
+          header="Address"
+          sortable
+          style={{ width: "35%" }}
+        ></Column>
+        <Column
+          field="join_date"
           header="Date"
           sortable
-          style={{ width: "25%" }}
+          style={{ width: "15%" }}
         ></Column>
-
         <Column
-          field="order_status"
-          header="Status"
-          body={statusBodyTemplate}
+          field="join_time"
+          header="Time"
           sortable
-          style={{ width: "25%" }}
-          showFilterMenu={false}
-          filterMenuStyle={{ width: "14rem" }}
-          filter
-          filterElement={statusRowFilterTemplate}
+          style={{ width: "10%" }}
         ></Column>
-
         <Column
           field=""
           header="Action"
           body={ActionBodyTemplate}
           sortable
-          style={{ width: "25%" }}
+          style={{ width: "5%" }}
         ></Column>
       </DataTable>
     </div>
