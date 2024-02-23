@@ -31,6 +31,7 @@ import BannerSettings from "./component/Settings/Website/Banner";
 
 import PurchaseIndex from "./component/PURCHASE/purchase-index";
 import VendorManagement from "./component/PURCHASE/vendor-management";
+import ExpensesManagement from "./component/PURCHASE/expenses-management";
 
 import DeliveryManagment from "./component/Delivery/delivery-managment";
 import DeliveryBoyManagment from "./component/Delivery/delivery-boy";
@@ -102,6 +103,7 @@ const App = () => {
                   <Route index element={<PurchaseIndex />} />
                   <Route path="purchase" element={<VendorManagement />} />
                   <Route path="vendor" element={<VendorManagement />} />
+                  <Route path="expenses" element={<ExpensesManagement />} />
                   <Route
                     path="purchase-history"
                     element={<PurchaseHistory />}

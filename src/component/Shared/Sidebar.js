@@ -181,6 +181,17 @@ const Sidebar = () => {
                         VENDOR
                       </Link>
                     </li>
+
+                    <li className="nav-item">
+                      <Link
+                        to="/purchaseManagement/expenses"
+                        className="nav-link"
+                        data-key="t-cover"
+                      >
+                        {" "}
+                        Expenses
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </li>

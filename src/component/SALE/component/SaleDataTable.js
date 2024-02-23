@@ -17,6 +17,8 @@ import { useQuery } from "react-query";
 
 import URLDomain from "../../../URL";
 import Cookies from "universal-cookie";
+import { queryClient } from "../../../App";
+
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 const cookies = new Cookies();
 
@@ -24,12 +26,15 @@ export const SaleDataTable = () => {
   const navigate = useNavigate();
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [selectedMonthYear, setselectedMonthYear] = useState(null);
+
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     order_status: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [isDataLoding, setisDataLoding] = useState(true);
   const [Sale, setSale] = useState(null);
+  const [SaleYear, setSaleYear] = useState(null);
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
@@ -45,6 +50,7 @@ export const SaleDataTable = () => {
       },
       body: JSON.stringify({
         store_id: adminStoreId,
+        selectedMonthYear: selectedMonthYear,
       }),
     })
       .then((response) => response.json())
@@ -57,6 +63,7 @@ export const SaleDataTable = () => {
     data: offline_sale_history,
     isError,
     isLoading: isLoadingAPI,
+    isFetching,
   } = useQuery({
     queryKey: ["offline_sale_history"],
     queryFn: (e) => fetchData(),
@@ -64,9 +71,12 @@ export const SaleDataTable = () => {
 
   useEffect(() => {
     setSale([]);
-    console.log("search product", offline_sale_history, isLoadingAPI);
+    setSaleYear([]);
     if (offline_sale_history) {
       setSale(offline_sale_history.store_customer_purchase_record);
+      setSaleYear(offline_sale_history.sale_year);
+
+      console.log("SaleYear", SaleYear);
       setisDataLoding(false);
     }
   }, [offline_sale_history, isLoadingAPI]);
@@ -79,6 +89,20 @@ export const SaleDataTable = () => {
   //     { field: "order_status", header: "Status" },
   //     { field: "date", header: "Date" },
   //   ];
+
+  const groupedItemTemplate = (option) => {
+    return (
+      <div className="flex align-items-center">
+        <img
+          alt={option.label}
+          src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png"
+          className={`mr-2 flag flag-${option.code.toLowerCase()}`}
+          style={{ width: "18px" }}
+        />
+        <div>{option.label}</div>
+      </div>
+    );
+  };
 
   const statusBodyTemplate = (rowData) => {
     return (
@@ -168,6 +192,20 @@ export const SaleDataTable = () => {
     return <Tag value={option} severity={getSeverity(option)} />;
   };
 
+  const YearTemplate = (option) => {
+    return <Tag value={option} severity="dark" />;
+  };
+
+  const changeDataData = (value) => {
+    // console.log("value", value.value);
+
+    setselectedMonthYear(value.value);
+
+    queryClient.invalidateQueries({
+      queryKey: ["offline_sale_history"],
+    });
+  };
+
   const renderHeader = () => {
     return (
       <div className="row  ">
@@ -187,25 +225,15 @@ export const SaleDataTable = () => {
         </div>
         <div className="col-sm-4">
           <Dropdown
-            value={statuses.order_status}
-            options={statuses}
-            onChange={(e) => statuses.filterApplyCallback(e.value)}
-            itemTemplate={statusItemTemplate}
-            placeholder="Select Year"
-            className="p-column-filter"
-            showClear
-            style={{ minWidth: "5rem" }}
-          />
-
-          <Dropdown
-            value={statuses.order_status}
-            options={statuses}
-            onChange={(e) => statuses.filterApplyCallback(e.value)}
-            itemTemplate={statusItemTemplate}
-            placeholder="Select Year"
-            className="p-column-filter"
-            showClear
-            style={{ minWidth: "5rem" }}
+            value={selectedMonthYear}
+            onChange={(e) => changeDataData(e)}
+            options={SaleYear}
+            optionLabel="label"
+            optionGroupLabel="label"
+            optionGroupChildren="items"
+            optionGroupTemplate={groupedItemTemplate}
+            className="w-full md:w-14rem"
+            placeholder="YEAR / MONTH"
           />
         </div>
         <div className="col-sm-4">
@@ -245,7 +273,7 @@ export const SaleDataTable = () => {
         tableStyle={{ minWidth: "50rem" }}
         filters={filters}
         filterDisplay="row"
-        // loading={isFetching}
+        loading={isFetching}
         // header={header}
       >
         <Column

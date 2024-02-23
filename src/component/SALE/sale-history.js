@@ -321,62 +321,7 @@ const SalesHistory = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="card">
-              {isDataLoding ? (
-                <Stack>
-                  <Skeleton height="100px" />
-                  <Skeleton height="100px" />
-                  <Skeleton height="100px" />
-                </Stack>
-              ) : (
-                <div className="card-body">
-                  <div id="customerList">
-                    <div className="table-responsive table-card mb-1">
-                      {/* <DatatableWrapper
-                        body={showData}
-                        headers={STORY_HEADERS}
-                        paginationOptionsProps={{
-                          initialState: {
-                            rowsPerPage: 10,
-                            options: [10, 15, 20],
-                          },
-                        }}
-                      >
-                        <Row className="mb-4 p-2">
-                          <Col
-                            xs={12}
-                            lg={4}
-                            className="d-flex flex-col justify-content-end align-items-end"
-                          >
-                            <Filter />
-                          </Col>
-                          <Col
-                            xs={12}
-                            sm={6}
-                            lg={4}
-                            className="d-flex flex-col justify-content-lg-center align-items-center justify-content-sm-start mb-2 mb-sm-0"
-                          >
-                            <PaginationOptions />
-                          </Col>
-                          <Col
-                            xs={12}
-                            sm={6}
-                            lg={4}
-                            className="d-flex flex-col justify-content-end align-items-end"
-                          >
-                            <Pagination />
-                          </Col>
-                        </Row>
-                        <Table className="table  table-hover">
-                          <TableHeader />
-                          <TableBody />
-                        </Table>
-                      </DatatableWrapper>
-                    */}
-                      <SaleDataTable saleData={showData} />
-                    </div>
-                  </div>
-                </div>
-              )}
+              <SaleDataTable />
             </div>
           </div>
         </div>
